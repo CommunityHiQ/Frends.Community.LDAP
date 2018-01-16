@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>Frends.Community.LDAP</id>
+    <version>1.0.0.0</version>
+    <title>Frend Community LDAP adapter tasks</title>
+    <authors>HiQ Finland</authors>
+    <owners />
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Frend Community LDAP adapter tasks</description>
+    <summary />
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" />
+      <frameworkAssembly assemblyName="System.Configuration" />
+      <frameworkAssembly assemblyName="System.Core" />
+      <frameworkAssembly assemblyName="System.Runtime.Serialization" />
+      <frameworkAssembly assemblyName="System.Data" />
+      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" />
+      <frameworkAssembly assemblyName="System.Xml" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" />
+      <frameworkAssembly assemblyName="System.Web.Services.Protocols" />
+      <frameworkAssembly assemblyName="System.Xml.XPath" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" />
+      <frameworkAssembly assemblyName="System.DirectoryServices" />  
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="bin\release\Frends.Community.LDAP.dll" target="lib\net451\Frends.Community.LDAP.dll" />
+  </files>
+</package>
