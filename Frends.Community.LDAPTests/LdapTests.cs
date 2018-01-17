@@ -18,13 +18,13 @@ namespace Frends.Community.LDAPTests
             var connection = new LdapConnectionInfo()
             {
                 LdapUri = "WinNT://" + Environment.MachineName + ",computer",
-                Username = "Administrator",
-                Password = "k00k05m41t0!",
+                Username = "",
+                Password = "",
                 AuthenticationType = Authentication.None
             };
             var user = new WindowsUser();
-            user.UserName = "Frendsssssssssssssss";
-            user.Password = "Passu123123";
+            user.UserName = "";
+            user.Password = "";
             user.Description = "User created by Frends.";
             LdapOperations.WindowsUser_Create(connection, user);
         }
@@ -35,13 +35,13 @@ namespace Frends.Community.LDAPTests
             var connection = new LdapConnectionInfo()
             {
                 LdapUri = "WinNT://" + Environment.MachineName + ",computer",
-                Username = "Administrator",
-                Password = "k00k05m41t0!",
+                Username = "",
+                Password = "",
                 AuthenticationType = Authentication.None
             };
             var user = new WindowsUser();
-            user.UserName = "Frends";
-            user.Password = "Passu1231231";
+            user.UserName = "";
+            user.Password = "";
             user.Description = "User created by Frends.222";
             LdapOperations.WindowsUser_Update(connection, user);
         }
@@ -52,8 +52,8 @@ namespace Frends.Community.LDAPTests
             var connection = new LdapConnectionInfo()
             {
                 LdapUri = "WinNT://" + Environment.MachineName + ",computer",
-                Username = "Administrator",
-                Password = "k00k05m41t0!",
+                Username = "",
+                Password = "",
                 AuthenticationType = Authentication.None
             };
 
@@ -123,9 +123,9 @@ namespace Frends.Community.LDAPTests
             var connection = new LdapConnectionInfo()
             {
                 AuthenticationType = Authentication.None,
-                LdapUri = "LDAP://127.0.0.1:389",
-                Username = "DEVDOM\\Administrator",
-                Password = "k00k05m41t0!"
+                LdapUri = "",
+                Username = "",
+                Password = ""
             };
 
             var user = new AdUser();
