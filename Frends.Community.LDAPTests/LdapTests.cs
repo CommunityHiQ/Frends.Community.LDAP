@@ -12,39 +12,6 @@ namespace Frends.Community.LDAPTests
     public class LdapTests
     {
 
-        [Test]
-        public void CreateWindowsUser()
-        {
-            var connection = new LdapConnectionInfo()
-            {
-                LdapUri = "WinNT://" + Environment.MachineName + ",computer",
-                Username = "",
-                Password = "",
-                AuthenticationType = Authentication.None
-            };
-            var user = new WindowsUser();
-            user.UserName = "";
-            user.Password = "";
-            user.Description = "User created by Frends.";
-            LdapOperations.WindowsUser_Create(connection, user);
-        }
-
-        [Test]
-        public void UpdateWindowsUser()
-        {
-            var connection = new LdapConnectionInfo()
-            {
-                LdapUri = "WinNT://" + Environment.MachineName + ",computer",
-                Username = "",
-                Password = "",
-                AuthenticationType = Authentication.None
-            };
-            var user = new WindowsUser();
-            user.UserName = "";
-            user.Password = "";
-            user.Description = "User created by Frends.222";
-            LdapOperations.WindowsUser_Update(connection, user);
-        }
 
         [Test]
         public void AddWindowsUserToGroup()
@@ -61,7 +28,7 @@ namespace Frends.Community.LDAPTests
             user.UserName = "Frends";
             var groups = new List<string>();
             groups.Add("Administrators");
-            LdapOperations.WindowsUser_AddToGroup(connection, user, groups.ToArray());
+            //LdapOperations.WindowsUser_AddToGroup(connection, user, groups.ToArray());
         }
 
         [Test]
@@ -75,9 +42,9 @@ namespace Frends.Community.LDAPTests
                 Password = "password"
             };
 
-            var u = LdapOperations.AD_UserExists(connection, "cn", "MattiMeikalainen2");
+            //var u = LdapOperations.AD_UserExists(connection, "cn", "MattiMeikalainen2");
 
-            Assert.AreEqual(true, u);
+            //Assert.AreEqual(true, u);
         }
 
         [Test]
@@ -114,7 +81,7 @@ namespace Frends.Community.LDAPTests
 
             //user.ADFlags = flags.ToArray();
 
-            LdapOperations.AD_CreateUser(connection, user, false ,"");
+            //LdapOperations.AD_CreateUser(connection, user, false ,"");
         }
 
         [Test]

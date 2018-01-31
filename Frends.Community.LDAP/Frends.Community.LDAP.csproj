@@ -28,8 +28,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Frends.Community.LDAP.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Frends.Tasks.Attributes">
+      <HintPath>..\packages\Frends.Tasks.Attributes.1.2.0\lib\net40\Frends.Tasks.Attributes.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
