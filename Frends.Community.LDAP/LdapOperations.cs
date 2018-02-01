@@ -14,83 +14,82 @@ using Frends.Tasks.Attributes;
 
 namespace Frends.Community.LDAP
 {
-    public static class LdapOperations
+    /// <summary>
+    /// Properties for User search
+    /// If the operation returns a user entry, it is returned.
+    /// </summary>
+    public class AD_UserExistsProperties
     {
-
         /// <summary>
-        /// Properties for User search
+        ///  The name of the attribute to search by.
         /// </summary>
-        public class AD_UserExistsProperties
-        {
-            /// <summary>
-            ///  The name of the attribute to search by.
-            /// </summary>
-            /// 
-            public string attribute;
-            /// <summary>
-            /// The value of the attribute to search by.
-            /// </summary>
-            public string value;
-        }
-
-        /// <summary>
-        /// Properties for create user
-        /// </summary>
-        public class AD_CreateUserProperties
-        {
-            /// <summary>
-            ///  Defines if password should be set at create time.
-            /// </summary>
-            /// 
-            public bool setPassword;
-            /// <summary>
-            /// AD Create user: Defines the new password if needed.
-            /// </summary>
-            [PasswordPropertyText(true)]
-            public string newPassword;
-        }
-
-        /// <summary>
-        /// Properties for AD groups
-        /// </summary>
-        public class AD_AddGroupsProperties
-        {
-            /// <summary>
-            ///  To which groups the user should be added.
-            /// </summary>
-            /// 
-            public string[] groups;
-        }
-
-        /// <summary>
-        /// Result class.
         /// 
-        /// Fields and their descriptions:
+        public string attribute { set; get; }
+        /// <summary>
+        /// The value of the attribute to search by.
+        /// </summary>
+        public string value { set; get; }
+    }
+
+    /// <summary>
+    /// Properties for create user
+    /// </summary>
+    public class AD_CreateUserProperties
+    {
+        /// <summary>
+        ///  Defines if password should be set at create time.
+        /// </summary>
         /// 
-        /// - operationSuccessful: Tells if the requested operation was performed successfully.
-        /// - user: If the operation returns a user entry, it is passed in this variable.
-        /// </summary>
-        public class OutputUser
-        {
-            public bool operationSuccessful;
-            public DirectoryEntry user;
-        }
-
+        public bool setPassword { set; get; }
         /// <summary>
-        /// Result class.
-        /// - operationSuccessful: Tells if the requested operation was performed successfully.
+        /// AD Create user: Defines the new password if needed.
         /// </summary>
-        public class Output
-        {
-            public bool operationSuccessful;
-        }
+        [PasswordPropertyText(true)]
+        public string newPassword { set; get; }
+    }
 
+    /// <summary>
+    /// Properties for AD groups
+    /// </summary>
+    public class AD_AddGroupsProperties
+    {
         /// <summary>
-        /// Searches Active Directory for user(s) specified by the given attribute and its value, included in the InputOtherData class.
+        ///  To which groups the user should be added.
+        /// </summary>
+        /// 
+        public string[] groups;
+    }
+
+    /// <summary>
+    /// Result class.
+    /// 
+    /// Fields and their descriptions:
+    /// 
+    /// - operationSuccessful: Tells if the requested operation was performed successfully.
+    /// - user: Returns a user entry.
+    /// </summary>
+    public class OutputUser
+    {
+        public bool operationSuccessful { get; set; }
+        public DirectoryEntry user { get; set; }
+    }
+
+    /// <summary>
+    /// Result class.
+    /// - operationSuccessful: Tells if the requested operation was performed successfully.
+    /// </summary>
+    public class Output
+    {
+        public bool operationSuccessful { get; set; }
+    }
+    public static class LdapOperations 
+    {
+        /// <summary>
+        /// Searches Active Directory for user(s) specified by the given attribute and its value, included in the AD_UserExistsProperties class.
         /// </summary>
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
         /// <param name="SearchParameters">Other data needed for the query</param>
-        /// <returns>LdapResult class</returns>
+        /// <returns>LdapResult class: bool OperationSuccessful, DirectoryEntry user</returns>
         public static OutputUser AD_UserExists([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_UserExistsProperties SearchParameters)
         {
             var ldapOperationResult = new OutputUser { operationSuccessful = false, user = null };
@@ -102,6 +101,8 @@ namespace Frends.Community.LDAP
             }
 
             ldapOperationResult.operationSuccessful = !(user == null);
+
+            if (ldapOperationResult.operationSuccessful == true) ldapOperationResult.user = user;
 
             return ldapOperationResult;
         }
