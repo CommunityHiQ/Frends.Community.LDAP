@@ -53,7 +53,7 @@ Create a user to AD.
 | LDAP uri | string | Actice Directory uri | 'example.fi' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
 | Cn | string | Common name | 'John Doe' |
 | Ou | string | Organization unit, where the user is located. |  |
 | Ad flags | List |  |  |
@@ -78,7 +78,7 @@ Update a user in the AD.
 | LDAP uri | string | Actice Directory uri | 'example.fi' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
 | Cn | string | Common name | 'John Doe' |
 | Ou | string | Organization unit, where the user is located. |  |
 | Ad flags | List |  |  |
@@ -102,7 +102,7 @@ Add the user in AD to group(s).
 | LDAP uri | string | Actice Directory uri | 'example.fi' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
 | Cn | string | Common name | 'John Doe' |
 | Ou | string | Organization unit, where the user is located. |  |
 | Ad flags | List |  |  |
@@ -130,11 +130,11 @@ Rebuild the project
 
 Run Tests with nunit3. Tests can be found under
 
-`Frends.Community.Azure.Blob\bin\Release\Frends.Community.Azure.Blob.Tests.dll-bin\Release\Frends.Community.LDAPTests.dll`
+`Frends.Community.LDAP\bin\Release\Frends.Community.LDAPTests.dll`
 
 Create a nuget package
 
-`nuget pack nuspec/Frends.Community.Azure.Blob.nuspec`
+`nuget pack Frends.Community.LDAP.nuspec`
 
 # Contributing
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.

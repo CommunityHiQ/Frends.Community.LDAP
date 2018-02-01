@@ -23,7 +23,6 @@ namespace Frends.Community.LDAP
         /// <summary>
         ///  The name of the attribute to search by.
         /// </summary>
-        /// 
         public string attribute { set; get; }
         /// <summary>
         /// The value of the attribute to search by.
@@ -39,7 +38,6 @@ namespace Frends.Community.LDAP
         /// <summary>
         ///  Defines if password should be set at create time.
         /// </summary>
-        /// 
         public bool setPassword { set; get; }
         /// <summary>
         /// AD Create user: Defines the new password if needed.
@@ -56,15 +54,12 @@ namespace Frends.Community.LDAP
         /// <summary>
         ///  To which groups the user should be added.
         /// </summary>
-        /// 
         public string[] groups { set; get; }
     }
 
     /// <summary>
     /// Result class.
-    /// 
     /// Fields and their descriptions:
-    /// 
     /// - operationSuccessful: Tells if the requested operation was performed successfully.
     /// - user: Returns a user entry.
     /// </summary>
