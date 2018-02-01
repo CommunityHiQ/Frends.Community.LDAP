@@ -72,6 +72,11 @@ namespace Frends.Community.LDAP
     {
         public bool operationSuccessful { get; set; }
         public DirectoryEntry user { get; set; }
+
+        public object GetUserProperty(string Attribute)
+        {
+            return user.Properties[Attribute];
+        }
     }
 
     /// <summary>
