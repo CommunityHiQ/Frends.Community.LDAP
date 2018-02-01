@@ -57,7 +57,7 @@ namespace Frends.Community.LDAP
         ///  To which groups the user should be added.
         /// </summary>
         /// 
-        public string[] groups;
+        public string[] groups { set; get; }
     }
 
     /// <summary>
