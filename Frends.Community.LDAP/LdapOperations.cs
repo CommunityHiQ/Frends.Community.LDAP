@@ -60,6 +60,23 @@ namespace Frends.Community.LDAP
     /// <summary>
     /// Result class.
     /// Fields and their descriptions:
+    /// - UserFound: Tells if user(s) found
+    /// - user: Returns a user entry.
+    /// </summary>
+    public class OutputUserFound
+    {
+        public bool UserFound { get; set; }
+        public DirectoryEntry user { get; set; }
+
+        public object GetUserProperty(string Attribute)
+        {
+            return user.Properties[Attribute];
+        }
+    }
+
+    /// <summary>
+    /// Result class.
+    /// Fields and their descriptions:
     /// - operationSuccessful: Tells if the requested operation was performed successfully.
     /// - user: Returns a user entry.
     /// </summary>
@@ -89,10 +106,10 @@ namespace Frends.Community.LDAP
         /// </summary>
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
         /// <param name="SearchParameters">Other data needed for the query</param>
-        /// <returns>LdapResult class: bool OperationSuccessful, DirectoryEntry user</returns>
-        public static OutputUser AD_UserExists([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_UserExistsProperties SearchParameters)
+        /// <returns>LdapResult class: bool UserFound, DirectoryEntry user</returns>
+        public static OutputUserFound AD_UserExists([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_UserExistsProperties SearchParameters)
         {
-            var ldapOperationResult = new OutputUser { operationSuccessful = false, user = null };
+            var ldapOperationResult = new OutputUserFound { UserFound = false, user = null };
 
             DirectoryEntry user;
             using (var ldap = new LdapService(ldapConnectionInfo))
@@ -100,9 +117,9 @@ namespace Frends.Community.LDAP
                 user = ldap.SearchUser(SearchParameters.attribute, SearchParameters.value);
             }
 
-            ldapOperationResult.operationSuccessful = !(user == null);
+            ldapOperationResult.UserFound = !(user == null);
 
-            if (ldapOperationResult.operationSuccessful == true) ldapOperationResult.user = user;
+            if (ldapOperationResult.UserFound == true) ldapOperationResult.user = user;
 
             return ldapOperationResult;
         }
