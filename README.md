@@ -32,7 +32,7 @@ Searches Active Directory for user(s) specified by the given attribute and its v
 | LDAP uri | string | Actice Directory uri | 'example.fi' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: ANone,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Authentication type | enum: None,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
 | Attribute | string | Attribute name to be searched. |  |
 | Value | string | Attribute value to be searched. |  |
 
@@ -53,7 +53,17 @@ Create a user to AD.
 | LDAP uri | string | Actice Directory uri | 'example.fi' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: ANone,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Authentication type | enum: None,
+Secure,
+Encryption,
+SecureSocketsLayer,
+ReadonlyServer,
+Anonymous,
+FastBind,
+Signing,
+Sealing,
+Delegation,
+ServerBind  | Authentication type | None |
 | Cn | string | Common name | 'John Doe' |
 | Ou | string | Organization unit, where the user is located. |  |
 | Ad flags | List |  |  |
@@ -78,7 +88,7 @@ Update a user in the AD.
 | LDAP uri | string | Actice Directory uri | 'example.fi' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: ANone,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Authentication type | enum: None,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
 | Cn | string | Common name | 'John Doe' |
 | Ou | string | Organization unit, where the user is located. |  |
 | Ad flags | List |  |  |
@@ -102,7 +112,7 @@ Add the user in AD to group(s).
 | LDAP uri | string | Actice Directory uri | 'example.fi' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: ANone,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Authentication type | enum: None,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
 | Cn | string | Common name | 'John Doe' |
 | Ou | string | Organization unit, where the user is located. |  |
 | Ad flags | List |  |  |
@@ -151,4 +161,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
 | Version | Changes |
 | ----- | ----- |
-| 1.0.0 | First version. Includes AD_UserExists, AD_CreateUser, AD_UpdateUser, AD_AddGrouts |
+| 1.0.0 | First version. Includes AD_UserExists, AD_CreateUser, AD_UpdateUser, AD_AddGroups |
