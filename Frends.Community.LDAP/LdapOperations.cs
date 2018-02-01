@@ -87,7 +87,7 @@ namespace Frends.Community.LDAP
     {
         public bool operationSuccessful { get; set; }
     }
-    public static class LdapOperations 
+    public static class LdapActiveDirectoryOperations 
     {
         /// <summary>
         /// Searches Active Directory for user(s) specified by the given attribute and its value, included in the AD_UserExistsProperties class.

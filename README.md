@@ -1,18 +1,16 @@
 # Frends.Community.LDAP
 
-FRENDS Community Task for Azure Blob related operations.
+FRENDS Community Task for Active Directory related operations.
 
-Task operations that use Azure DataMovement library for managing blobs.
-https://github.com/Azure/azure-storage-net-data-movement
+Task operations that use Active Directory library.
+https://github.com/CommunityHiQ/Frends.Community.LDAP
 
 - [Installing](#installing)
 - [Tasks](#tasks)
-     - [UploadFileAsync](#uploadfileasync)
-	 - [ListBlobs](#listblobs)
-     - [DownloadBlobAsync](#downloadblobasync)
-     - [ReadBlobContentAsync](#readblobcontentasync)
-     - [DeleteBlobAsync](#deleteblobasync)
-     - [DeleteContainerAsync](#deletecontainerasync)
+     - [AD_UserExists](#ad_userexists)
+	 - [AD_CreateUser](#ad_createUser)
+     - [AD_UpdateUser](#ad_updateUser)
+     - [AD_AddGroups](#ad_addgroups)
 - [Building](#building)
 - [Contributing](#contributing)
 - [Change Log](#change-log)
@@ -24,138 +22,115 @@ You can install the task via FRENDS UI Task View or you can find the nuget packa
 
 # Tasks
 
-## UploadFileAsync
-Uploads file to target container. If the container doesn't exist, it will be created before the upload operation.
+## AD_UserExists
+Searches Active Directory for user(s) specified by the given attribute and its value.
 
 ### Properties
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| Source File | string | Full path to file that is uploaded. | 'c:\temp\uploadMe.xml' |
-| Connection String | string | Connection string to Azure storage | 'UseDevelopmentStorage=true' |
-| Container Name | string | Name of the azure blob storage container where the data will be uploaded. If the container doesn't exist, then it will be created. See [Naming and Referencing Containers](https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata) for naming conventions. | 'my-container' |
-| Blob Type | enum: Append, Block or Page  | Azure blob type to upload. | Block |
-| Rename To | string | If value is set, uploaded file will be renamed to this. | 'newFileName.xml' |
-| Overwrite | bool | Should upload operation overwrite existing file with same name. | true |
-| ParallelOperations | int | The number of the concurrent operations. | 64 |
+| LDAP uri | string | Actice Directory uri | 'example.fi' |
+| Username | string | User name | 'user' |
+| Password | string | Password | '****' |
+| Authentication type | enum: ANone,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Attribute | string | Attribute name to be searched. |  |
+| Value | string | Attribute value to be searched. |  |
 
 ### Returns
 
-| Property | Type | Description | Example |
-| -------- | -------- | -------- | -------- |
-| SourceFile | string | Full path of file uploaded | |
-| Uri | string | Uri to uploaded blob | |
-
-## ListBlobs
-List blobs in container.
+Result a object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| Connection String | string | Connection string to Azure storage | 'UseDevelopmentStorage=true' |
-| Container Name | string | Name of the azure blob storage container from where the data will be downloaded. | 'my-container' |
-| Prefix | string | Blob prefix used while searching container | |
+| operationSuccessful | bool | True, if user found | |
+| user | DirectoryEntry(object) | Found user | |
+
+## AD_CreateUser
+Create a user to AD.
+
+| Property | Type | Description | Example |
+| -------- | -------- | -------- | -------- |
+| LDAP uri | string | Actice Directory uri | 'example.fi' |
+| Username | string | User name | 'user' |
+| Password | string | Password | '****' |
+| Authentication type | enum: ANone,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Cn | string | Common name | 'John Doe' |
+| Ou | string | Organization unit, where the user is located. |  |
+| Ad flags | List |  |  |
+| Other attributes | List |  |  |
 
 ### Returns
 
-Result is a list of object with following properties
+Result a object with parameter.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| Name | string | Blob Name. With Directories this is empty. | |
-| Uri | string | Blob Uri | |
-| BlobType | string | Type of the blob. Either 'Block','Page' or 'Directory' | 'Block' |
+| operationSuccessful | bool | True, if operation is successful | |
 
 
-## DownloadBlobAsync
-Downloads blob to a file.
+## AD_UpdateUser
+Update a user in the AD.
 
 ### Properties
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| Connection String | string | Connection string to Azure storage | 'UseDevelopmentStorage=true' |
-| Container Name | string | Name of the azure blob storage container from where the data will be downloaded. | 'my-container' |
-| Blob Name | string | Name of the blob to be downloaded. | 'donwloadMe.xml' |
-| Blob Type | enum: Append, Block or Page  | Azure blob type to download. | Block |
-| Directory | string | Download destination directory. | 'c:\downloads' |
-| FileExistsOperation | enum: Error, Rename, Overwrite | Action to take if destination file exists. Error: throws exception, Overwrite: writes over existing file, Rename: Renames file by adding '(1)' at the end (example: myFile.txt --> myFile(1).txt) | Error |
+| LDAP uri | string | Actice Directory uri | 'example.fi' |
+| Username | string | User name | 'user' |
+| Password | string | Password | '****' |
+| Authentication type | enum: ANone,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Cn | string | Common name | 'John Doe' |
+| Ou | string | Organization unit, where the user is located. |  |
+| Ad flags | List |  |  |
+| Other attributes | List |  |  |
 
 ### Returns
+Result a object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| FileName | string | Downloaded file name. | |
-| Directory | string | Download directory. | |
-| FullPath | string | Full path to downloaded file. | |
+| operationSuccessful | bool | True, if user found | |
+| user | DirectoryEntry(object) | Updated user | |
 
-## ReadBlobContentAsync
-Reads blob content to string.
+## AD_AddGroups
+Add the user in AD to group(s).
 
 ### Properties
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| Connection String | string | Connection string to Azure storage | 'UseDevelopmentStorage=true' |
-| Container Name | string | Name of the azure blob storage container from where blob data is located. | 'my-container' |
-| Blob Name | string | Name of the blob which content is read. | 'donwloadMe.xml' |
-| Blob Type | enum: Append, Block or Page  | Azure blob type to read. | Block |
-| Encoding Name | string | Encoding name in which blob content is read. | 'UTF-8' |
+| LDAP uri | string | Actice Directory uri | 'example.fi' |
+| Username | string | User name | 'user' |
+| Password | string | Password | '****' |
+| Authentication type | enum: ANone,Secure,Encryption,SecureSocketsLayer,ReadonlyServer,Anonymous,FastBind,Signing,Sealing,Delegation,ServerBind  | Authentication type | None |
+| Cn | string | Common name | 'John Doe' |
+| Ou | string | Organization unit, where the user is located. |  |
+| Ad flags | List |  |  |
+| Other attributes | List |  |  |
 
 ### Returns: 
+Result a object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| Content | string | Blob content. | |
-
-## DeleteBlobAsync
-Deletes a blob from target container. Operation result is seen as succesful even if the blob or container doesn't exist.
-
-### Properties
-
-| Property | Type | Description | Example |
-| -------- | -------- | -------- | -------- |
-| Connection String | string | Connection string to Azure storage | 'UseDevelopmentStorage=true' |
-| Container Name | string | Name of the container where delete blob exists. | 'my-container' |
-| Blob Name | string | Name of the blob to delete. | 'deleteMe.xml' |
-| Blob Type | enum: Append, Block or Page  | Azure blob type to read. | Block |
-
-### Returns: 
-
-| Property | Type | Description | Example |
-| -------- | -------- | -------- | -------- |
-| Success | bool | Indicates whether the operation was succesful or not. | true |
-
-## DeleteContainerAsync
-Deletes a whole container from blob storage.
-
-### Properties
-
-| Property | Type | Description | Example |
-| -------- | -------- | -------- | -------- |
-| Connection String | string | Connection string to Azure storage | 'UseDevelopmentStorage=true' |
-| Container Name | string | Name of the container to delete. | 'my-container' |
-
-### Returns: 
-
-| Property | Type | Description | Example |
-| -------- | -------- | -------- | -------- |
-| Success | bool | Indicates whether the operation was succesful or not. | true |
+| operationSuccessful | bool | True, if user found | |
+| user | DirectoryEntry(object) | Added user | |
 
 # Building
 
 Clone a copy of the repo
 
-`git clone https://github.com/CommunityHiQ/Frends.Community.Azure.Blob`
+`git clone https://github.com/CommunityHiQ/Frends.Community.LDAP`
 
 Restore dependencies
 
-`nuget restore Frends.Community.Azure.Blob`
+`nuget restore FreFrends.Community.LDAP`
 
 Rebuild the project
 
 Run Tests with nunit3. Tests can be found under
 
-`Frends.Community.Azure.Blob\bin\Release\Frends.Community.Azure.Blob.Tests.dll`
+`Frends.Community.Azure.Blob\bin\Release\Frends.Community.Azure.Blob.Tests.dll-bin\Release\Frends.Community.LDAPTests.dll`
 
 Create a nuget package
 
@@ -176,4 +151,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
 | Version | Changes |
 | ----- | ----- |
-| 1.1.0 | Wrote documentation according to development quide lines. Added DownloadBlobAsync, ReadBlobContentAsync and ListBlobs tasks. |
+| 1.0.0 | First version. Includes AD_UserExists, AD_CreateUser, AD_UpdateUser, AD_AddGrouts |
