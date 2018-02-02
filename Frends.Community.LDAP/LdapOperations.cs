@@ -70,7 +70,7 @@ namespace Frends.Community.LDAP
 
         public object GetUserProperty(string Attribute)
         {
-            return user.Properties[Attribute];
+            return user.Properties[Attribute].Value.ToString();
         }
     }
 
@@ -87,7 +87,7 @@ namespace Frends.Community.LDAP
 
         public object GetUserProperty(string Attribute)
         {
-            return user.Properties[Attribute];
+            return user.Properties[Attribute].Value.ToString();
         }
     }
 

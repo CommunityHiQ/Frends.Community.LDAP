@@ -109,7 +109,7 @@ namespace Frends.Community.LDAPTests
             attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.postalCode, Value = "vaihdettu", DataType = AttributeType.String });
             attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.mobile, Value = "vaihdettu", DataType = AttributeType.String });
             user.OtherAttributes = attributes.ToArray();
-            LdapOperations.AD_UpdateUser(connection, user);
+            LdapActiveDirectoryOperations.AD_UpdateUser(connection, user);
         }
     }
 }
