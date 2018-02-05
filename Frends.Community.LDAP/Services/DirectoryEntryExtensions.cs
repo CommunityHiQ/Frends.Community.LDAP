@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#pragma warning disable CS1591 
+
 namespace Frends.Community.LDAP.Services
 {
     public static class DirectoryEntryExtensions

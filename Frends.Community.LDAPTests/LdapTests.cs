@@ -5,14 +5,12 @@ using System.DirectoryServices;
 using Frends.Community.LDAP.Models;
 using Frends.Community.LDAP;
 
-
 namespace Frends.Community.LDAPTests
 {
+
     [TestFixture]
     public class LdapTests
     {
-
-
         [Test]
         public void AddWindowsUserToGroup()
         {
@@ -37,14 +35,19 @@ namespace Frends.Community.LDAPTests
             var connection = new LdapConnectionInfo()
             {
                 AuthenticationType = Authentication.Secure,
-                LdapUri = "LDAP://yourInstance",
-                Username = "username",
-                Password = "password"
+                LdapUri = "",
+                Username = "",
+                Password = ""
             };
 
-            //var u = LdapOperations.AD_UserExists(connection, "cn", "MattiMeikalainen2");
+            var e = new AD_FetchObjectProperties()
+            {
+                filter = @"(&(objectClass=user)(sAMAccountName=HiQTestAdmin))"
+            };
+            List<OutputObjectEntry> u = LdapActiveDirectoryOperations.AD_FetchObject(connection, e);
+            var result = u[0].GetProperty("objectClass");//lastLogon; dSCorePropagationData; objectClass; whenChanged
 
-            //Assert.AreEqual(true, u);
+            Assert.AreEqual(4, 1);
         }
 
         [Test]

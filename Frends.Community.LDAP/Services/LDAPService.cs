@@ -10,6 +10,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+#pragma warning disable CS1591 
+
 namespace Frends.Community.LDAP.Services
 {
     public class LdapService : IDisposable
@@ -113,38 +115,40 @@ namespace Frends.Community.LDAP.Services
         }
 
         /// <summary>
-        /// Searches for a single object of the object class USER in Active Directory based on a single attribute and value 
-        /// for it. sAMAccountName or CN are good attributes to search - since only one result is returned, it's important the
-        /// value is unique
+        /// Searches for the collection of the objects based on given filter. 
         /// </summary>
-        /// <param name="Attribute">The attribute to filter the search by</param>
-        /// <param name="Value">The value of the attribute to filter the search by</param>
-        /// <returns></returns>
-        public DirectoryEntry SearchUser(string Attribute, string Value)
+        /// <param name="filter">The attribute to filter the search by</param>
+        /// <returns> The list of the DirectoreEntry(s) objects</returns>
+         public List<DirectoryEntry> SearchObjectsByFilter(string filter)
         {
+            var ret = new List<DirectoryEntry>();
             try
             {
-                string filter = "(&(objectClass=user)(" + Attribute + "=" + Value + "))";
                 using (DirectorySearcher s = new DirectorySearcher(_rootEntry))
                 {
                     s.SearchScope = SearchScope.Subtree;
                     s.ReferralChasing = ReferralChasingOption.All;
                     s.Filter = filter;
-                    SearchResult res = s.FindOne();
-                    if (res == null)
+                    SearchResultCollection ResultCollection = s.FindAll();
+       
+                    if (ResultCollection == null)
                     {
-                        return null;
+                        return ret;
                     }
                     else
                     {
-                        return res.GetDirectoryEntry();
+                        foreach (SearchResult item in ResultCollection)
+                        {
+                            ret.Add(item.GetDirectoryEntry());
+                        }
+                        return ret;
                     }
                 }
             }
             catch (Exception ex)
             {
-                string message = "Failed finding user with username {0}:'." + ex.Message;
-                throw new ArgumentException(string.Format(message, Value), ex);
+                string message = "Failed finding objects with filter {0}:'." + ex.Message;
+                throw new ArgumentException(string.Format(message, filter), ex);
                 throw new Exception(ex.Message);
             }
         }

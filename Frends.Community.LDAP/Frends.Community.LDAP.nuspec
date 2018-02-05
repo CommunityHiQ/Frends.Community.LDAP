@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
     <id>Frends.Community.LDAP</id>
-    <version>0.5.2</version>
+    <version>1.0.0</version>
     <title>Frend Community LDAP adapter tasks</title>
     <authors>HiQ Finland</authors>
     <owners />

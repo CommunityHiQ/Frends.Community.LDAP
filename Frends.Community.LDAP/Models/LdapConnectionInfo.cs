@@ -6,10 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#pragma warning disable CS1591
+
 namespace Frends.Community.LDAP.Models
 {
     public class LdapConnectionInfo
     {
+        [DefaultValue("LDAP://xx.xxx.xxx.xxx/CN=Users,DC=FRENDSTest01,DC=net")]
         public string LdapUri { get; set; }
         public string Username { get; set; }
         [PasswordPropertyText(true)]

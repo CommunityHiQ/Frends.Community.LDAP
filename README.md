@@ -7,7 +7,7 @@ https://github.com/CommunityHiQ/Frends.Community.LDAP
 
 - [Installing](#installing)
 - [Tasks](#tasks)
-     - [AD_UserExists](#ad_userexists)
+     - [AD_FetchObject](#ad_fetchbbject)
 	 - [AD_CreateUser](#ad_createUser)
      - [AD_UpdateUser](#ad_updateUser)
      - [AD_AddGroups](#ad_addgroups)
@@ -23,18 +23,17 @@ You can install the task via FRENDS UI Task View or you can find the nuget packa
 # Tasks
 
 ## AD_UserExists
-Searches Active Directory for user(s) specified by the given attribute and its value.
+Searches Active Directory for object(s) specified by filter.
 
 ### Properties
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| LDAP uri | string | Actice Directory uri | 'example.fi' |
+| LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx/CN=Users,DC=FRENDSTest01,DC=net' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
-| Attribute | string | Attribute name to be searched. |  |
-| Value | string | Attribute value to be searched. |  |
+| filter | string | Attribute name to be searched. | '(&(objectClass=user)(sAMAccountName=TestAdmin))' |
 
 ### Returns
 
@@ -42,15 +41,15 @@ Result a object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if user found | |
-| user | DirectoryEntry(object) | Found user | |
+| OutputObjectEntry | The collection of the DirectoryEntry | Found users | |
+https://msdn.microsoft.com/en-us/library/system.directoryservices.directoryentry(v=vs.110).aspx
 
 ## AD_CreateUser
 Create a user to AD.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| LDAP uri | string | Actice Directory uri | 'example.fi' |
+| LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
@@ -75,7 +74,7 @@ Update a user in the AD.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| LDAP uri | string | Actice Directory uri | 'example.fi' |
+| LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
@@ -99,7 +98,7 @@ Add the user in AD to group(s).
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| LDAP uri | string | Actice Directory uri | 'example.fi' |
+| LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |

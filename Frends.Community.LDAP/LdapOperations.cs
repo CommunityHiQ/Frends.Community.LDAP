@@ -15,19 +15,15 @@ using Frends.Tasks.Attributes;
 namespace Frends.Community.LDAP
 {
     /// <summary>
-    /// Properties for User search
-    /// If the operation returns a user entry, it is returned.
+    /// Properties for AD's object search
     /// </summary>
-    public class AD_UserExistsProperties
+    public class AD_FetchObjectProperties
     {
         /// <summary>
-        ///  The name of the attribute to search by.
+        /// Defines filter which is used to search object(s)
         /// </summary>
-        public string attribute { set; get; }
-        /// <summary>
-        /// The value of the attribute to search by.
-        /// </summary>
-        public string value { set; get; }
+        [DefaultValue("(&(objectClass=user)(sAMAccountName=TestAdmin))")]
+        public string filter { set; get; }
     }
 
     /// <summary>
@@ -60,17 +56,36 @@ namespace Frends.Community.LDAP
     /// <summary>
     /// Result class.
     /// Fields and their descriptions:
-    /// - UserFound: Tells if user(s) found
-    /// - user: Returns a user entry.
+    /// - ObjectEntry is object's entry data(DirectoryEntry)
     /// </summary>
-    public class OutputUserFound
+    public class OutputObjectEntry
     {
-        public bool UserFound { get; set; }
-        public DirectoryEntry user { get; set; }
+        public DirectoryEntry ObjectEntry { get; set; }
 
-        public object GetUserProperty(string Attribute)
+        public object GetPropertyLargeInteger(string Attribute)// int64
         {
-            return user.Properties[Attribute].Value.ToString();
+            var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
+            var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
+            return recipientType;
+        }
+
+        // GetProperty returns collection even if there are one object match.
+        public object GetProperty(String Attribute)// int32, string, ...
+        {
+            var object_type = ObjectEntry.Properties[Attribute].Value.ToString();
+
+            if(object_type is System.Object[]) // many objects found
+            {
+                return ObjectEntry.Properties[Attribute].Value;
+            }
+            else // just one object found
+            {
+                List<object> ret = new List<object>();
+                ret.Add(ObjectEntry.Properties[Attribute].Value);
+                return ret;
+            }
         }
     }
 
@@ -102,26 +117,29 @@ namespace Frends.Community.LDAP
     public static class LdapActiveDirectoryOperations 
     {
         /// <summary>
-        /// Searches Active Directory for user(s) specified by the given attribute and its value, included in the AD_UserExistsProperties class.
+        /// Searches Active Directory for objects specified by the given filter, included in the AD_FetchObjectProperties class.
         /// </summary>
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
-        /// <param name="SearchParameters">Other data needed for the query</param>
-        /// <returns>LdapResult class: bool UserFound, DirectoryEntry user</returns>
-        public static OutputUserFound AD_UserExists([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_UserExistsProperties SearchParameters)
+        /// <param name="SearchParameters">Filter needed for the query</param>
+        /// <returns>LdapResult class: the Collection of the  DirectoryEntry</returns>
+        public static List<OutputObjectEntry> AD_FetchObject([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_FetchObjectProperties SearchParameters)
         {
-            var ldapOperationResult = new OutputUserFound { UserFound = false, user = null };
 
-            DirectoryEntry user;
+            var ret_outputs = new List<OutputObjectEntry>(); 
+            List<DirectoryEntry> tmpObjectEntries;
+
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
-                user = ldap.SearchUser(SearchParameters.attribute, SearchParameters.value);
+                tmpObjectEntries = ldap.SearchObjectsByFilter(SearchParameters.filter);
             }
 
-            ldapOperationResult.UserFound = !(user == null);
-
-            if (ldapOperationResult.UserFound == true) ldapOperationResult.user = user;
-
-            return ldapOperationResult;
+            foreach (var item in tmpObjectEntries)
+            {
+                OutputObjectEntry output_class = new OutputObjectEntry();
+                output_class.ObjectEntry = item;
+                ret_outputs.Add(output_class);
+            }
+            return ret_outputs;
         }
 
         /// <summary>
