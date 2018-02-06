@@ -64,17 +64,36 @@ namespace Frends.Community.LDAP
 
         public object GetPropertyLargeInteger(string Attribute)// int64
         {
-            var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
-            var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-            var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-            var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
-            return recipientType;
+            List<object> ret = new List<object>();
+            var object_type = ObjectEntry.Properties[Attribute].Value;
+
+            if (object_type is System.Object[]) // many objects found
+            {
+                foreach (var item in (Object[])(ObjectEntry.Properties[Attribute].Value))
+                {                          
+                    var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
+                    var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+                    var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+                    var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
+                    ret.Add(recipientType);
+                }
+                return ret;
+            }
+            else // just one object found
+            {               
+                var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
+                var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+                var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+                var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
+                ret.Add(recipientType);
+                return recipientType;
+            }
         }
 
         // GetProperty returns collection even if there are one object match.
         public object GetProperty(String Attribute)// int32, string, ...
         {
-            var object_type = ObjectEntry.Properties[Attribute].Value.ToString();
+            var object_type = ObjectEntry.Properties[Attribute].Value;
 
             if(object_type is System.Object[]) // many objects found
             {
@@ -121,7 +140,7 @@ namespace Frends.Community.LDAP
         /// </summary>
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
         /// <param name="SearchParameters">Filter needed for the query</param>
-        /// <returns>LdapResult class: the Collection of the  DirectoryEntry</returns>
+        /// <returns>LdapResult class: the Collection of the DirectoryEntry classes.</returns>
         public static List<OutputObjectEntry> AD_FetchObject([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_FetchObjectProperties SearchParameters)
         {
 
@@ -204,6 +223,15 @@ namespace Frends.Community.LDAP
 
                 return ldapOperationResult;
             }
+        }
+
+        private static long  ConvertToLargeInteger(object value)
+        {
+            var adsLargeInteger = value;
+            var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
+            return recipientType;
         }
     }
 }

@@ -35,18 +35,17 @@ namespace Frends.Community.LDAPTests
             var connection = new LdapConnectionInfo()
             {
                 AuthenticationType = Authentication.Secure,
-                LdapUri = "",
-                Username = "",
-                Password = ""
+                LdapUri = "LDAP://52.166.223.166/CN=Users,DC=FRENDSTest01,DC=net",
+                Username = "FRENDSTEST01\\Testuser1",
+                Password = "Test101"
             };
 
             var e = new AD_FetchObjectProperties()
             {
-                filter = @"(&(objectClass=user)(sAMAccountName=HiQTestAdmin))"
+                filter = @"(&(objectClass=user)(sAMAccountName=Guest))"
             };
             List<OutputObjectEntry> u = LdapActiveDirectoryOperations.AD_FetchObject(connection, e);
-            var result = u[0].GetProperty("objectClass");//lastLogon; dSCorePropagationData; objectClass; whenChanged
-
+            var result = u[0].GetProperty("instanceType");//lastLogon; dSCorePropagationData; objectClass; whenChanged; GetPropertyLargeInteger
             Assert.AreEqual(4, 1);
         }
 

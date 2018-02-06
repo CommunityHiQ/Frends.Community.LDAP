@@ -22,7 +22,7 @@ You can install the task via FRENDS UI Task View or you can find the nuget packa
 
 # Tasks
 
-## AD_UserExists
+## AD_FetchObject
 Searches Active Directory for object(s) specified by filter.
 
 ### Properties
@@ -37,12 +37,18 @@ Searches Active Directory for object(s) specified by filter.
 
 ### Returns
 
-Result a object with parameters.
+Result a object(s) with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| OutputObjectEntry | The collection of the DirectoryEntry | Found users | |
+| OutputObjectEntry | The collection of the DirectoryEntry | Found objects | |
 https://msdn.microsoft.com/en-us/library/system.directoryservices.directoryentry(v=vs.110).aspx
+
+Usage:
+To fetch result use syntax:
+#result[0].GetProperty("instanceType")
+#result[0].GetPropertyLargeInteger("lastLogon") - If attribute is in integer8 format.
+#result can be looped by loop element, also.
 
 ## AD_CreateUser
 Create a user to AD.
