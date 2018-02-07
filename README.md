@@ -7,9 +7,9 @@ https://github.com/CommunityHiQ/Frends.Community.LDAP
 
 - [Installing](#installing)
 - [Tasks](#tasks)
-     - [AD_FetchObject](#ad_fetchbbject)
-	 - [AD_CreateUser](#ad_createUser)
-     - [AD_UpdateUser](#ad_updateUser)
+     - [AD_FetchObject](#ad_fetchbobject)
+	 - [AD_CreateUser](#ad_createuser)
+     - [AD_UpdateUser](#ad_updateuser)
      - [AD_AddGroups](#ad_addgroups)
 - [Building](#building)
 - [Contributing](#contributing)
@@ -47,7 +47,9 @@ https://msdn.microsoft.com/en-us/library/system.directoryservices.directoryentry
 Usage:
 To fetch result use syntax:
 #result[0].GetProperty("instanceType")
+
 #result[0].GetPropertyLargeInteger("lastLogon") - If attribute is in integer8 format.
+
 #result can be looped by loop element, also.
 
 ## AD_CreateUser
@@ -87,7 +89,7 @@ Update a user in the AD.
 | Cn | string | Common name | 'John Doe' |
 | Ou | string | Organization unit, where the user is located. |  |
 | Ad flags | List |  |  |
-| Other attributes | List |  |  |
+| Other attributes | List | parameters: Attribute=attribute name; Value: Value to be set(set to null if you want to clear the value); Data type: Attribute's type |  |
 
 ### Returns
 Result a object with parameters.

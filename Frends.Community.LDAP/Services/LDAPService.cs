@@ -285,7 +285,8 @@ namespace Frends.Community.LDAP.Services
                     {
                         // attribuutin arvo oli tyhjä, seuraavaksi tyhjennös
                         if (isUpdate == true)
-                        { // tyhjennä arvo entry.Properties[attribute.Key].Clear(); }
+                        { // tyhjennä arvo 
+                            entry.Properties[attribute.Key].Clear();
                         }
                     }
                 }

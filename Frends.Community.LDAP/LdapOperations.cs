@@ -141,7 +141,7 @@ namespace Frends.Community.LDAP
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
         /// <param name="SearchParameters">Filter needed for the query</param>
         /// <returns>LdapResult class: the Collection of the DirectoryEntry classes.</returns>
-        public static List<OutputObjectEntry> AD_FetchObject([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_FetchObjectProperties SearchParameters)
+        public static List<OutputObjectEntry> AD_FetchObjects([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_FetchObjectProperties SearchParameters)
         {
 
             var ret_outputs = new List<OutputObjectEntry>(); 

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Frends.Tasks.Attributes;
 
 #pragma warning disable CS1591 
 
@@ -19,6 +20,7 @@ namespace Frends.Community.LDAP.Models
         /// <summary>
         /// Custom attribute name. Use this if the attribute is not available on the Attribute-list.
         /// </summary>
+        [ConditionalDisplay(nameof(Attribute), AdUserAttribute.CustomAttribute)]
         public string CustomAttributeName { get; set; }
 
         /// <summary>
