@@ -37,6 +37,7 @@ namespace Frends.Community.LDAP.Models
     {
         CustomAttribute,
         samAccountName,
+        cn,
         userPassword,
         givenName,
         sn,

@@ -102,6 +102,13 @@ namespace Frends.Community.LDAP.Services
             return entry;
         }
 
+        public DirectoryEntry DeleteAdUser(DirectoryEntry entry)
+        {
+            entry.DeleteTree();
+            entry.CommitChanges();
+            return entry;
+        }
+
         public DirectoryEntry UpdateAdUser(AdUser user)
         {
             if (!user.CN.ToUpper().StartsWith("CN="))

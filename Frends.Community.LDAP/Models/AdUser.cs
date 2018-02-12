@@ -20,7 +20,7 @@ namespace Frends.Community.LDAP.Models
         /// <summary>
         /// Common name, i.e. JohnDoe. Mandatory.
         /// </summary>
-        public string CN { get; set; }
+       public string CN { get; set; }
 
 
         /// <summary>
@@ -34,7 +34,19 @@ namespace Frends.Community.LDAP.Models
 
         public string GetPath()
         {
-            return CN + "," + OU;
+            return CN+","+OU;
         }
     }
+
+    public class CreateADuser: AdUser
+    {
+        public string Path;
+    }
+
+    public class UpdateADuser : AdUser
+    {
+        public string DN;
+    }
+
+
 }

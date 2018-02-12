@@ -48,9 +48,31 @@ namespace Frends.Community.LDAP
     public class AD_AddGroupsProperties
     {
         /// <summary>
-        ///  To which groups the user should be added.
+        ///  To which groups the user should be added(For example. CN=Guests,CN=Builtin).
         /// </summary>
         public string[] groups { set; get; }
+    }
+
+    /// <summary>
+    ///  User to be added into groups
+    /// </summary>
+    public class AD_AddGroupsUserProperties
+    {
+        [DefaultValue("CN=MattiMeikalainen")]
+        public string cn { set; get; }
+        [DefaultValue("CN=Users,DC=FRENDSTest01,DC=net")]
+        public string ou { set; get; }
+    }
+
+    /// <summary>
+    /// Properties for AD delete user
+    /// </summary>
+    public class AD_DeleteUserProperties
+    {
+        /// <summary>
+        ///  cn name of the user
+        /// </summary>
+        public string user { set; get; }
     }
 
     /// <summary>
@@ -91,18 +113,17 @@ namespace Frends.Community.LDAP
         }
 
         // GetProperty returns collection even if there are one object match.
-        public object GetProperty(String Attribute)// int32, string, ...
+        public object[] GetProperty(String Attribute)// int32, string, ...
         {
             var object_type = ObjectEntry.Properties[Attribute].Value;
 
             if(object_type is System.Object[]) // many objects found
             {
-                return ObjectEntry.Properties[Attribute].Value;
+                return (Object[])ObjectEntry.Properties[Attribute].Value;
             }
             else // just one object found
             {
-                List<object> ret = new List<object>();
-                ret.Add(ObjectEntry.Properties[Attribute].Value);
+                object[] ret = new object[]  { ObjectEntry.Properties[Attribute].Value };
                 return ret;
             }
         }
@@ -213,9 +234,12 @@ namespace Frends.Community.LDAP
         /// <param name="adUser"></param>
         /// <param name="GroupsToAdd"></param>
         /// <returns></returns>
-        public static Output AD_AddGroups([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AdUser adUser, AD_AddGroupsProperties GroupsToAdd)
+        public static Output AD_AddGroups([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_AddGroupsUserProperties User, [CustomDisplay(DisplayOption.Tab)] AD_AddGroupsProperties GroupsToAdd)
         {
             var ldapOperationResult = new Output { operationSuccessful = false };
+            var adUser = new AdUser();
+            adUser.CN =User.cn;
+            adUser.OU =User.ou;
 
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
@@ -225,13 +249,29 @@ namespace Frends.Community.LDAP
             }
         }
 
-        private static long  ConvertToLargeInteger(object value)
+        /// <summary>
+        /// Delete AD user.
+        /// </summary>
+        /// <param name="ldapConnectionInfo"></param>
+        /// <param name="user"></param>
+        /// <returns>operationSuccessful = true if operation is ok.</returns>
+        public static Output AD_DeleteUser([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, AD_DeleteUserProperties user)
         {
-            var adsLargeInteger = value;
-            var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-            var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-            var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
-            return recipientType;
+            var ret_output = new Output();
+            List<DirectoryEntry> tmpObjectEntries;
+            ret_output.operationSuccessful = false;
+
+            using (var ldap = new LdapService(ldapConnectionInfo))// @"(&(objectClass=user)(cn=MattiMeikalainen))
+            {
+                tmpObjectEntries = ldap.SearchObjectsByFilter("(&(objectClass=user)(cn="+user.user+"))");
+                if (tmpObjectEntries.Count > 0)
+                {
+                    ldap.DeleteAdUser(tmpObjectEntries[0]);
+                }
+            }
+
+            ret_output.operationSuccessful = true;
+            return ret_output;
         }
     }
 }

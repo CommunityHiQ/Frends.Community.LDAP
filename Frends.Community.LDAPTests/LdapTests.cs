@@ -12,95 +12,134 @@ namespace Frends.Community.LDAPTests
     public class LdapTests
     {
         [Test]
-        public void AD_VerifyUserExists()
+        public void AD_4_VerifyUserExists()
         {
             var connection = new LdapConnectionInfo()
             {
                 AuthenticationType = Authentication.Secure,
-                LdapUri = "",
-                Username = "",
-                Password = ""
+                LdapUri = "LDAP://52.166.223.166/CN=Users,DC=FRENDSTest01,DC=net",
+                Username = "FRENDSTEST01\\Testuser1",
+                Password = "6Fe96cb8e2#141"
             };
 
             var e = new AD_FetchObjectProperties()
             {
-                filter = @"(&(objectClass=user)(sAMAccountName=Guest))"
+                filter = @"(&(objectClass=user)(cn=MattiMeikalainen))" //(&(objectClass=user)(sAMAccountName=MattiMeikalainen))
             };
             List<OutputObjectEntry> u = LdapActiveDirectoryOperations.AD_FetchObjects(connection, e);
-            var result = u[0].GetProperty("sAMAccountName");//lastLogon; dSCorePropagationData; objectClass; whenChanged; GetPropertyLargeInteger
-            Assert.AreEqual(4, 1);
+            object[] result = u[0].GetProperty("cn");//sAMAccountName;lastLogon; dSCorePropagationData; objectClass; whenChanged; GetPropertyLargeInteger
+            Assert.AreEqual(result[0], "MattiMeikalainen");
         }
 
         [Test]
-        public void AD_Create()
+        public void AD_2_Create()
         {
             var connection = new LdapConnectionInfo()
             {
                 AuthenticationType = Authentication.Secure,
-                LdapUri = "LDAP://yourInstanceHere",
-                Username = "username",
-                Password = "password"
+                LdapUri = "LDAP://52.166.223.166",
+                Username = "FRENDSTEST01\\Testuser1",
+                Password = "6Fe96cb8e2#141"
             };
         
             var user = new AdUser();
-            user.CN = "MattiMeikalainen2";
-            user.OU = "OU=Users,DC=JessenInstanssi";// OU=Users,DC=JessenInstanssi
+            user.CN = "MattiMeikalainen";
+            user.OU = "CN=Users,DC=FRENDSTest01,DC=net";// OU=Users,DC=JessenInstanssi CN=Users,DC=FRENDSTest01,DC=net
             var attributes = new List<EntryAttribute>();
-            //attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.samAccountName, Value = "Matti2", DataType = AttributeType.String });
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.userPassword, Value = "$ala San4?", DataType = AttributeType.String });
             attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.givenName, Value = "Matti", DataType = AttributeType.String });
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.sn, Value = "Meikäläinen", DataType = AttributeType.String });
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.streetAddress, Value = "Kuusitie 12", DataType = AttributeType.String });
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.telephoneNumber, Value = "040121915", DataType = AttributeType.String });
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.l, Value = "Finland", DataType = AttributeType.String });
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.postalCode, Value = "00100", DataType = AttributeType.String });
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.mobile, Value = "040 25153143", DataType = AttributeType.String });
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.initials, Value = "M.M", DataType = AttributeType.String });
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.mail, Value = "M.M", DataType = AttributeType.String });
             user.OtherAttributes = attributes.ToArray();
 
-            //var flags = new List<ADFlag>();
-            //flags.Add(new ADFlag() { FlagType = ADFlagType.ADS_UF_ACCOUNTDISABLE, Value = false });
-            //flags.Add(new ADFlag() { FlagType = ADFlagType.ADS_UF_NORMAL_ACCOUNT, Value = true });
+            var flags = new List<ADFlag>();
+            flags.Add(new ADFlag() { FlagType = ADFlagType.ADS_UF_ACCOUNTDISABLE, Value = false });
+            flags.Add(new ADFlag() { FlagType = ADFlagType.ADS_UF_NORMAL_ACCOUNT, Value = true });
 
-            //user.ADFlags = flags.ToArray();
+            user.ADFlags = flags.ToArray();
 
-            //LdapOperations.AD_CreateUser(connection, user, false ,"");
+            var e = new AD_CreateUserProperties()
+            {
+                newPassword = "",
+                setPassword = false
+            };
+
+            var ret=LdapActiveDirectoryOperations.AD_CreateUser(connection, user, e);
+            Assert.AreEqual(true,true);
         }
 
         [Test]
-        public void AD_Update()
+        public void AD_3_Update()
         {
             var connection = new LdapConnectionInfo()
             {
-                AuthenticationType = Authentication.None,
-                LdapUri = "",
-                Username = "",
-                Password = ""
+                AuthenticationType = Authentication.Secure,
+                LdapUri = "LDAP://52.166.223.166",
+                Username = "FRENDSTEST01\\Testuser1",
+                Password = "6Fe96cb8e2#141"
             };
 
+            // update value vois olla yhessä annetaan vain DN
             var user = new AdUser();
-            user.CN = "Guest";
+            user.CN = "MattiMeikalainen";
             user.OU = "CN=Users,DC=FRENDSTest01,DC=net";//CN=Users,DC=FRENDSTest01,DC=net OU=FrendsOU,DC=DEVDOM,DC=COM"
             var attributes = new List<EntryAttribute>();
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.samAccountName, Value = "Guest2", DataType = AttributeType.String });
-            //attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.userPassword, Value = "vaihdettu", DataType = AttributeType.String });
-            //attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.givenName, Value = "vaihdettu", DataType = AttributeType.String });
-            //attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.sn, Value = "vaihdettu", DataType = AttributeType.String });
-            //attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.streetAddress, Value = "vaihdettu", DataType = AttributeType.String });
-            //attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.telephoneNumber, Value = "vaihdettu", DataType = AttributeType.String });
-            //attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.l, Value = "vaihdettu", DataType = AttributeType.String });
-            //attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.postalCode, Value = "vaihdettu", DataType = AttributeType.String });
-            //attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.mobile, Value = "vaihdettu", DataType = AttributeType.String });
+            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.description, Value = "MattiMeikalainen", DataType = AttributeType.String });
             user.OtherAttributes = attributes.ToArray();
-            LdapActiveDirectoryOperations.AD_UpdateUser(connection, user);
+            var ret = LdapActiveDirectoryOperations.AD_UpdateUser(connection, user);
+            Assert.AreEqual(true, true);
         }
 
         [Test]
-        public void Test()
+        public void AD_1_Delete()
         {
-            AD_VerifyUserExists();
-            AD_Update();
+            var connection = new LdapConnectionInfo()
+            {
+                AuthenticationType = Authentication.Secure,
+                LdapUri = "LDAP://52.166.223.166/CN=Users,DC=FRENDSTest01,DC=net",
+                Username = "FRENDSTEST01\\Testuser1",
+                Password = "6Fe96cb8e2#141"
+            };
+
+            var e = new AD_DeleteUserProperties()
+            {
+                user = "MattiMeikalainen"
+            };
+            var ret = LdapActiveDirectoryOperations.AD_DeleteUser(connection,e);
+            Assert.AreEqual(true, true);
         }
+
+        [Test]
+        public void AD_5_AddGroups()
+        {
+            var connection = new LdapConnectionInfo()
+            {
+                AuthenticationType = Authentication.Secure,
+                LdapUri = "LDAP://52.166.223.166",
+                Username = "FRENDSTEST01\\Testuser1",
+                Password = "6Fe96cb8e2#141"
+            };
+
+
+            // vois olla yhessä
+            var user = new AdUser();
+            user.CN = "CN=MattiMeikalainen";
+            user.OU = "CN=Users,DC=FRENDSTest01,DC=net";// OU=Users,DC=JessenInstanssi CN=Users,DC=FRENDSTest01,DC=net
+            var attributes = new List<EntryAttribute>();
+            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.givenName, Value = "Matti", DataType = AttributeType.String });
+            user.OtherAttributes = attributes.ToArray();
+
+            var flags = new List<ADFlag>();
+            flags.Add(new ADFlag() { FlagType = ADFlagType.ADS_UF_ACCOUNTDISABLE, Value = false });
+            flags.Add(new ADFlag() { FlagType = ADFlagType.ADS_UF_NORMAL_ACCOUNT, Value = true });
+
+            user.ADFlags = flags.ToArray();
+
+            var e = new AD_AddGroupsProperties()
+            {
+                groups=new string[] { "CN=Guests,CN=Builtin" }
+            };
+
+           // var ret = LdapActiveDirectoryOperations.AD_AddGroups(connection, user, e);
+            Assert.AreEqual(true, true);
+        }
+
     }
 }

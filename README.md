@@ -42,10 +42,12 @@ Result a object(s) with parameters.
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
 | OutputObjectEntry | The collection of the DirectoryEntry | Found objects | |
+
 https://msdn.microsoft.com/en-us/library/system.directoryservices.directoryentry(v=vs.110).aspx
 
 Usage:
 To fetch result use syntax:
+
 #result[0].GetProperty("instanceType")
 
 #result[0].GetPropertyLargeInteger("lastLogon") - If attribute is in integer8 format.
@@ -61,10 +63,10 @@ Create a user to AD.
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
-| Cn | string | Common name | 'John Doe' |
-| Ou | string | Organization unit, where the user is located. |  |
-| Ad flags | List |  |  |
-| Other attributes | List |  |  |
+| Cn | string | Common name | 'MattiMeikalainen' |
+| Ou | string | Organization unit, where the user is located. | CN=Users,DC=FRENDSTest01,DC=net |
+| Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
+| Other attributes | List | parameters: Attribute=attribute name; Value: Value to be set; Data type: Attribute's type |  |
 
 ### Returns
 
@@ -86,9 +88,9 @@ Update a user in the AD.
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
-| Cn | string | Common name | 'John Doe' |
-| Ou | string | Organization unit, where the user is located. |  |
-| Ad flags | List |  |  |
+| Cn | string | Common name | 'MattiMeikalainen' |
+| Ou | string | Organization unit, where the user is located. | 'CN=Users,DC=FRENDSTest01,DC=net' |
+| Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
 | Other attributes | List | parameters: Attribute=attribute name; Value: Value to be set(set to null if you want to clear the value); Data type: Attribute's type |  |
 
 ### Returns
@@ -96,7 +98,7 @@ Result a object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if user found | |
+| operationSuccessful | bool | True, if user found| |
 | user | DirectoryEntry(object) | Updated user | |
 
 ## AD_AddGroups
@@ -110,18 +112,17 @@ Add the user in AD to group(s).
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
-| Cn | string | Common name | 'John Doe' |
-| Ou | string | Organization unit, where the user is located. |  |
-| Ad flags | List |  |  |
-| Other attributes | List |  |  |
+| Cn | string | Common name | 'CN=MattiMeikalainen' |
+| Ou | string | Organization unit, where the user is located. | 'CN=Users,DC=FRENDSTest01,DC=net' |
+| Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
+| AD_AddGroupsProperties| List | Groups the user to be added. | 'CN=Guests,CN=Builtin' |
 
 ### Returns: 
 Result a object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if user found | |
-| user | DirectoryEntry(object) | Added user | |
+| operationSuccessful | bool | True, if operation is successful | |
 
 # Building
 
