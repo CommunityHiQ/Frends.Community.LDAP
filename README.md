@@ -32,7 +32,7 @@ Searches Active Directory for object(s) specified by filter.
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx/CN=Users,DC=FRENDSTest01,DC=net' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
+| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx | Authentication type | None |
 | filter | string | Attribute name to be searched. | '(&(objectClass=user)(sAMAccountName=TestAdmin))' |
 
 ### Returns
@@ -62,7 +62,7 @@ Create a user to AD.
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
+| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx | Authentication type | None |
 | Cn | string | Common name | 'MattiMeikalainen' |
 | Ou | string | Organization unit, where the user is located. | CN=Users,DC=FRENDSTest01,DC=net |
 | Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
@@ -87,7 +87,7 @@ Update a user in the AD.
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
+| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx | Authentication type | None |
 | Cn | string | Common name | 'MattiMeikalainen' |
 | Ou | string | Organization unit, where the user is located. | 'CN=Users,DC=FRENDSTest01,DC=net' |
 | Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
@@ -111,7 +111,7 @@ Add the user in AD to group(s).
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | None |
+| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx | Authentication type | None |
 | Cn | string | Common name | 'CN=MattiMeikalainen' |
 | Ou | string | Organization unit, where the user is located. | 'CN=Users,DC=FRENDSTest01,DC=net' |
 | Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
@@ -159,4 +159,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
 | Version | Changes |
 | ----- | ----- |
-| 1.0.0 | First version. Includes AD_UserExists, AD_CreateUser, AD_UpdateUser, AD_AddGroups |
+| 1.0.0 | First version. Includes AD_FetchObjects, AD_CreateUser, AD_UpdateUser, AD_AddGroups |
