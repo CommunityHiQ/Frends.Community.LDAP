@@ -111,7 +111,7 @@ Add the user in AD to group(s).
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx | None |
+| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
 | Cn | string | Common name | 'CN=MattiMeikalainen' |
 | Ou | string | Organization unit, where the user is located. | 'CN=Users,DC=FRENDSTest01,DC=net' |
 | Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
