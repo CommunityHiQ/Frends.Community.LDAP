@@ -84,13 +84,13 @@ namespace Frends.Community.LDAP.Services
             return true;
         }
 
-        public DirectoryEntry CreateAdUser(AdUser user)
+        public DirectoryEntry CreateAdUser(CreateADuser user)
         {
             var entryAttributes = GetEntryAttributes(user, user.OtherAttributes);
             if(!user.CN.ToUpper().StartsWith("CN="))
                 user.CN = "CN=" + user.CN;
 
-            var entry = CreateEntry(user.CN, user.OU, LdapClasses.User, entryAttributes);
+            var entry = CreateEntry(user.CN, user.Path, LdapClasses.User, entryAttributes);
             SaveEntry(entry);
 
             foreach (var flag in user.ADFlags)
@@ -109,12 +109,12 @@ namespace Frends.Community.LDAP.Services
             return entry;
         }
 
-        public DirectoryEntry UpdateAdUser(AdUser user)
+        public DirectoryEntry UpdateAdUser(UpdateADuser user)
         {
-            if (!user.CN.ToUpper().StartsWith("CN="))
-                user.CN = "CN=" + user.CN;
+            //if (!user.CN.ToUpper().StartsWith("CN="))
+            //    user.CN = "CN=" + user.CN;
 
-            var entry = FindPath(_rootEntry, user.GetPath());
+            var entry = FindPath(_rootEntry, user.DN);
             var entryAttributes = GetEntryAttributes(user, user.OtherAttributes);
             SetDirectoryEntryAttributes(entry, entryAttributes, true);
             SaveEntry(entry);
@@ -181,9 +181,9 @@ namespace Frends.Community.LDAP.Services
             return entry;
         }
 
-        public bool AddAdUserToGroup(AdUser user, IEnumerable<string> groups)
+        public bool AddAdUserToGroup(string dn, IEnumerable<string> groups)
         {
-            var entry = FindPath(_rootEntry, user.GetPath());
+            var entry = FindPath(_rootEntry, dn);
             foreach (var groupName in groups)
             {
                 var groupEntry = SearchEntry(groupName, LdapClasses.Group);

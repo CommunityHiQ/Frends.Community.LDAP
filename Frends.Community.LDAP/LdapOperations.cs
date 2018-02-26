@@ -20,8 +20,16 @@ namespace Frends.Community.LDAP
     public class AD_FetchObjectProperties
     {
         /// <summary>
+        /// Defines path which used to search object(s)
+        /// </summary>
+        [DefaultDisplayType(DisplayType.Text)]
+        [DefaultValue("CN=Users,DC=FRENDSTest01,DC=net")]
+        public string Path { get; set; }
+
+        /// <summary>
         /// Defines filter which is used to search object(s)
         /// </summary>
+        [DefaultDisplayType(DisplayType.Text)]
         [DefaultValue("(&(objectClass=user)(sAMAccountName=TestAdmin))")]
         public string filter { set; get; }
     }
@@ -58,10 +66,9 @@ namespace Frends.Community.LDAP
     /// </summary>
     public class AD_AddGroupsUserProperties
     {
-        [DefaultValue("CN=MattiMeikalainen")]
-        public string cn { set; get; }
-        [DefaultValue("CN=Users,DC=FRENDSTest01,DC=net")]
-        public string ou { set; get; }
+        [DefaultValue("CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net")]
+        [DefaultDisplayType(DisplayType.Text)]
+        public string dn { set; get; }
     }
 
     /// <summary>
@@ -157,16 +164,18 @@ namespace Frends.Community.LDAP
     public static class LdapActiveDirectoryOperations 
     {
         /// <summary>
-        /// Searches Active Directory for objects specified by the given filter, included in the AD_FetchObjectProperties class.
+        /// Searches Active Directory for objects specified by the given Path + filter, included in the AD_FetchObjectProperties class.
         /// </summary>
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
-        /// <param name="SearchParameters">Filter needed for the query</param>
+        /// <param name="SearchParameters">Path and filter needed for the query</param>
         /// <returns>LdapResult class: the Collection of the DirectoryEntry classes.</returns>
         public static List<OutputObjectEntry> AD_FetchObjects([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_FetchObjectProperties SearchParameters)
         {
 
             var ret_outputs = new List<OutputObjectEntry>(); 
             List<DirectoryEntry> tmpObjectEntries;
+
+            ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/"+SearchParameters.Path;
 
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
@@ -189,7 +198,7 @@ namespace Frends.Community.LDAP
         /// <param name="adUser">The user record to be created</param>
         /// <param name="Password">Passes two parameters to this task: bool setPassword, which defines if a password should be set at create time, and string newPassword, containing the password to be set.</param>
         /// <returns>LdapResult class, which carries a copy of the created user record.</returns>
-        public static OutputUser AD_CreateUser([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AdUser adUser, AD_CreateUserProperties Password )
+        public static OutputUser AD_CreateUser([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] CreateADuser adUser, AD_CreateUserProperties Password )
         {
             var ldapOperationResult = new OutputUser { operationSuccessful = false, user = null };
 
@@ -199,7 +208,7 @@ namespace Frends.Community.LDAP
 
                 if (Password.setPassword) 
                 {
-                    SetPassword.SetUserPassword(ldapConnectionInfo.LdapUri,adUser.OU,ldapConnectionInfo.Username,ldapConnectionInfo.Password,adUser.CN, Password.newPassword);
+                    SetPassword.SetUserPassword(ldapConnectionInfo.LdapUri,adUser.Path,ldapConnectionInfo.Username,ldapConnectionInfo.Password,adUser.CN, Password.newPassword);
                 }
 
                 ldapOperationResult.operationSuccessful = true;
@@ -214,7 +223,7 @@ namespace Frends.Community.LDAP
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
         /// <param name="adUser">The user record to be updated</param>
         /// <returns>LdapResult class, which carries a copy of the updated user record.</returns>
-        public static OutputUser AD_UpdateUser([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AdUser adUser)
+        public static OutputUser AD_UpdateUser([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] UpdateADuser adUser)
         {
             var ldapOperationResult = new OutputUser { operationSuccessful = false, user = null };
 
@@ -231,19 +240,16 @@ namespace Frends.Community.LDAP
         /// Add the user in AD to group(s).
         /// </summary>
         /// <param name="ldapConnectionInfo"></param>
-        /// <param name="adUser"></param>
+        /// <param name="User"></param>
         /// <param name="GroupsToAdd"></param>
         /// <returns></returns>
         public static Output AD_AddGroups([CustomDisplay(DisplayOption.Tab)] LdapConnectionInfo ldapConnectionInfo, [CustomDisplay(DisplayOption.Tab)] AD_AddGroupsUserProperties User, [CustomDisplay(DisplayOption.Tab)] AD_AddGroupsProperties GroupsToAdd)
         {
             var ldapOperationResult = new Output { operationSuccessful = false };
-            var adUser = new AdUser();
-            adUser.CN =User.cn;
-            adUser.OU =User.ou;
-
+ 
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
-                ldapOperationResult.operationSuccessful = ldap.AddAdUserToGroup(adUser, GroupsToAdd.groups);
+                ldapOperationResult.operationSuccessful = ldap.AddAdUserToGroup(User.dn, GroupsToAdd.groups);
 
                 return ldapOperationResult;
             }

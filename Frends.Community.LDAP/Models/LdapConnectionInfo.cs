@@ -13,7 +13,7 @@ namespace Frends.Community.LDAP.Models
 {
     public class LdapConnectionInfo
     {
-        [DefaultValue("LDAP://xx.xxx.xxx.xxx/CN=Users,DC=FRENDSTest01,DC=net")]
+        [DefaultValue("LDAP://xx.xxx.xxx.xxx")]
         [DefaultDisplayType(DisplayType.Text)]
         public string LdapUri { get; set; }
         [DefaultDisplayType(DisplayType.Text)]

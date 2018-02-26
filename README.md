@@ -23,16 +23,17 @@ You can install the task via FRENDS UI Task View or you can find the nuget packa
 # Tasks
 
 ## AD_FetchObject
-Searches Active Directory for object(s) specified by filter.
+Searches Active Directory for object(s) specified by path and filter.
 
 ### Properties
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx/CN=Users,DC=FRENDSTest01,DC=net' |
+| LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
+| Path | string | The path to be search attribute. | 'CN=Users,DC=FRENDSTest01,DC=net' |
 | filter | string | Attribute name to be searched. | '(&(objectClass=user)(sAMAccountName=TestAdmin))' |
 
 ### Returns
@@ -63,8 +64,8 @@ Create a user to AD.
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx|
-| Cn | string | Common name | 'MattiMeikalainen' |
-| Ou | string | Organization unit, where the user is located. | CN=Users,DC=FRENDSTest01,DC=net |
+| Cn | string | Common name | 'CN=MattiMeikalainen' |
+| Path | string | Location, where the user is located. | CN=Users,DC=FRENDSTest01,DC=net |
 | Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
 | Other attributes | List | parameters: Attribute=attribute name; Value: Value to be set; Data type: Attribute's type |  |
 
@@ -88,8 +89,7 @@ Update a user in the AD.
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
-| Cn | string | Common name | 'MattiMeikalainen' |
-| Ou | string | Organization unit, where the user is located. | 'CN=Users,DC=FRENDSTest01,DC=net' |
+| DN | string | distinguishedName, where the user is located. | 'CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net' |
 | Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
 | Other attributes | List | parameters: Attribute=attribute name; Value: Value to be set(set to null if you want to clear the value); Data type: Attribute's type |  |
 
@@ -112,9 +112,7 @@ Add the user in AD to group(s).
 | Username | string | User name | 'user' |
 | Password | string | Password | '****' |
 | Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
-| Cn | string | Common name | 'CN=MattiMeikalainen' |
-| Ou | string | Organization unit, where the user is located. | 'CN=Users,DC=FRENDSTest01,DC=net' |
-| Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
+| DN | string | distinguishedName, where the user is located. | 'CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net' |
 | AD_AddGroupsProperties| List | Groups the user to be added. | 'CN=Guests,CN=Builtin' |
 
 ### Returns: 

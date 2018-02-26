@@ -4,49 +4,63 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Frends.Tasks.Attributes;
 
 #pragma warning disable CS1591 
 
 namespace Frends.Community.LDAP.Models
 {
-    public class AdUser : LdapEntry
-    {
 
-        public AdUser() : base()
+    public class CreateADuser : LdapEntry
+    {
+        [DefaultDisplayType(DisplayType.Text)]
+        [DefaultValue("CN=MattiMeikalainen")]
+        public string CN { get; set; }
+
+        [DefaultDisplayType(DisplayType.Text)]
+        [DefaultValue("CN=Users,DC=FRENDSTest01,DC=net")]
+        public string Path { get; set; }
+
+        public CreateADuser() : base()
         {
             ADFlags = new ADFlag[0];
         }
 
-        /// <summary>
-        /// Common name, i.e. JohnDoe. Mandatory.
-        /// </summary>
-       public string CN { get; set; }
+        public ADFlag[] ADFlags { get; set; }
 
-
-        /// <summary>
-        /// Organization Unit, where the user is located
-        /// </summary>
-        public string OU { get; set; }
-
-        public ADFlag[] ADFlags {get;set;}
-
-        public override EntryAttribute[] OtherAttributes{ get; set; }
+        public override EntryAttribute[] OtherAttributes { get; set; }
 
         public string GetPath()
         {
-            return CN+","+OU;
+            return "";
+            //return CN+","+OU;
         }
+
     }
 
-    public class CreateADuser: AdUser
+    public class UpdateADuser : LdapEntry
     {
-        public string Path;
+        [DefaultValue("CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net")]
+        [DefaultDisplayType(DisplayType.Text)]
+        public string DN { get; set; }
+
+        public UpdateADuser() : base()
+        {
+            ADFlags = new ADFlag[0];
+        }
+
+        public ADFlag[] ADFlags { get; set; }
+
+        public override EntryAttribute[] OtherAttributes { get; set; }
+
+        public string GetPath()
+        {
+            return "";
+            //return CN+","+OU;
+        }
+
     }
 
-    public class UpdateADuser : AdUser
-    {
-        public string DN;
-    }
 
 
 }
