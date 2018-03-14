@@ -1,0 +1,16 @@
+﻿{
+  "Tasks": [
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_FetchObjects"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_CreateUser"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_UpdateUser"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_AddGroups"
+    }
+  ]
+}
