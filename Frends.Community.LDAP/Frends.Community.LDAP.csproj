@@ -31,10 +31,8 @@
     <DocumentationFile>bin\Release\Frends.Community.LDAP.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Frends.Tasks.Attributes">
-      <HintPath>..\packages\Frends.Tasks.Attributes.1.2.0\lib\net40\Frends.Tasks.Attributes.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
@@ -61,9 +59,10 @@
     <Compile Include="Services\SetPassword.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Frends.Community.LDAP.nuspec" />
+    <None Include="Frends.Community.LDAP.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="FrendsTaskMetadata.json" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

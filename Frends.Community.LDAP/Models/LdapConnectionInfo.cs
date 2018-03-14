@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Frends.Tasks.Attributes;
 
 #pragma warning disable CS1591
 
@@ -14,9 +14,9 @@ namespace Frends.Community.LDAP.Models
     public class LdapConnectionInfo
     {
         [DefaultValue("LDAP://xx.xxx.xxx.xxx")]
-        [DefaultDisplayType(DisplayType.Text)]
+        [DisplayFormat(DataFormatString = "Text")]
         public string LdapUri { get; set; }
-        [DefaultDisplayType(DisplayType.Text)]
+        [DisplayFormat(DataFormatString = "Text")]
         public string Username { get; set; }
         [PasswordPropertyText(true)]
         public string Password { get; set; }
