@@ -1,60 +1,53 @@
 ﻿using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.DirectoryServices;
+using System.Configuration;
+using System.Diagnostics;
 using Frends.Community.LDAP.Models;
 using Frends.Community.LDAP;
+using TestConfigurationHandler;
 
 namespace Frends.Community.LDAPTests
 {
-
     [TestFixture]
     public class LdapTests
     {
-        [Test]
-        public void AD_4_VerifyUserExists()
+        private string _user;
+        private string _dn;
+        private string _path;
+        private LdapConnectionInfo _connection;
+
+
+        [SetUp]
+        public void Setup()
         {
-            var connection = new LdapConnectionInfo()
+            _user = "MattiMeikalainen";
+            _path = "CN=Users,DC=FRENDSTest01,DC=net";
+            _dn = "CN=MattiMeikalainen;CN=Users,DC=FRENDSTest01,DC=net";
+
+            _connection = new LdapConnectionInfo
             {
                 AuthenticationType = Authentication.Secure,
-                LdapUri = "",
-                Username = "",
-                Password = ""
+                LdapUri = "LDAP://"  + ConfigHandler.ReadConfigValue("HiQ.AzureADTest.Address"),
+                Username = ConfigHandler.ReadConfigValue("HiQ.AzureADTest.User").ToString(),
+                Password = ConfigHandler.ReadConfigValue("HiQ.AzureADTest.Password").ToString()
             };
-
-            var e = new AD_FetchObjectProperties()
-            {
-                filter = @"(&(objectClass=user)(cn=MattiMeikalainen))", //(&(objectClass=user)(sAMAccountName=MattiMeikalainen))
-                Path = @"CN=Users,DC=FRENDSTest01,DC=net"
-            };
-            List<OutputObjectEntry> u = LdapActiveDirectoryOperations.AD_FetchObjects(connection, e);
-            object[] result = u[0].GetProperty("cn");//sAMAccountName;lastLogon; dSCorePropagationData; objectClass; whenChanged; GetPropertyLargeInteger
-            Assert.AreEqual(result[0], "MattiMeikalainen");
         }
 
-        [Test]
-        public void AD_2_Create()
+        [Test, Order(1)]
+        public void ShouldCreateUser()
         {
-            var connection = new LdapConnectionInfo()
+            var user = new CreateADuser
             {
-                AuthenticationType = Authentication.Secure,
-                LdapUri = "",
-                Username = "",
-                Password = ""
+                CN = _user,
+                Path = _path
             };
-        
-            var user = new CreateADuser();
-            user.CN = "MattiMeikalainen";
-            //user.OU = "CN=Users,DC=FRENDSTest01,DC=net";// OU=Users,DC=JessenInstanssi CN=Users,DC=FRENDSTest01,DC=net
-            user.Path = "CN = Users,DC = FRENDSTest01,DC = net";
-            var attributes = new List<EntryAttribute>();
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.givenName, Value = "Matti", DataType = AttributeType.String });
+            var attributes = new List<EntryAttribute> { new EntryAttribute() { Attribute = AdUserAttribute.givenName, Value = "Matti", DataType = AttributeType.String } };
             user.OtherAttributes = attributes.ToArray();
 
-            var flags = new List<ADFlag>();
-            flags.Add(new ADFlag() { FlagType = ADFlagType.ADS_UF_ACCOUNTDISABLE, Value = false });
-            flags.Add(new ADFlag() { FlagType = ADFlagType.ADS_UF_NORMAL_ACCOUNT, Value = true });
-
+            var flags = new List<ADFlag>
+            { new ADFlag {FlagType = ADFlagType.ADS_UF_ACCOUNTDISABLE, Value = false},
+                new ADFlag {FlagType = ADFlagType.ADS_UF_NORMAL_ACCOUNT, Value = true}
+            };
             user.ADFlags = flags.ToArray();
 
             var e = new AD_CreateUserProperties()
@@ -62,76 +55,53 @@ namespace Frends.Community.LDAPTests
                 newPassword = "",
                 setPassword = false
             };
-
-            var ret=LdapActiveDirectoryOperations.AD_CreateUser(connection, user, e);
-            Assert.AreEqual(true,true);
+            var result = LdapActiveDirectoryOperations.AD_CreateUser(_connection, user, e);
+            Assert.AreEqual(result.operationSuccessful, true);
         }
 
-        [Test]
-        public void AD_3_Update()
-        {
-            var connection = new LdapConnectionInfo()
-            {
-                AuthenticationType = Authentication.Secure,
-                LdapUri = "",
-                Username = "",
-                Password = ""
-            };
 
-            var user = new UpdateADuser();
-            user.DN = "CN=MattiMeikalainen;CN=Users,DC=FRENDSTest01,DC=net";//CN=Users,DC=FRENDSTest01,DC=net OU=FrendsOU,DC=DEVDOM,DC=COM"
-            var attributes = new List<EntryAttribute>();
-            attributes.Add(new EntryAttribute() { Attribute = AdUserAttribute.description, Value = "MattiMeikalainen", DataType = AttributeType.String });
+        [Test, Order(2)]
+        public void ShouldFetchUser()
+        {
+            var e = new AD_FetchObjectProperties()
+            {
+                filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path
+            };
+            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e);
+            var result = u[0].GetProperty("cn");
+            Assert.AreEqual(result[0], _user);
+        }
+
+
+        [Test, Order(3)]
+        public void ShouldUpdateUser()
+        {
+            var user = new UpdateADuser { DN = _dn };
+            var attributes = new List<EntryAttribute> {
+                new EntryAttribute {Attribute = AdUserAttribute.description, Value = "MattiMeikalainen", DataType = AttributeType.String}
+            };
             user.OtherAttributes = attributes.ToArray();
-            var ret = LdapActiveDirectoryOperations.AD_UpdateUser(connection, user);
-            Assert.AreEqual(true, true);
+            var result = LdapActiveDirectoryOperations.AD_UpdateUser(_connection, user);
+            Assert.AreEqual(result.operationSuccessful, true);
         }
 
-        [Test]
-        public void AD_1_Delete()
+        [Test, Order(4)]
+        public void ShouldAddGroups()
         {
-            // url in format(delete is just for unit test): 
-            // LDAP://xx.xx.xx.xx/CN=Users,DC=FRENDSTest01,DC=net
-            var connection = new LdapConnectionInfo()
-            {
-                AuthenticationType = Authentication.Secure,
-                LdapUri = "",
-                Username = "",
-                Password = ""
-            };
+            var u = new AD_AddGroupsUserProperties { dn = _dn };
+            var e = new AD_AddGroupsProperties { groups = new[] { "CN=Guests,CN=Builtin" } };
 
-            var e = new AD_DeleteUserProperties()
-            {
-                user = "MattiMeikalainen"
-            };
-            var ret = LdapActiveDirectoryOperations.AD_DeleteUser(connection,e);
-            Assert.AreEqual(true, true);
+            var result = LdapActiveDirectoryOperations.AD_AddGroups(_connection, u, e);
+            Assert.AreEqual(result.operationSuccessful, true);
         }
 
-        [Test]
-        public void AD_5_AddGroups()
+        [Test, Order(5)]
+        public void ShouldDeleteUser()
         {
-            var connection = new LdapConnectionInfo()
-            {
-                AuthenticationType = Authentication.Secure,
-                LdapUri = "",
-                Username = "",
-                Password = ""
-            };
-
-            var u = new AD_AddGroupsUserProperties()
-            {
-                dn="CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net"
-            };
-
-            var e = new AD_AddGroupsProperties()
-            {
-                groups=new string[] { "CN=Guests,CN=Builtin" }
-            };
-
-           var ret = LdapActiveDirectoryOperations.AD_AddGroups(connection, u, e);
-            Assert.AreEqual(true, true);
+            var e = new AD_DeleteUserProperties { user = _user };
+            var result = LdapActiveDirectoryOperations.AD_DeleteUser(_connection, e);
+            Assert.AreEqual(result.operationSuccessful, true);
         }
-
     }
 }
