@@ -128,6 +128,7 @@ Removes AD object from a set of groups
 
 ### Properties
 Ldap connection Info:
+
 | Property           | Type   | Description             | Example                |
 | ------------------ | ------ | ----------------------- | ---------------------- |
 | LdapUri            | string | Uri for the LDAP server | `LDAP://frends.ad.org` |
@@ -136,11 +137,13 @@ Ldap connection Info:
 | AuthenticationType | Enum   | Type of authentication  | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
 
 Target:
+
 | Property           | Type   | Description             | Example                |
 | ------------------ | ------ | ----------------------- | ---------------------- |
 | Dn                 | string | Distinguished name of the object to remove from groups | `CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net` |
 
 Group to remove from
+
 | Property           | Type     | Description             | Example                |
 | ------------------ | -------- | ----------------------- | ---------------------- |
 | Groups             | string[] | List of dn strings identifying the groups from which the target should be removed from | `CN=Guests,CN=Builtin` |
