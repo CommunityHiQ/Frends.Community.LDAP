@@ -142,11 +142,18 @@ Target:
 | ------------------ | ------ | ----------------------- | ---------------------- |
 | Dn                 | string | Distinguished name of the object to remove from groups | `CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net` |
 
-Group to remove from
+Groups to remove from:
 
 | Property           | Type     | Description             | Example                |
 | ------------------ | -------- | ----------------------- | ---------------------- |
 | Groups             | string[] | List of dn strings identifying the groups from which the target should be removed from | `CN=Guests,CN=Builtin` |
+
+### Returns
+Result a object with parameters.
+
+| Property | Type | Description | Example |
+| -------- | -------- | -------- | -------- |
+| operationSuccessful | bool | True, if operation is successful | |
 
 # Building
 
