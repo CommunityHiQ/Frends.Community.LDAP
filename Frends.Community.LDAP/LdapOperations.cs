@@ -5,10 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 #pragma warning disable CS1591
 
@@ -80,6 +76,24 @@ namespace Frends.Community.LDAP
         ///  cn name of the user
         /// </summary>
         public string user { set; get; }
+    }
+
+    public class AD_RemoveFromGroupsTargetProperties
+    {
+        /// <summary>
+        /// Distinguished name of the object to remove from groups
+        /// </summary>
+        [DefaultValue("CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Dn { set; get; }
+    }
+
+    public class AD_RemoveFromGroupsGroupProperties
+    {
+        /// <summary>
+        /// Groups to remove the object from (For example. CN=Guests,CN=Builtin).
+        /// </summary>
+        public string[] Groups { set; get; }
     }
 
     /// <summary>
@@ -278,6 +292,25 @@ namespace Frends.Community.LDAP
 
             ret_output.operationSuccessful = true;
             return ret_output;
+        }
+
+        /// <summary>
+        /// Remove AD object from a set of groups
+        /// </summary>
+        /// <param name="ldapConnectionInfo"></param>
+        /// <param name="target"></param>
+        /// <param name="groupsToRemoveFrom"></param>
+        /// <returns>Object { bool operationSuccessful }</returns>
+        public static Output AD_RemoveFromGroups([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_RemoveFromGroupsTargetProperties target, [PropertyTab] AD_RemoveFromGroupsGroupProperties groupsToRemoveFrom)
+        {
+            var result = new Output();
+
+            using (var ldap = new LdapService(ldapConnectionInfo))
+            {
+                result.operationSuccessful = ldap.RemoveFromGroups(target.Dn, groupsToRemoveFrom.Groups);
+            }
+
+            return result;
         }
     }
 }

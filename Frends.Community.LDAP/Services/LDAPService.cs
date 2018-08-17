@@ -1,14 +1,8 @@
 ﻿using Frends.Community.LDAP.Models;
-using Frends.Community.LDAP.Services;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.Dynamic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 #pragma warning disable CS1591 
 
@@ -307,6 +301,42 @@ namespace Frends.Community.LDAP.Services
         {
             _rootEntry.Dispose();
             _rootEntry = null;
+        }
+
+        public bool RemoveFromGroups(string targetDn, IEnumerable<string> groups)
+        {
+            DirectoryEntry targetEntry = FindPath(_rootEntry, targetDn);
+            foreach (string groupName in groups)
+            {
+                DirectoryEntry groupEntry = null;
+                try
+                {
+                    groupEntry = SearchEntry(groupName, LdapClasses.Group);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Exception occured while trying to find group {groupName} from {_rootEntry.Path}", e);
+                }
+
+                if(groupEntry == null)
+                {
+                    throw new Exception($"{groupName} was not found from {_rootEntry.Path}");
+                }
+
+                try
+                {
+                    if (IsMemberOf(targetEntry, groupEntry))
+                    {
+                        groupEntry.Invoke("remove", new[] { targetEntry.Path.ToString() });
+                        SaveEntry(groupEntry, false);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Something went wrong while removing user {targetDn} from group {groupName}", e);
+                }
+            }
+            return SaveEntry(targetEntry, false);
         }
     }
 }

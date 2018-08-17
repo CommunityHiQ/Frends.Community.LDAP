@@ -14,6 +14,7 @@ namespace Frends.Community.LDAPTests
         private string _user;
         private string _dn;
         private string _path;
+        private string _groupDn;
         private LdapConnectionInfo _connection;
 
 
@@ -23,6 +24,7 @@ namespace Frends.Community.LDAPTests
             _user = "MattiMeikalainen";
             _path = "CN=Users,DC=FRENDSTest01,DC=net";
             _dn = "CN=MattiMeikalainen;CN=Users,DC=FRENDSTest01,DC=net";
+            _groupDn = "CN=Guests,CN=Builtin";
 
             _connection = new LdapConnectionInfo
             {
@@ -90,13 +92,24 @@ namespace Frends.Community.LDAPTests
         public void ShouldAddGroups()
         {
             var u = new AD_AddGroupsUserProperties { dn = _dn };
-            var e = new AD_AddGroupsProperties { groups = new[] { "CN=Guests,CN=Builtin" } };
+            var e = new AD_AddGroupsProperties { groups = new[] { _groupDn } };
 
             var result = LdapActiveDirectoryOperations.AD_AddGroups(_connection, u, e);
             Assert.AreEqual(result.operationSuccessful, true);
         }
 
         [Test, Order(5)]
+        public void ShouldRemoveUserFromGroup()
+        {
+            var u = new AD_RemoveFromGroupsTargetProperties { Dn = _dn };
+            var e = new AD_RemoveFromGroupsGroupProperties { Groups = new[] { _groupDn } };
+
+            Output result = LdapActiveDirectoryOperations.AD_RemoveFromGroups(_connection, u, e);
+
+            Assert.IsTrue(result.operationSuccessful);
+        }
+
+        [Test, Order(6)]
         public void ShouldDeleteUser()
         {
             var e = new AD_DeleteUserProperties { user = _user };

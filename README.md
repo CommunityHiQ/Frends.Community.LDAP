@@ -11,6 +11,7 @@ https://github.com/CommunityHiQ/Frends.Community.LDAP
 	 - [AD_CreateUser](#ad_createuser)
      - [AD_UpdateUser](#ad_updateuser)
      - [AD_AddGroups](#ad_addgroups)
+	 - [AD_RemoveFromGroups](#ad_removefromgroups)
 - [Building](#building)
 - [Contributing](#contributing)
 - [Change Log](#change-log)
@@ -122,6 +123,28 @@ Result a object with parameters.
 | -------- | -------- | -------- | -------- |
 | operationSuccessful | bool | True, if operation is successful | |
 
+## AD_RemoveFromGroups
+Removes AD object from a set of groups
+
+### Properties
+Ldap connection Info:
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| LdapUri            | string | Uri for the LDAP server | `LDAP://frends.ad.org` |
+| Username           | string | User name to login with | `frendsAgent`          |
+| Password           | string | Password                | `***`                  |
+| AuthenticationType | Enum   | Type of authentication  | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
+
+Target:
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| Dn                 | string | Distinguished name of the object to remove from groups | `CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net` |
+
+Group to remove from
+| Property           | Type     | Description             | Example                |
+| ------------------ | -------- | ----------------------- | ---------------------- |
+| Groups             | string[] | List of dn strings identifying the groups from which the target should be removed from | `CN=Guests,CN=Builtin` |
+
 # Building
 
 Clone a copy of the repo
@@ -156,5 +179,6 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 # Change Log
 
 | Version | Changes |
-| ----- | ----- |
-| 1.0.0 | First version. Includes AD_FetchObjects, AD_CreateUser, AD_UpdateUser, AD_AddGroups |
+| ------- | ------- |
+| 1.0.0   | First version. Includes AD_FetchObjects, AD_CreateUser, AD_UpdateUser, AD_AddGroups |
+| 1.7.10  | Added AD_RemoveFromGroups |
