@@ -11,6 +11,9 @@
     },
     {
       "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_AddGroups"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_RemoveFromGroups"
     }
   ]
 }
