@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices;
 
+#pragma warning disable CS1591
+
 namespace Frends.Community.LDAP
 {
     /// <summary>
