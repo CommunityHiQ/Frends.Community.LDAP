@@ -155,6 +155,33 @@ Result a object with parameters.
 | -------- | -------- | -------- | -------- |
 | operationSuccessful | bool | True, if operation is successful | |
 
+## AD_DeleteUser
+Deletes AD user
+
+### Properties
+Ldap connection Info:
+
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| LdapUri            | string | Uri for the LDAP server | `LDAP://frends.ad.org` |
+| Username           | string | User name to login with | `frendsAgent`          |
+| Password           | string | Password                | `***`                  |
+| AuthenticationType | Enum   | Type of authentication  | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
+
+User:
+
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| Cn                 | string | Distinguished name of the object to remove from groups | `CN=UserName,CN=Users,DC=FRENDSTest01,DC=net` |
+
+
+### Returns
+Result a object with parameters.
+
+| Property | Type | Description | Example |
+| -------- | -------- | -------- | -------- |
+| operationSuccessful | bool | True, if operation is successful | |
+
 # Building
 
 Clone a copy of the repo
@@ -192,3 +219,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | ------- | ------- |
 | 1.0.0   | First version. Includes AD_FetchObjects, AD_CreateUser, AD_UpdateUser, AD_AddGroups |
 | 1.7.10  | Added AD_RemoveFromGroups |
+| 2.0.1   | Added AD_DeleteUser |

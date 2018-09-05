@@ -117,7 +117,7 @@ namespace Frends.Community.LDAP
 
             using (var ldap = new LdapService(ldapConnectionInfo))// @"(&(objectClass=user)(cn=MattiMeikalainen))
             {
-                tmpObjectEntries = ldap.SearchObjectsByFilter("(&(objectClass=user)(cn="+user.user+"))");
+                tmpObjectEntries = ldap.SearchObjectsByFilter("(&(objectClass=user)(cn="+user.User+"))");
                 if (tmpObjectEntries.Count > 0)
                 {
                     ldap.DeleteAdUser(tmpObjectEntries[0]);
