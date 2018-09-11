@@ -106,21 +106,29 @@ namespace Frends.Community.LDAP
         /// <summary>
         /// Delete AD user.
         /// </summary>
-        /// <param name="ldapConnectionInfo"></param>
-        /// <param name="user"></param>
+        /// <param name="ldapConnectionInfo">Properties to define LDAP connection</param>
+        /// <param name="userProperties">Properties to define the user to be deleted</param>
         /// <returns>operationSuccessful = true if operation is ok.</returns>
-        public static Output AD_DeleteUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, AD_DeleteUserProperties user)
+        public static Output AD_DeleteUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_DeleteUserProperties userProperties)
         {
             var ret_output = new Output();
             List<DirectoryEntry> tmpObjectEntries;
             ret_output.operationSuccessful = false;
 
+            ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + userProperties.Path;
+
+            string filter = "(&(objectClass=user)(cn=" + userProperties.Cn + "))";
+
             using (var ldap = new LdapService(ldapConnectionInfo))// @"(&(objectClass=user)(cn=MattiMeikalainen))
             {
-                tmpObjectEntries = ldap.SearchObjectsByFilter("(&(objectClass=user)(cn="+user.User+"))");
+                tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
                 if (tmpObjectEntries.Count > 0)
                 {
                     ldap.DeleteAdUser(tmpObjectEntries[0]);
+                }
+                else
+                {
+                    throw new System.Exception($"Did not find any entries matching filter {filter} from {ldapConnectionInfo.LdapUri}");
                 }
             }
 

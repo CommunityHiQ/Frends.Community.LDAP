@@ -71,11 +71,18 @@ namespace Frends.Community.LDAP
     public class AD_DeleteUserProperties
     {
         /// <summary>
-        ///  cn name of the user
+        /// Path to remove from
         /// </summary>
-        [DefaultValue("CN=UserName,CN=Users,DC=FRENDSTest01,DC=net")]
         [DisplayFormat(DataFormatString = "Text")]
-        public string User { set; get; }
+        [DefaultValue("OU=Users,DC=FRENDSTest01,DC=net")]
+        public string Path { get; set; }
+
+        /// <summary>
+        ///  Common name of the user
+        /// </summary>
+        [DefaultValue("UserName")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Cn { set; get; }
     }
 
     public class AD_RemoveFromGroupsTargetProperties
@@ -94,16 +101,6 @@ namespace Frends.Community.LDAP
         /// Groups to remove the object from (For example. CN=Guests,CN=Builtin).
         /// </summary>
         public string[] Groups { set; get; }
-    }
-
-    public class AD_DeleteObjectProperties
-    {
-        /// <summary>
-        /// Distinguished name of the object to delete
-        /// </summary>
-        [DefaultValue("CN=UserName,CN=Users,DC=FRENDSTest01,DC=net")]
-        [DisplayFormat(DataFormatString = "Text")]
-        public string Dn { get; set; }
     }
 
     /// <summary>

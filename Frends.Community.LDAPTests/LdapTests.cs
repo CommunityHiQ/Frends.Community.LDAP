@@ -112,7 +112,7 @@ namespace Frends.Community.LDAPTests
         [Test, Order(6)]
         public void ShouldDeleteUser()
         {
-            var e = new AD_DeleteUserProperties { User = _user };
+            var e = new AD_DeleteUserProperties { Cn = _user };
             var result = LdapActiveDirectoryOperations.AD_DeleteUser(_connection, e);
             Assert.AreEqual(result.operationSuccessful, true);
         }

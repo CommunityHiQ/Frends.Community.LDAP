@@ -12,6 +12,7 @@ https://github.com/CommunityHiQ/Frends.Community.LDAP
      - [AD_UpdateUser](#ad_updateuser)
      - [AD_AddGroups](#ad_addgroups)
 	 - [AD_RemoveFromGroups](#ad_removefromgroups)
+	 - [AD_DeleteUser](#ad_deleteuser)
 - [Building](#building)
 - [Contributing](#contributing)
 - [Change Log](#change-log)
@@ -172,7 +173,8 @@ User:
 
 | Property           | Type   | Description             | Example                |
 | ------------------ | ------ | ----------------------- | ---------------------- |
-| Cn                 | string | Distinguished name of the object to remove from groups | `CN=UserName,CN=Users,DC=FRENDSTest01,DC=net` |
+| Path               | string | Path to the OU where the user is located | `OU=Users,DC=FRENDSTest01,DC=net` |
+| Cn                 | string | Distinguished name of the object to remove from groups | `UserName` |
 
 
 ### Returns
@@ -180,7 +182,7 @@ Result a object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if operation is successful | |
+| operationSuccessful | bool | True, if operation is successful | `true` |
 
 # Building
 
