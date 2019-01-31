@@ -20,12 +20,18 @@ namespace Frends.Community.LDAP
         public static List<OutputObjectEntry> AD_FetchObjects([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_FetchObjectProperties SearchParameters)
         {
 
-            var ret_outputs = new List<OutputObjectEntry>(); 
-            List<DirectoryEntry> tmpObjectEntries;
+            var ret_outputs = new List<OutputObjectEntry>();
+            //ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + SearchParameters.Path;
 
-            ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/"+SearchParameters.Path;
+            LdapConnectionInfo ldapQueryInfo = new LdapConnectionInfo();
+            ldapQueryInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + SearchParameters.Path;
+            ldapQueryInfo.Username = ldapConnectionInfo.Username;
+            ldapQueryInfo.Password = ldapConnectionInfo.Password;
+            ldapQueryInfo.AuthenticationType = ldapConnectionInfo.AuthenticationType;
 
-            using (var ldap = new LdapService(ldapConnectionInfo))
+
+            List <DirectoryEntry> tmpObjectEntries;
+            using (var ldap = new LdapService(ldapQueryInfo))
             {
                 tmpObjectEntries = ldap.SearchObjectsByFilter(SearchParameters.filter);
             }
