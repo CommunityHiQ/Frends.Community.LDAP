@@ -8,23 +8,24 @@ https://github.com/CommunityHiQ/Frends.Community.LDAP
 - [Installing](#installing)
 - [Tasks](#tasks)
      - [AD_FetchObject](#ad_fetchbobject)
-	 - [AD_CreateUser](#ad_createuser)
+     - [AD_CreateUser](#ad_createuser)
      - [AD_UpdateUser](#ad_updateuser)
      - [AD_AddGroups](#ad_addgroups)
-	 - [AD_RemoveFromGroups](#ad_removefromgroups)
+     - [AD_RemoveFromGroups](#ad_removefromgroups)
+     - [AD_DeleteUser](#ad_deleteuser)
 - [Building](#building)
 - [Contributing](#contributing)
 - [Change Log](#change-log)
 
 # Installing
 
-You can install the task via FRENDS UI Task View or you can find the nuget package from the following nuget feed
-'Insert nuget feed here'
+You can install the task via FRENDS UI Task View or you can find the NuGet package from the following NuGet feed
+https://www.myget.org/F/frends-community/api/v3/index.json
 
 # Tasks
 
 ## AD_FetchObject
-Searches Active Directory for object(s) specified by path and filter.
+Searches Active Directory for an object(s) specified by path and filter.
 
 ### Properties
 
@@ -39,7 +40,7 @@ Searches Active Directory for object(s) specified by path and filter.
 
 ### Returns
 
-Result a object(s) with parameters.
+A result object(s) with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
@@ -72,7 +73,7 @@ Create a user to AD.
 
 ### Returns
 
-Result a object with parameter.
+An object with a parameter.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
@@ -95,7 +96,7 @@ Update a user in the AD.
 | Other attributes | List | parameters: Attribute=attribute name; Value: Value to be set(set to null if you want to clear the value); Data type: Attribute's type |  |
 
 ### Returns
-Result a object with parameters.
+An object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
@@ -103,7 +104,7 @@ Result a object with parameters.
 | user | DirectoryEntry(object) | Updated user | |
 
 ## AD_AddGroups
-Add the user in AD to group(s).
+Add the user in AD to a group(s).
 
 ### Properties
 
@@ -146,14 +147,42 @@ Groups to remove from:
 
 | Property           | Type     | Description             | Example                |
 | ------------------ | -------- | ----------------------- | ---------------------- |
-| Groups             | string[] | List of dn strings identifying the groups from which the target should be removed from | `CN=Guests,CN=Builtin` |
+| Groups             | string[] | List of DN strings identifying the groups from which the target should be removed from | `CN=Guests,CN=Builtin` |
 
 ### Returns
-Result a object with parameters.
+An object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
 | operationSuccessful | bool | True, if operation is successful | |
+
+## AD_DeleteUser
+Deletes AD user
+
+### Properties
+Ldap connection Info:
+
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| LdapUri            | string | Uri for the LDAP server | `LDAP://frends.ad.org` |
+| Username           | string | User name to login with | `frendsAgent`          |
+| Password           | string | Password                | `***`                  |
+| AuthenticationType | Enum   | Type of authentication  | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
+
+User:
+
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| Path               | string | Path to the OU where the user is located | `OU=Users,DC=FRENDSTest01,DC=net` |
+| Cn                 | string | Distinguished name of the object to remove from groups | `UserName` |
+
+
+### Returns
+An object with parameters.
+
+| Property | Type | Description | Example |
+| -------- | -------- | -------- | -------- |
+| operationSuccessful | bool | True, if operation is successful | `true` |
 
 # Building
 
@@ -171,7 +200,7 @@ Run Tests with nunit3. Tests can be found under
 
 `Frends.Community.LDAP\bin\Release\Frends.Community.LDAPTests.dll`
 
-Create a nuget package
+Create a NuGet package
 
 `nuget pack Frends.Community.LDAP.nuspec`
 
@@ -193,3 +222,5 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 1.0.0   | First version. Includes AD_FetchObjects, AD_CreateUser, AD_UpdateUser, AD_AddGroups |
 | 2.0.0  | Added AD_RemoveFromGroups |
 | 2.1.0  | AD flags are now updated by UpdateADuser |
+| 3.0.0   | Added AD_DeleteUser |
+
