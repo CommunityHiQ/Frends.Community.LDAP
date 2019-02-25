@@ -220,7 +220,7 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | Version | Changes |
 | ------- | ------- |
 | 1.0.0   | First version. Includes AD_FetchObjects, AD_CreateUser, AD_UpdateUser, AD_AddGroups |
-| 2.0.0  | Added AD_RemoveFromGroups |
-| 2.1.0  | AD flags are now updated by UpdateADuser |
+| 2.0.0   | Added AD_RemoveFromGroups |
+| 2.1.0   | AD flags are now updated by UpdateADuser |
 | 3.0.0   | Added AD_DeleteUser |
-
+| 3.1.0   | AD_UpdateUser now handles empty attributes properly | 
