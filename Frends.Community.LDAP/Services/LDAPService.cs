@@ -111,6 +111,12 @@ namespace Frends.Community.LDAP.Services
             var entry = FindPath(_rootEntry, user.DN);
             var entryAttributes = GetEntryAttributes(user, user.OtherAttributes);
             SetDirectoryEntryAttributes(entry, entryAttributes, true);
+
+            foreach (var flag in user.ADFlags)
+            {
+                entry.SetAccountFlag(flag.FlagType, flag.Value);
+            }
+
             SaveEntry(entry);
             return entry;
         }
