@@ -284,7 +284,7 @@ namespace Frends.Community.LDAP.Services
             {
                 try
                 {
-                    if (attribute.Value != null)
+                    if (attribute.Value != null && !String.IsNullOrEmpty(attribute.Value.ToString()))
                     {
                         entry.Properties[attribute.Key].Value = attribute.Value;
                     }
