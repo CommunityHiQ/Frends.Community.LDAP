@@ -224,3 +224,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 2.1.0   | AD flags are now updated by UpdateADuser |
 | 3.0.0   | Added AD_DeleteUser |
 | 3.1.0   | AD_UpdateUser now handles empty attributes properly | 
+| 3.1.2   | Added AD_RenameUser |
