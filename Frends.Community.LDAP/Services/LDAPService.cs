@@ -103,6 +103,13 @@ namespace Frends.Community.LDAP.Services
             return entry;
         }
 
+        public DirectoryEntry RenameAdUser(DirectoryEntry entry, string newName)
+        {
+            entry.Rename("CN=" + newName);
+            entry.CommitChanges();
+            return entry;
+        }
+
         public DirectoryEntry UpdateAdUser(UpdateADuser user)
         {
             //if (!user.CN.ToUpper().StartsWith("CN="))
