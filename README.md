@@ -174,7 +174,36 @@ User:
 | Property           | Type   | Description             | Example                |
 | ------------------ | ------ | ----------------------- | ---------------------- |
 | Path               | string | Path to the OU where the user is located | `OU=Users,DC=FRENDSTest01,DC=net` |
-| Cn                 | string | Distinguished name of the object to remove from groups | `UserName` |
+| Cn                 | string | CN of the user to be deleted | `UserName` |
+
+
+### Returns
+An object with parameters.
+
+| Property | Type | Description | Example |
+| -------- | -------- | -------- | -------- |
+| operationSuccessful | bool | True, if operation is successful | `true` |
+
+## AD_RenameUser
+Renames AD user (changes user's CN)
+
+### Properties
+Ldap connection Info:
+
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| LdapUri            | string | Uri for the LDAP server | `LDAP://frends.ad.org` |
+| Username           | string | User name to login with | `frendsAgent`          |
+| Password           | string | Password                | `***`                  |
+| AuthenticationType | Enum   | Type of authentication  | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
+
+User:
+
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| Path               | string | Path to the OU where the user is located | `OU=Users,DC=FRENDSTest01,DC=net` |
+| Cn                 | string | Current CN of the user | `UserName` |
+| NewCn              | string | New CN that is to be assigned to the user | `NewUserName` |
 
 
 ### Returns
