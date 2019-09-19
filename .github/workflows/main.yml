@@ -23,7 +23,9 @@ jobs:
     - uses: actions/checkout@v1
     
     - name: download nuget.exe
-      run: certutil.exe -urlcache -split -f "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" nuget.exe
+      run: |
+        certutil.exe -urlcache -split -f "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" nuget.exe
+        nuget.exe restore
 
     - name: Restore NuGet Packages
       run: |
