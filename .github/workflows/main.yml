@@ -15,9 +15,9 @@ jobs:
           - os: ubuntu-18.04
             msbuild: dotnet msbuild
           - os: windows-latest
-            msbuild: dotnet msbuild
+            # msbuild: dotnet msbuild
 
-            # msbuild: '"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"'
+            msbuild: '"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"'
 
     steps:
     - uses: actions/checkout@v1
