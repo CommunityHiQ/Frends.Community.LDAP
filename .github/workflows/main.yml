@@ -32,7 +32,7 @@ jobs:
        
     - name: Build
       run: |
-        ${{ matrix.msbuild }} -verbosity:n Frends.Community.LDAP.sln
+        ${{ matrix.msbuild }} /t:verbosity:n Frends.Community.LDAP.sln
     
     - name: Test
       run: dotnet test Frends.Community.LDAP.sln 
