@@ -18,6 +18,8 @@ jobs:
             msbuild: dotnet msbuild
 
             # msbuild: '"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"'
+            
+            vstest: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"'
 
     steps:
     - uses: actions/checkout@v1
@@ -36,7 +38,7 @@ jobs:
       # /t:verbosity:n
     
     - name: Test
-      run: vstest Frends.Community.LDAP.sln 
+      run: ${{ matrix.vstest }} Frends.Community.LDAP.sln 
                 
         
         # dotnet test 
