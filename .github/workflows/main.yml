@@ -38,8 +38,7 @@ jobs:
         
         #'"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"' Frends.Community.LDAP.sln /verbosity:detailed
     - name: Test
-      run: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" Frends.Community.LDAP.sln'
-      # ${{ matrix.vstest }} Frends.Community.LDAP.sln 
-                
+      run: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" Frends.Community.LDAPTests\bin\Debug\Frends.Community.LDAPTests.dll'
+      # ${{ matrix.vstest }} Frends.Community.LDAP.sln                 
         
         # dotnet test 
