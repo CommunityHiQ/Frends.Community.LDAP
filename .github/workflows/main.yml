@@ -36,7 +36,7 @@ jobs:
       # /t:verbosity:n
     
     - name: Test
-      run: dotnet vstest Frends.Community.LDAP.sln 
+      run: vstest Frends.Community.LDAP.sln 
                 
         
         # dotnet test 
