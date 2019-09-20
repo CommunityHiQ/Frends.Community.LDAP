@@ -33,7 +33,7 @@ jobs:
       run: ${{ matrix.msbuild }} Frends.Community.LDAP.sln /t:Restore
        
     - name: Build
-      run: '"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"' Frends.Community.LDAP.sln /verbosity:detailed
+      run: '"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Frends.Community.LDAP.sln /verbosity:detailed'
         # ${{ matrix.msbuild }} Frends.Community.LDAP.sln /verbosity:detailed
         
         #'"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"' Frends.Community.LDAP.sln /verbosity:detailed
