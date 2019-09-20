@@ -35,7 +35,7 @@ jobs:
         ${{ matrix.msbuild }} /t:verbosity:n Frends.Community.LDAP.sln
     
     - name: Test
-      run: dotnet test Frends.Community.LDAP.sln 
+      run: dotnet vstest Frends.Community.LDAP.sln 
                 
         
         # dotnet test 
