@@ -18,27 +18,18 @@ jobs:
             # msbuild: dotnet msbuild
 
             msbuild: '"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"'
-            
             vstest: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"'
 
     steps:
     - uses: actions/checkout@v1
     
-    - name: download nuget.exe
+    - name: Restore NuGet Packages
       run: |
         certutil.exe -urlcache -split -f "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" nuget.exe
-        
-    - name: Restore NuGet Packages
-      run: nuget.exe restore
-      # run: ${{ matrix.msbuild }} Frends.Community.LDAP.sln /t:Restore
+        nuget.exe restore
        
     - name: Build
-      run: '"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Frends.Community.LDAP.sln /verbosity:normal'
-        # ${{ matrix.msbuild }} Frends.Community.LDAP.sln /verbosity:detailed
-        
-        #'"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"' Frends.Community.LDAP.sln /verbosity:detailed
+      run: '"%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Frends.Community.LDAP.sln'
+      
     - name: Test
       run: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" Frends.Community.LDAPTests\bin\Debug\Frends.Community.LDAPTests.dll'
-      # ${{ matrix.vstest }} Frends.Community.LDAP.sln                 
-        
-        # dotnet test 
