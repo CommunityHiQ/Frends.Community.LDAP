@@ -29,8 +29,8 @@ jobs:
         certutil.exe -urlcache -split -f "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" nuget.exe
         
     - name: Restore NuGet Packages
-      run: nuget.exe restore
-      # ${{ matrix.msbuild }} Frends.Community.LDAP.sln /t:Restore
+      # run: nuget.exe restore
+      run: ${{ matrix.msbuild }} Frends.Community.LDAP.sln /t:Restore
        
     - name: Build
       run: |
