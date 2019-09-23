@@ -7,13 +7,19 @@ jobs:
   build:
     name: Build on without matrix
     runs-on: windows-2019
+    
+    
+    services:
+      redis:
+        image: redis
+        ports:
+        - 6379/tcp
 
     steps:
     - uses: actions/checkout@v1
     
     - name: Restore NuGet Packages
-      run: |
-        certutil.exe -urlcache -split -f "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" nuget.exe
+      run: certutil.exe -urlcache -split -f "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" nuget.exe
         nuget.exe restore
        
     - name: Build
@@ -21,3 +27,7 @@ jobs:
       
     - name: Test
       run: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" Frends.Community.LDAPTests\bin\Debug\Frends.Community.LDAPTests.dll'
+      
+      env:
+        REDIS_HOST: localhost
+        REDIS_PORT: ${{ job.services.redis.ports[6379] }}
