@@ -124,6 +124,10 @@ namespace Frends.Community.LDAP
                     var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
                     var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
                     var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+                    if (lowPart < 0)
+                    {
+                        highPart += 1;
+                    }
                     var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
                     ret.Add(recipientType);
                 }
@@ -134,6 +138,10 @@ namespace Frends.Community.LDAP
                 var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
                 var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
                 var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+                if (lowPart < 0)
+                {
+                    highPart += 1;
+                }
                 var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
                 ret.Add(recipientType);
                 return recipientType;
@@ -154,6 +162,22 @@ namespace Frends.Community.LDAP
                 object[] ret = new object[] { ObjectEntry.Properties[Attribute].Value };
                 return ret;
             }
+        }
+
+        public DateTime GetAccountExpiresDateTime()
+        {
+            object largeIntObject = GetPropertyLargeInteger("accountExpires");
+
+            if ((long)largeIntObject > DateTime.MaxValue.Ticks)//0x7FFFFFFFFFFFFFFF = account never expires -> doesn't fit in DateTime
+            {
+                return DateTime.MaxValue; //return DateTime.MaxValue instead
+            }
+            else
+            {
+                DateTime datetime = DateTime.FromFileTime(((long)largeIntObject));
+                return datetime;
+            }
+
         }
     }
 
