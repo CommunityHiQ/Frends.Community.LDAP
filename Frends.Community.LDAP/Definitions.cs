@@ -112,18 +112,19 @@ namespace Frends.Community.LDAP
     {
         public DirectoryEntry ObjectEntry { get; set; }
 
-        public object GetPropertyLargeInteger(string Attribute)// int64
+        public object GetPropertyLargeInteger(string attribute)// int64
         {
             List<object> ret = new List<object>();
-            var object_type = ObjectEntry.Properties[Attribute].Value;
+            var object_type = ObjectEntry.Properties[attribute].Value;
 
             if (object_type is System.Object[]) // many objects found
             {
-                foreach (var item in (Object[])(ObjectEntry.Properties[Attribute].Value))
+                foreach (var item in (Object[])(ObjectEntry.Properties[attribute].Value))
                 {
-                    var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
+                    var adsLargeInteger = ObjectEntry.Properties[attribute].Value;
                     var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
                     var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+                    // compensate for IADsLargeInteger interface bug
                     if (lowPart < 0)
                     {
                         highPart += 1;
@@ -135,9 +136,10 @@ namespace Frends.Community.LDAP
             }
             else // just one object found
             {
-                var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
+                var adsLargeInteger = ObjectEntry.Properties[attribute].Value;
                 var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
                 var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+                // compensate for IADsLargeInteger interface bug
                 if (lowPart < 0)
                 {
                     highPart += 1;
@@ -149,17 +151,17 @@ namespace Frends.Community.LDAP
         }
 
         // GetProperty returns collection even if there are one object match.
-        public object[] GetProperty(String Attribute)// int32, string, ...
+        public object[] GetProperty(String attribute)// int32, string, ...
         {
-            var object_type = ObjectEntry.Properties[Attribute].Value;
+            var object_type = ObjectEntry.Properties[attribute].Value;
 
             if (object_type is System.Object[]) // many objects found
             {
-                return (Object[])ObjectEntry.Properties[Attribute].Value;
+                return (Object[])ObjectEntry.Properties[attribute].Value;
             }
             else // just one object found
             {
-                object[] ret = new object[] { ObjectEntry.Properties[Attribute].Value };
+                object[] ret = new object[] { ObjectEntry.Properties[attribute].Value };
                 return ret;
             }
         }
