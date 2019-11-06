@@ -121,34 +121,31 @@ namespace Frends.Community.LDAP
             {
                 foreach (var item in (Object[])(ObjectEntry.Properties[attribute].Value))
                 {
-                    var adsLargeInteger = ObjectEntry.Properties[attribute].Value;
-                    var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                    var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                    // compensate for IADsLargeInteger interface bug
-                    if (lowPart < 0)
-                    {
-                        highPart += 1;
-                    }
-                    var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
-                    ret.Add(recipientType);
+                    ret.Add(ProcessLargeInteger(attribute));
                 }
                 return ret;
             }
             else // just one object found
             {
-                var adsLargeInteger = ObjectEntry.Properties[attribute].Value;
-                var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                // compensate for IADsLargeInteger interface bug
-                if (lowPart < 0)
-                {
-                    highPart += 1;
-                }
-                var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
-                ret.Add(recipientType);
-                return recipientType;
+                return ProcessLargeInteger(attribute);
             }
         }
+            
+        private long ProcessLargeInteger(string attribute)
+        {
+            var adsLargeInteger = ObjectEntry.Properties[attribute].Value;
+            var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            // compensate for IADsLargeInteger interface bug
+            if (lowPart < 0)
+            {
+                highPart += 1;
+            }
+            var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
+            return recipientType;
+        }
+
+
 
         // GetProperty returns collection even if there are one object match.
         public object[] GetProperty(String attribute)// int32, string, ...
