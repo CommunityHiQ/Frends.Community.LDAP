@@ -115,6 +115,7 @@ namespace Frends.Community.LDAP
         public object GetPropertyLargeInteger(string attribute)// int64
         {
             List<object> ret = new List<object>();
+
             var object_type = ObjectEntry.Properties[attribute].Value;
 
             if (object_type is System.Object[]) // many objects found
@@ -134,8 +135,15 @@ namespace Frends.Community.LDAP
         private long ProcessLargeInteger(string attribute)
         {
             var adsLargeInteger = ObjectEntry.Properties[attribute].Value;
+
+            if(adsLargeInteger == null)
+            {
+                throw new ArgumentException("User attribute not found", attribute);
+            }
+
             var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
             var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+
             // compensate for IADsLargeInteger interface bug
             if (lowPart < 0)
             {
