@@ -55,6 +55,8 @@ To fetch result use syntax:
 
 #result[0].GetPropertyLargeInteger("lastLogon") - If attribute is in integer8 format.
 
+#result[0].GetAccountExpiresDateTime() - Returns a DateTime value for AD accountExpires attribute. If accountExpires=0x7FFFFFFFFFFFFFFF, DateTime.MaxValue is returned.
+
 #result can be looped by loop element, also.
 
 ## AD_CreateUser
