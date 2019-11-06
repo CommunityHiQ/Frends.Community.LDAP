@@ -27,7 +27,7 @@ namespace Frends.Community.LDAP
 
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
-                tmpObjectEntries = ldap.SearchObjectsByFilter(SearchParameters.filter);
+                tmpObjectEntries = ldap.SearchObjectsByFilter(SearchParameters.Filter);
             }
 
             foreach (var item in tmpObjectEntries)
@@ -48,18 +48,18 @@ namespace Frends.Community.LDAP
         /// <returns>LdapResult class, which carries a copy of the created user record.</returns>
         public static OutputUser AD_CreateUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] CreateADuser adUser, AD_CreateUserProperties Password )
         {
-            var ldapOperationResult = new OutputUser { operationSuccessful = false, user = null };
+            var ldapOperationResult = new OutputUser { OperationSuccessful = false, User = null };
 
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
-                ldapOperationResult.user = ldap.CreateAdUser(adUser);
+                ldapOperationResult.User = ldap.CreateAdUser(adUser);
 
-                if (Password.setPassword) 
+                if (Password.SetPassword) 
                 {
-                    SetPassword.SetUserPassword(ldapConnectionInfo.LdapUri,adUser.Path,ldapConnectionInfo.Username,ldapConnectionInfo.Password,adUser.CN, Password.newPassword);
+                    SetPassword.SetUserPassword(ldapConnectionInfo.LdapUri,adUser.Path,ldapConnectionInfo.Username,ldapConnectionInfo.Password,adUser.CN, Password.NewPassword);
                 }
 
-                ldapOperationResult.operationSuccessful = true;
+                ldapOperationResult.OperationSuccessful = true;
 
                 return ldapOperationResult;
             }   
@@ -73,12 +73,12 @@ namespace Frends.Community.LDAP
         /// <returns>LdapResult class, which carries a copy of the updated user record.</returns>
         public static OutputUser AD_UpdateUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] UpdateADuser adUser)
         {
-            var ldapOperationResult = new OutputUser { operationSuccessful = false, user = null };
+            var ldapOperationResult = new OutputUser { OperationSuccessful = false, User = null };
 
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
-                ldapOperationResult.user = ldap.UpdateAdUser(adUser);
-                ldapOperationResult.operationSuccessful = true;
+                ldapOperationResult.User = ldap.UpdateAdUser(adUser);
+                ldapOperationResult.OperationSuccessful = true;
 
                 return ldapOperationResult;
             }
@@ -93,11 +93,11 @@ namespace Frends.Community.LDAP
         /// <returns></returns>
         public static Output AD_AddGroups([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_AddGroupsUserProperties User, [PropertyTab] AD_AddGroupsProperties GroupsToAdd)
         {
-            var ldapOperationResult = new Output { operationSuccessful = false };
+            var ldapOperationResult = new Output { OperationSuccessful = false };
  
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
-                ldapOperationResult.operationSuccessful = ldap.AddAdUserToGroup(User.dn, GroupsToAdd.groups);
+                ldapOperationResult.OperationSuccessful = ldap.AddAdUserToGroup(User.Dn, GroupsToAdd.Groups);
 
                 return ldapOperationResult;
             }
@@ -113,7 +113,7 @@ namespace Frends.Community.LDAP
         {
             var ret_output = new Output();
             List<DirectoryEntry> tmpObjectEntries;
-            ret_output.operationSuccessful = false;
+            ret_output.OperationSuccessful = false;
 
             ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + userProperties.Path;
 
@@ -132,7 +132,7 @@ namespace Frends.Community.LDAP
                 }
             }
 
-            ret_output.operationSuccessful = true;
+            ret_output.OperationSuccessful = true;
             return ret_output;
         }
 
@@ -149,7 +149,7 @@ namespace Frends.Community.LDAP
 
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
-                result.operationSuccessful = ldap.RemoveFromGroups(target.Dn, groupsToRemoveFrom.Groups);
+                result.OperationSuccessful = ldap.RemoveFromGroups(target.Dn, groupsToRemoveFrom.Groups);
             }
 
             return result;

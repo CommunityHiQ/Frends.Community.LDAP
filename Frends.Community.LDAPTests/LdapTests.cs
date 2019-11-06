@@ -54,11 +54,11 @@ namespace Frends.Community.LDAPTests
 
             var e = new AD_CreateUserProperties()
             {
-                newPassword = "",
-                setPassword = false
+                NewPassword = "",
+                SetPassword = false
             };
             var result = LdapActiveDirectoryOperations.AD_CreateUser(_connection, user, e);
-            Assert.AreEqual(result.operationSuccessful, true);
+            Assert.AreEqual(result.OperationSuccessful, true);
         }
 
 
@@ -67,7 +67,7 @@ namespace Frends.Community.LDAPTests
         {
             var e = new AD_FetchObjectProperties()
             {
-                filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
                 Path = _path
             };
             var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e);
@@ -87,7 +87,7 @@ namespace Frends.Community.LDAPTests
 
             var e = new AD_FetchObjectProperties()
             {
-                filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
                 Path = _path
             };
 
@@ -110,7 +110,7 @@ namespace Frends.Community.LDAPTests
 
             var e = new AD_FetchObjectProperties()
             {
-                filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
                 Path = _path
             };
 
@@ -133,17 +133,17 @@ namespace Frends.Community.LDAPTests
             };
             user.OtherAttributes = attributes.ToArray();
             var result = LdapActiveDirectoryOperations.AD_UpdateUser(_connection, user);
-            Assert.AreEqual(result.operationSuccessful, true);
+            Assert.AreEqual(result.OperationSuccessful, true);
         }
 
         [Test, Order(6)]
         public void ShouldAddGroups()
         {
-            var u = new AD_AddGroupsUserProperties { dn = _dn };
-            var e = new AD_AddGroupsProperties { groups = new[] { _groupDn } };
+            var u = new AD_AddGroupsUserProperties { Dn = _dn };
+            var e = new AD_AddGroupsProperties { Groups = new[] { _groupDn } };
 
             var result = LdapActiveDirectoryOperations.AD_AddGroups(_connection, u, e);
-            Assert.AreEqual(result.operationSuccessful, true);
+            Assert.AreEqual(result.OperationSuccessful, true);
         }
 
         [Test, Order(7)]
@@ -154,7 +154,7 @@ namespace Frends.Community.LDAPTests
 
             Output result = LdapActiveDirectoryOperations.AD_RemoveFromGroups(_connection, u, e);
 
-            Assert.IsTrue(result.operationSuccessful);
+            Assert.IsTrue(result.OperationSuccessful);
         }
 
         [Test, Order(8)]
@@ -162,7 +162,7 @@ namespace Frends.Community.LDAPTests
         {
             var e = new AD_DeleteUserProperties { Cn = _user, Path = _path };
             var result = LdapActiveDirectoryOperations.AD_DeleteUser(_connection, e);
-            Assert.AreEqual(result.operationSuccessful, true);
+            Assert.AreEqual(result.OperationSuccessful, true);
         }
     }
 }

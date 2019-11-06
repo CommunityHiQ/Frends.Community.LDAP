@@ -25,7 +25,7 @@ namespace Frends.Community.LDAP
         /// </summary>
         [DisplayFormat(DataFormatString = "Text")]
         [DefaultValue("(&(objectClass=user)(sAMAccountName=TestAdmin))")]
-        public string filter { set; get; }
+        public string Filter { set; get; }
     }
 
     /// <summary>
@@ -36,12 +36,12 @@ namespace Frends.Community.LDAP
         /// <summary>
         ///  Defines if password should be set at create time.
         /// </summary>
-        public bool setPassword { set; get; }
+        public bool SetPassword { set; get; }
         /// <summary>
         /// AD Create user: Defines the new password if needed.
         /// </summary>
         [PasswordPropertyText(true)]
-        public string newPassword { set; get; }
+        public string NewPassword { set; get; }
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ namespace Frends.Community.LDAP
         /// <summary>
         ///  To which groups the user should be added(For example. CN=Guests,CN=Builtin).
         /// </summary>
-        public string[] groups { set; get; }
+        public string[] Groups { set; get; }
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace Frends.Community.LDAP
     {
         [DefaultValue("CN=UserName,CN=Users,DC=FRENDSTest01,DC=net")]
         [DisplayFormat(DataFormatString = "Text")]
-        public string dn { set; get; }
+        public string Dn { set; get; }
     }
 
     /// <summary>
@@ -191,12 +191,12 @@ namespace Frends.Community.LDAP
     /// </summary>
     public class OutputUser
     {
-        public bool operationSuccessful { get; set; }
-        public DirectoryEntry user { get; set; }
+        public bool OperationSuccessful { get; set; }
+        public DirectoryEntry User { get; set; }
 
         public object GetUserProperty(string Attribute)
         {
-            return user.Properties[Attribute].Value.ToString();
+            return User.Properties[Attribute].Value.ToString();
         }
     }
 
@@ -206,6 +206,6 @@ namespace Frends.Community.LDAP
     /// </summary>
     public class Output
     {
-        public bool operationSuccessful { get; set; }
+        public bool OperationSuccessful { get; set; }
     }
 }
