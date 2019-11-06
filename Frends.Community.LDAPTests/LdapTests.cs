@@ -101,7 +101,7 @@ namespace Frends.Community.LDAPTests
 
 
         [Test, Order(4)]
-        public void InvalidAttributeShouldThrowException()
+        public void GetPropertyLargeInteger_InvalidAttributeShouldThrowException()
         {
             var user = new CreateADuser
             {
@@ -114,9 +114,6 @@ namespace Frends.Community.LDAPTests
                 Filter = "(&(objectClass=user)(cn=" + _user + "))",
                 Path = _path
             };
-
-            //Assume the created test user has a default value of: accountExpires = 0x7FFFFFFFFFFFFFFF = 9223372036854775807
-            System.Int64 largeInt = 9223372036854775807;
 
             var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e); //user
             Assert.Throws<System.ArgumentException>(() => u[0].GetPropertyLargeInteger("fooBar"));
