@@ -144,7 +144,7 @@ namespace Frends.Community.LDAP
         /// <returns>operationSuccessful = true if operation is ok.</returns>
         public static OutputUser AD_RenameUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_RenameUserProperties userProperties)
         {
-            var ldapOperationResult = new OutputUser { operationSuccessful = false, user = null };
+            var ldapOperationResult = new OutputUser { OperationSuccessful = false, User = null };
 
             List<DirectoryEntry> tmpObjectEntries;
             
@@ -157,7 +157,7 @@ namespace Frends.Community.LDAP
                 tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
                 if (tmpObjectEntries.Count == 1)
                 {
-                    ldapOperationResult.user = ldap.RenameAdUser(tmpObjectEntries[0], userProperties.NewCn);
+                    ldapOperationResult.User = ldap.RenameAdUser(tmpObjectEntries[0], userProperties.NewCn);
                 }
                 else if (tmpObjectEntries.Count == 0)
                 {
@@ -169,7 +169,7 @@ namespace Frends.Community.LDAP
                 }
             }
             
-            ldapOperationResult.operationSuccessful = true;
+            ldapOperationResult.OperationSuccessful = true;
             return ldapOperationResult;
         }
 

@@ -79,7 +79,7 @@ An object with a parameter.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if operation is successful | |
+| OperationSuccessful | bool | True, if operation is successful | |
 
 
 ## AD_UpdateUser
@@ -102,8 +102,8 @@ An object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if user found| |
-| user | DirectoryEntry(object) | Updated user | |
+| OperationSuccessful | bool | True, if user found| |
+| User | DirectoryEntry(object) | Updated user | |
 
 ## AD_AddGroups
 Add the user in AD to a group(s).
@@ -124,7 +124,7 @@ Result a object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if operation is successful | |
+| OperationSuccessful | bool | True, if operation is successful | |
 
 ## AD_RemoveFromGroups
 Removes AD object from a set of groups
@@ -156,7 +156,7 @@ An object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if operation is successful | |
+| OperationSuccessful | bool | True, if operation is successful | |
 
 ## AD_DeleteUser
 Deletes AD user
@@ -184,7 +184,7 @@ An object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if operation is successful | `true` |
+| OperationSuccessful | bool | True, if operation is successful | `true` |
 
 ## AD_RenameUser
 Renames AD user (changes user's CN)
@@ -213,7 +213,7 @@ An object with parameters.
 
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
-| operationSuccessful | bool | True, if operation is successful | `true` |
+| OperationSuccessful | bool | True, if operation is successful | `true` |
 
 # Building
 
@@ -255,9 +255,5 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 2.1.0   | AD flags are now updated by UpdateADuser |
 | 3.0.0   | Added AD_DeleteUser |
 | 3.1.0   | AD_UpdateUser now handles empty attributes properly | 
-<<<<<<< HEAD
-| 3.1.2   | Added AD_RenameUser |
-| 3.2.0   | Added new attribute type: JSONArray |
-=======
 | 3.2.0   | Added GetAccountExpiresDateTime, fixed known lowPart interface bug |
->>>>>>> master
+| 3.3.0   | Added AD_RenameUser and a new attribute type: JSONArray |
