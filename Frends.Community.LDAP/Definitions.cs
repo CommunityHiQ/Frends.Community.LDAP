@@ -25,7 +25,7 @@ namespace Frends.Community.LDAP
         /// </summary>
         [DisplayFormat(DataFormatString = "Text")]
         [DefaultValue("(&(objectClass=user)(sAMAccountName=TestAdmin))")]
-        public string filter { set; get; }
+        public string Filter { set; get; }
     }
 
     /// <summary>
@@ -36,12 +36,12 @@ namespace Frends.Community.LDAP
         /// <summary>
         ///  Defines if password should be set at create time.
         /// </summary>
-        public bool setPassword { set; get; }
+        public bool SetPassword { set; get; }
         /// <summary>
         /// AD Create user: Defines the new password if needed.
         /// </summary>
         [PasswordPropertyText(true)]
-        public string newPassword { set; get; }
+        public string NewPassword { set; get; }
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ namespace Frends.Community.LDAP
         /// <summary>
         ///  To which groups the user should be added(For example. CN=Guests,CN=Builtin).
         /// </summary>
-        public string[] groups { set; get; }
+        public string[] Groups { set; get; }
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace Frends.Community.LDAP
     {
         [DefaultValue("CN=UserName,CN=Users,DC=FRENDSTest01,DC=net")]
         [DisplayFormat(DataFormatString = "Text")]
-        public string dn { set; get; }
+        public string Dn { set; get; }
     }
 
     /// <summary>
@@ -139,48 +139,79 @@ namespace Frends.Community.LDAP
     {
         public DirectoryEntry ObjectEntry { get; set; }
 
-        public object GetPropertyLargeInteger(string Attribute)// int64
+        public object GetPropertyLargeInteger(string attribute)// int64
         {
             List<object> ret = new List<object>();
-            var object_type = ObjectEntry.Properties[Attribute].Value;
+
+            var object_type = ObjectEntry.Properties[attribute].Value;
 
             if (object_type is System.Object[]) // many objects found
             {
-                foreach (var item in (Object[])(ObjectEntry.Properties[Attribute].Value))
+                foreach (var item in (Object[])(ObjectEntry.Properties[attribute].Value))
                 {
-                    var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
-                    var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                    var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                    var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
-                    ret.Add(recipientType);
+                    ret.Add(ProcessLargeInteger(attribute));
                 }
                 return ret;
             }
             else // just one object found
             {
-                var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
-                var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
-                ret.Add(recipientType);
-                return recipientType;
+                return ProcessLargeInteger(attribute);
             }
         }
+            
+        private long ProcessLargeInteger(string attribute)
+        {
+            var adsLargeInteger = ObjectEntry.Properties[attribute].Value;
+
+            if(adsLargeInteger == null)
+            {
+                throw new ArgumentException("User attribute not found", attribute);
+            }
+
+            var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+
+            // compensate for IADsLargeInteger interface bug
+            if (lowPart < 0)
+            {
+                highPart += 1;
+            }
+            var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
+            return recipientType;
+        }
+
+
 
         // GetProperty returns collection even if there are one object match.
-        public object[] GetProperty(String Attribute)// int32, string, ...
+        public object[] GetProperty(String attribute)// int32, string, ...
         {
-            var object_type = ObjectEntry.Properties[Attribute].Value;
+            var object_type = ObjectEntry.Properties[attribute].Value;
 
             if (object_type is System.Object[]) // many objects found
             {
-                return (Object[])ObjectEntry.Properties[Attribute].Value;
+                return (Object[])ObjectEntry.Properties[attribute].Value;
             }
             else // just one object found
             {
-                object[] ret = new object[] { ObjectEntry.Properties[Attribute].Value };
+                object[] ret = new object[] { ObjectEntry.Properties[attribute].Value };
                 return ret;
             }
+        }
+
+        public DateTime GetAccountExpiresDateTime()
+        {
+            object largeIntObject = GetPropertyLargeInteger("accountExpires");
+
+            if ((long)largeIntObject > DateTime.MaxValue.Ticks)//0x7FFFFFFFFFFFFFFF = account never expires -> doesn't fit in DateTime
+            {
+                return DateTime.MaxValue; //return DateTime.MaxValue instead
+            }
+            else
+            {
+                DateTime datetime = DateTime.FromFileTime(((long)largeIntObject));
+                return datetime;
+            }
+
         }
     }
 
@@ -192,12 +223,12 @@ namespace Frends.Community.LDAP
     /// </summary>
     public class OutputUser
     {
-        public bool operationSuccessful { get; set; }
-        public DirectoryEntry user { get; set; }
+        public bool OperationSuccessful { get; set; }
+        public DirectoryEntry User { get; set; }
 
         public object GetUserProperty(string Attribute)
         {
-            return user.Properties[Attribute].Value.ToString();
+            return User.Properties[Attribute].Value.ToString();
         }
     }
 
@@ -207,6 +238,6 @@ namespace Frends.Community.LDAP
     /// </summary>
     public class Output
     {
-        public bool operationSuccessful { get; set; }
+        public bool OperationSuccessful { get; set; }
     }
 }

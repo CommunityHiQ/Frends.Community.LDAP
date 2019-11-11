@@ -54,11 +54,11 @@ namespace Frends.Community.LDAPTests
 
             var e = new AD_CreateUserProperties()
             {
-                newPassword = "",
-                setPassword = false
+                NewPassword = "",
+                SetPassword = false
             };
             var result = LdapActiveDirectoryOperations.AD_CreateUser(_connection, user, e);
-            Assert.AreEqual(result.operationSuccessful, true);
+            Assert.AreEqual(result.OperationSuccessful, true);
         }
 
 
@@ -67,7 +67,7 @@ namespace Frends.Community.LDAPTests
         {
             var e = new AD_FetchObjectProperties()
             {
-                filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
                 Path = _path
             };
             var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e);
@@ -77,6 +77,75 @@ namespace Frends.Community.LDAPTests
 
 
         [Test, Order(3)]
+        public void ShouldGetPropertyLargeInteger()
+        {
+            var user = new CreateADuser
+            {
+                CN = _user,
+                Path = _path
+            };
+
+            var e = new AD_FetchObjectProperties()
+            {
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path
+            };
+
+            //Assume the created test user has a default value of: accountExpires = 0x7FFFFFFFFFFFFFFF = 9223372036854775807
+            System.Int64 largeInt = 9223372036854775807;
+
+            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e); //user
+            var result = (System.Int64)u[0].GetPropertyLargeInteger("accountExpires");
+            Assert.AreEqual(largeInt, result);
+        }
+
+
+        [Test, Order(4)]
+        public void GetPropertyLargeInteger_InvalidAttributeShouldThrowException()
+        {
+            var user = new CreateADuser
+            {
+                CN = _user,
+                Path = _path
+            };
+
+            var e = new AD_FetchObjectProperties()
+            {
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path
+            };
+
+            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e); //user
+            Assert.Throws<System.ArgumentException>(() => u[0].GetPropertyLargeInteger("fooBar"));
+        }
+
+
+        [Test, Order(5)]
+        public void ShouldGetUserAccountExpiresDateTime()
+        {
+            var user = new CreateADuser
+            {
+                CN = _user,
+                Path = _path
+            };
+
+            var e = new AD_FetchObjectProperties()
+            {
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path
+            };
+
+            //User accountExpires = 0x7FFFFFFFFFFFFFFF -> DateTime should return DateTime.MaxValue
+            System.DateTime expectedDateTime = System.DateTime.MaxValue;
+
+            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e); //user
+            System.DateTime result = u[0].GetAccountExpiresDateTime();
+            Assert.AreEqual(expectedDateTime, result);
+        }
+
+
+
+        [Test, Order(6)]
         public void ShouldUpdateUser()
         {
             var user = new UpdateADuser { DN = _dn };
@@ -85,20 +154,20 @@ namespace Frends.Community.LDAPTests
             };
             user.OtherAttributes = attributes.ToArray();
             var result = LdapActiveDirectoryOperations.AD_UpdateUser(_connection, user);
-            Assert.AreEqual(result.operationSuccessful, true);
+            Assert.AreEqual(result.OperationSuccessful, true);
         }
 
-        [Test, Order(4)]
+        [Test, Order(7)]
         public void ShouldAddGroups()
         {
-            var u = new AD_AddGroupsUserProperties { dn = _dn };
-            var e = new AD_AddGroupsProperties { groups = new[] { _groupDn } };
+            var u = new AD_AddGroupsUserProperties { Dn = _dn };
+            var e = new AD_AddGroupsProperties { Groups = new[] { _groupDn } };
 
             var result = LdapActiveDirectoryOperations.AD_AddGroups(_connection, u, e);
-            Assert.AreEqual(result.operationSuccessful, true);
+            Assert.AreEqual(result.OperationSuccessful, true);
         }
 
-        [Test, Order(5)]
+        [Test, Order(8)]
         public void ShouldRemoveUserFromGroup()
         {
             var u = new AD_RemoveFromGroupsTargetProperties { Dn = _dn };
@@ -106,15 +175,15 @@ namespace Frends.Community.LDAPTests
 
             Output result = LdapActiveDirectoryOperations.AD_RemoveFromGroups(_connection, u, e);
 
-            Assert.IsTrue(result.operationSuccessful);
+            Assert.IsTrue(result.OperationSuccessful);
         }
 
-        [Test, Order(6)]
+        [Test, Order(9)]
         public void ShouldDeleteUser()
         {
-            var e = new AD_DeleteUserProperties { Cn = _user };
+            var e = new AD_DeleteUserProperties { Cn = _user, Path = _path };
             var result = LdapActiveDirectoryOperations.AD_DeleteUser(_connection, e);
-            Assert.AreEqual(result.operationSuccessful, true);
+            Assert.AreEqual(result.OperationSuccessful, true);
         }
     }
 }

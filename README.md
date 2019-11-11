@@ -55,6 +55,8 @@ To fetch result use syntax:
 
 #result[0].GetPropertyLargeInteger("lastLogon") - If attribute is in integer8 format.
 
+#result[0].GetAccountExpiresDateTime() - Returns a DateTime value for AD accountExpires attribute. If accountExpires=0x7FFFFFFFFFFFFFFF, DateTime.MaxValue is returned.
+
 #result can be looped by loop element, also.
 
 ## AD_CreateUser
@@ -253,5 +255,9 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 2.1.0   | AD flags are now updated by UpdateADuser |
 | 3.0.0   | Added AD_DeleteUser |
 | 3.1.0   | AD_UpdateUser now handles empty attributes properly | 
+<<<<<<< HEAD
 | 3.1.2   | Added AD_RenameUser |
 | 3.2.0   | Added new attribute type: JSONArray |
+=======
+| 3.2.0   | Added GetAccountExpiresDateTime, fixed known lowPart interface bug |
+>>>>>>> master
