@@ -137,6 +137,43 @@ namespace Frends.Community.LDAP
         }
 
         /// <summary>
+        /// Rename AD user.
+        /// </summary>
+        /// <param name="ldapConnectionInfo">Properties to define LDAP connection</param>
+        /// <param name="userProperties">Properties to define the user to be renamed</param>
+        /// <returns>operationSuccessful = true if operation is ok.</returns>
+        public static OutputUser AD_RenameUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_RenameUserProperties userProperties)
+        {
+            var ldapOperationResult = new OutputUser { OperationSuccessful = false, User = null };
+
+            List<DirectoryEntry> tmpObjectEntries;
+            
+            ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + userProperties.Path;
+
+            string filter = "(&(objectClass=user)(cn=" + userProperties.Cn + "))";
+
+            using (var ldap = new LdapService(ldapConnectionInfo)) // @"(&(objectClass=user)(cn=MattiMeikalainen))
+            {
+                tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
+                if (tmpObjectEntries.Count == 1)
+                {
+                    ldapOperationResult.User = ldap.RenameAdUser(tmpObjectEntries[0], userProperties.NewCn);
+                }
+                else if (tmpObjectEntries.Count == 0)
+                {
+                    throw new System.Exception($"Did not find any entries matching filter {filter} from {ldapConnectionInfo.LdapUri}");
+                }
+                else if (tmpObjectEntries.Count > 1)
+                {
+                    throw new System.Exception($"Found more than one entry matching filter {filter} from {ldapConnectionInfo.LdapUri}");
+                }
+            }
+            
+            ldapOperationResult.OperationSuccessful = true;
+            return ldapOperationResult;
+        }
+
+        /// <summary>
         /// Remove AD object from a set of groups
         /// </summary>
         /// <param name="ldapConnectionInfo"></param>

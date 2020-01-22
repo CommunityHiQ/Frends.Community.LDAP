@@ -17,6 +17,9 @@
     },
     {
       "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_DeleteUser"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_RenameUser"
     }
   ]
 }

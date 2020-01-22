@@ -39,7 +39,8 @@ namespace Frends.Community.LDAP.Models
     {
         String = 0,
         Int = 1,
-        Boolean = 3
+        Boolean = 3,
+        JSONArray = 4
     }
 
     public class ADFlag

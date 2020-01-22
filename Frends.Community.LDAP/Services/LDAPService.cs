@@ -103,6 +103,13 @@ namespace Frends.Community.LDAP.Services
             return entry;
         }
 
+        public DirectoryEntry RenameAdUser(DirectoryEntry entry, string newName)
+        {
+            entry.Rename("CN=" + newName);
+            entry.CommitChanges();
+            return entry;
+        }
+
         public DirectoryEntry UpdateAdUser(UpdateADuser user)
         {
             //if (!user.CN.ToUpper().StartsWith("CN="))
@@ -248,30 +255,33 @@ namespace Frends.Community.LDAP.Services
             {
                 var attrName = !string.IsNullOrEmpty(attr.CustomAttributeName) ? attr.CustomAttributeName : attr.Attribute.ToString();
 
-                if (attr.DataType == AttributeType.String)
+                if (string.IsNullOrWhiteSpace(attr.Value))
                 {
-                    if (String.IsNullOrEmpty(attr.Value))
-                        dictionaryEntry.Add(attrName, null);
-                    else
-                        dictionaryEntry.Add(attrName, attr.Value);
-                }
-                else if (attr.DataType == AttributeType.Int)
-                {
-                    if (String.IsNullOrEmpty(attr.Value))
+                    if (attr.DataType == AttributeType.Int)
                         dictionaryEntry.Add(attrName, 0);
                     else
-                        dictionaryEntry.Add(attrName, Convert.ToInt32(attr.Value));
-                }
-
-                else if (attr.DataType == AttributeType.Boolean)
-                {
-                    if (String.IsNullOrEmpty(attr.Value))
                         dictionaryEntry.Add(attrName, null);
-                    else
-                        dictionaryEntry.Add(attrName, Boolean.Parse(attr.Value));
                 }
                 else
-                    throw new ArgumentException("Non supported type for property " + attr.CustomAttributeName + ".");
+                {
+                    switch (attr.DataType)
+                    {
+                        case AttributeType.String:
+                            dictionaryEntry.Add(attrName, attr.Value);
+                            break;
+                        case AttributeType.Int:
+                            dictionaryEntry.Add(attrName, Convert.ToInt32(attr.Value));
+                            break;
+                        case AttributeType.Boolean:
+                            dictionaryEntry.Add(attrName, Boolean.Parse(attr.Value));
+                            break;
+                        case AttributeType.JSONArray:
+                            dictionaryEntry.Add(attrName, Newtonsoft.Json.Linq.JToken.Parse(attr.Value).ToArray());
+                            break;
+                        default:
+                            throw new ArgumentException("Non supported type for property " + attr.CustomAttributeName + ".");
+                    }
+                }
             }
             return dictionaryEntry;
         }

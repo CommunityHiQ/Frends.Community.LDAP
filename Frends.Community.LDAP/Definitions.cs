@@ -85,6 +85,33 @@ namespace Frends.Community.LDAP
         public string Cn { set; get; }
     }
 
+    /// <summary>
+    /// Properties for AD rename user
+    /// </summary>
+    public class AD_RenameUserProperties
+    {
+        /// <summary>
+        /// Path to the user to be renamed
+        /// </summary>
+        [DisplayFormat(DataFormatString = "Text")]
+        [DefaultValue("OU=Users,DC=FRENDSTest01,DC=net")]
+        public string Path { get; set; }
+
+        /// <summary>
+        ///  Current common name of the user
+        /// </summary>
+        [DefaultValue("UserName")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Cn { set; get; }
+
+        /// <summary>
+        ///  New name for the user
+        /// </summary>
+        [DefaultValue("NewUserName")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string NewCn { set; get; }
+    }
+
     public class AD_RemoveFromGroupsTargetProperties
     {
         /// <summary>
