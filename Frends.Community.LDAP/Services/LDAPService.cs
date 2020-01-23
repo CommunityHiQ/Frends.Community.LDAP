@@ -167,6 +167,55 @@ namespace Frends.Community.LDAP.Services
             }
         }
 
+        /// <summary>
+        /// Searches for the collection of the objects based on given filter. 
+        /// PropertiesToLoad specify which properties AD returns. Empty array returns object's all properties.
+        /// Also this method returns current result set. If you need all properties AND live version, use AD_FetchObjects() task.
+        /// </summary>
+        /// <param name="filter">The attribute to filter the search by</param>
+        /// <param name="propertiesToLoad">Array of properties to load. Empty array loads all properties.</param>
+        /// <returns> The list of the DirectoreEntry(s) objects</returns>
+        public List<SearchResult> SearchObjectsByFilterSpecifyProperties(string filter, string[] propertiesToLoad)
+        {
+            var ret = new List<SearchResult>();
+            try
+            {
+                using (DirectorySearcher ds = new DirectorySearcher(_rootEntry))
+                {
+                    ds.SearchScope = SearchScope.Subtree;
+                    ds.ReferralChasing = ReferralChasingOption.All;
+                    ds.Filter = filter;
+
+                    // Specify properties to load -> better perfomance
+                    foreach (var prop in propertiesToLoad)
+                    {
+                        ds.PropertiesToLoad.Add(prop);
+                    }
+
+                    SearchResultCollection ResultCollection = ds.FindAll();
+
+                    if (ResultCollection == null)
+                    {
+                        return ret;
+                    }
+                    else
+                    {
+                        foreach (SearchResult item in ResultCollection)
+                        {
+                            ret.Add(item);
+                        }
+                        return ret;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = "Failed finding objects with filter {0}:'." + ex.Message;
+                throw new ArgumentException(string.Format(message, filter), ex);
+                throw new Exception(ex.Message);
+            }
+        }
+
 
         #region Windows Users
         public DirectoryEntry CreateWindowsUser(WindowsUser user)

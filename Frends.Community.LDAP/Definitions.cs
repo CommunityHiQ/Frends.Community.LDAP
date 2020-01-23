@@ -8,6 +8,34 @@ using System.DirectoryServices;
 
 namespace Frends.Community.LDAP
 {
+
+    /// <summary>
+    /// Properties for AD's object search
+    /// </summary>
+    public class AD_SearchObjectProperties
+    {
+        /// <summary>
+        /// Defines path which used to search object(s)
+        /// </summary>
+        [DisplayFormat(DataFormatString = "Text")]
+        [DefaultValue("CN=Users,DC=FRENDSTest01,DC=net")]
+        public string Path { get; set; }
+
+        /// <summary>
+        /// Defines filter which is used to search object(s)
+        /// </summary>
+        [DisplayFormat(DataFormatString = "Text")]
+        [DefaultValue("(&(objectClass=user)(sAMAccountName=TestAdmin))")]
+        public string Filter { set; get; }
+
+        /// <summary>
+        /// Defines properties to load. Empty list fetch all properties.
+        /// adspath is returned automatically.
+        /// </summary>
+        public string[] PropertiesToLoad { get; set; }
+    }
+
+
     /// <summary>
     /// Properties for AD's object search
     /// </summary>
@@ -128,6 +156,35 @@ namespace Frends.Community.LDAP
         /// Groups to remove the object from (For example. CN=Guests,CN=Builtin).
         /// </summary>
         public string[] Groups { set; get; }
+    }
+
+    /// <summary>
+    /// Result class for object search.
+    /// Fields and their descriptions:
+    /// - SearchEntry is search's result data(SearchResult)
+    /// Methods:
+    /// - GetPropertyStringValue(name) : returns property's first value
+    /// </summary>
+    public class OutputSearchEntry
+    {
+        public SearchResult SearchEntry { get; set; }
+
+        /// <summary>
+        /// Returns property's first value as string or null.
+        /// </summary>
+        /// <param name="name">Propterty name</param>
+        /// <returns>Property's first value or null if property not exists.</returns>
+        public string GetPropertyStringValue(String name)
+        {
+            if (SearchEntry.Properties.Contains(name))
+            {
+                if (SearchEntry.Properties[name].Count > 0)
+                {
+                    return SearchEntry.Properties[name][0].ToString();
+                }
+            }
+            return null;
+        }
     }
 
     /// <summary>

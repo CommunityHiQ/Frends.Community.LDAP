@@ -11,6 +11,39 @@ namespace Frends.Community.LDAP
     
     public static class LdapActiveDirectoryOperations 
     {
+
+        /// <summary>
+        /// Searches Active Directory for objects specified by the given Path + filter, included in the AD_SearchObjectProperties class.
+        /// </summary>
+        /// <param name="ldapConnectionInfo">The LDAP connection information</param>
+        /// <param name="SearchParameters">Path, filter and returned properties needed for the query</param>
+        /// <returns>LdapResult class: the Collection of the SearchEntry classes.</returns>
+        public static List<OutputSearchEntry> AD_SearchObjects([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_SearchObjectProperties SearchParameters)
+        {
+            ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + SearchParameters.Path;
+
+            List<SearchResult> tmpSearchEntries;
+
+            // Search objects
+            using (var ldap = new LdapService(ldapConnectionInfo))
+            {
+                tmpSearchEntries = ldap.SearchObjectsByFilterSpecifyProperties(SearchParameters.Filter, SearchParameters.PropertiesToLoad);
+            }
+
+            // Create & return result list
+            var ret_outputs = new List<OutputSearchEntry>();
+
+            foreach (var item in tmpSearchEntries)
+            {
+                OutputSearchEntry output_class = new OutputSearchEntry
+                {
+                    SearchEntry = item
+                };
+                ret_outputs.Add(output_class);
+            }
+            return ret_outputs;
+        }
+
         /// <summary>
         /// Searches Active Directory for objects specified by the given Path + filter, included in the AD_FetchObjectProperties class.
         /// </summary>

@@ -8,6 +8,7 @@ https://github.com/CommunityHiQ/Frends.Community.LDAP
 - [Installing](#installing)
 - [Tasks](#tasks)
      - [AD_FetchObject](#ad_fetchbobject)
+     - [AD_SearchObjects](#ad_searchobjects)
      - [AD_CreateUser](#ad_createuser)
      - [AD_UpdateUser](#ad_updateuser)
      - [AD_AddGroups](#ad_addgroups)
@@ -56,6 +57,38 @@ To fetch result use syntax:
 #result[0].GetPropertyLargeInteger("lastLogon") - If attribute is in integer8 format.
 
 #result[0].GetAccountExpiresDateTime() - Returns a DateTime value for AD accountExpires attribute. If accountExpires=0x7FFFFFFFFFFFFFFF, DateTime.MaxValue is returned.
+
+#result can be looped by loop element, also.
+
+## AD_SearchObjects
+Searches Active Directory for an object(s) specified by path and filter and returns specified properties.
+
+### Properties
+
+| Property | Type | Description | Example |
+| -------- | -------- | -------- | -------- |
+| LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
+| Username | string | User name | 'user' |
+| Password | string | Password | '****' |
+| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
+| Path | string | The path to be search attribute. | 'CN=Users,DC=FRENDSTest01,DC=net' |
+| Filter | string | Attribute name to be searched. | '(&(objectClass=user)(sAMAccountName=TestAdmin))' |
+| PropertiesToLoad | string[] | Properties to return from AD. Empty array returns object's all properties. | [ 'cn', 'name', 'email'] |
+
+### Returns
+
+A result object(s) with parameters.
+
+| Property | Type | Description | Example |
+| -------- | -------- | -------- | -------- |
+| OutputSearchEntry | The collection of the SearchResult | Found objects |  List<OutputSearchEntry> |
+
+https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.searchresult?view=netframework-4.8
+
+Usage:
+To access result use syntax:
+
+#result[0].GetPropertyStringValue("name")
 
 #result can be looped by loop element, also.
 
@@ -257,3 +290,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 3.1.0   | AD_UpdateUser now handles empty attributes properly | 
 | 3.2.0   | Added GetAccountExpiresDateTime, fixed known lowPart interface bug |
 | 3.3.0   | Added AD_RenameUser and a new attribute type: JSONArray |
+| 3.4.0   | Added AD_SearchObjects |
