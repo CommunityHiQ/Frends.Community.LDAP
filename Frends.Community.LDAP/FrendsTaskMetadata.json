@@ -1,6 +1,9 @@
 ﻿{
   "Tasks": [
     {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_SearchObjects"
+    },
+    {
       "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_FetchObjects"
     },
     {

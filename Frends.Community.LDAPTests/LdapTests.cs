@@ -185,5 +185,26 @@ namespace Frends.Community.LDAPTests
             var result = LdapActiveDirectoryOperations.AD_DeleteUser(_connection, e);
             Assert.AreEqual(result.OperationSuccessful, true);
         }
+
+        /// <summary>
+        /// Test for AD_SearchOjects: fetch a property and a not loaded property.
+        /// </summary>
+        [Test, Order(10)]
+        public void ShouldSearchUser()
+        {
+            var prop = new AD_SearchObjectProperties()
+            {
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path,
+                PropertiesToLoad = new string[] { "cn", "invalidProperty" }
+            };
+            
+            var ret = LdapActiveDirectoryOperations.AD_SearchObjects(_connection, prop);
+
+            string cnValue = ret[0].GetPropertyStringValue("cn");
+            string nullValue = ret[0].GetPropertyStringValue("name"); // should return null
+            Assert.AreEqual(cnValue, _user);
+            Assert.AreEqual(nullValue, null);
+        }
     }
 }
