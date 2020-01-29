@@ -27,7 +27,7 @@ namespace Frends.Community.LDAP
             // Search objects
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
-                tmpSearchEntries = ldap.SearchObjectsByFilterSpecifyProperties(SearchParameters.Filter, SearchParameters.PropertiesToLoad);
+                tmpSearchEntries = ldap.SearchObjectsByFilterSpecifyProperties(SearchParameters.Filter, SearchParameters.PropertiesToLoad, SearchParameters.PageSize);
             }
 
             // Create & return result list

@@ -33,6 +33,14 @@ namespace Frends.Community.LDAP
         /// adspath is returned automatically.
         /// </summary>
         public string[] PropertiesToLoad { get; set; }
+
+        /// <summary>
+        /// Defines PageSize when fetch big amounts of data from server. 
+        /// 0 - not used. Server limits returned objects count.
+        /// 1000 - a safe first value. Client fetched 1000 objects per internal call. 
+        /// </summary>
+        [DefaultValue(0)]
+        public int PageSize { get; set; }
     }
 
 
