@@ -174,8 +174,9 @@ namespace Frends.Community.LDAP.Services
         /// </summary>
         /// <param name="filter">The attribute to filter the search by</param>
         /// <param name="propertiesToLoad">Array of properties to load. Empty array loads all properties.</param>
+        /// <param name="pageSize">DirectorySearches paging on/off. 0 = off</param>
         /// <returns> The list of the DirectoreEntry(s) objects</returns>
-        public List<SearchResult> SearchObjectsByFilterSpecifyProperties(string filter, string[] propertiesToLoad)
+        public List<SearchResult> SearchObjectsByFilterSpecifyProperties(string filter, string[] propertiesToLoad, int pageSize)
         {
             var ret = new List<SearchResult>();
             try
@@ -186,31 +187,31 @@ namespace Frends.Community.LDAP.Services
                     ds.ReferralChasing = ReferralChasingOption.All;
                     ds.Filter = filter;
 
+                    // Paging on/off
+                    if(pageSize > 0)
+                    {
+                        ds.PageSize = pageSize;
+                    }
+
                     // Specify properties to load -> better perfomance
                     foreach (var prop in propertiesToLoad)
                     {
                         ds.PropertiesToLoad.Add(prop);
                     }
 
-                    SearchResultCollection ResultCollection = ds.FindAll();
-
-                    if (ResultCollection == null)
-                    {
-                        return ret;
-                    }
-                    else
-                    {
+                    using (SearchResultCollection ResultCollection = ds.FindAll())
+                    {                        
                         foreach (SearchResult item in ResultCollection)
                         {
                             ret.Add(item);
-                        }
-                        return ret;
+                        } 
                     }
                 }
+                return ret;
             }
             catch (Exception ex)
             {
-                string message = "Failed finding objects with filter {0}:'." + ex.Message;
+                string message = "Failed searching objects with filter {0}:'." + ex.Message;
                 throw new ArgumentException(string.Format(message, filter), ex);
                 throw new Exception(ex.Message);
             }

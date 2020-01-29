@@ -74,6 +74,7 @@ Searches Active Directory for an object(s) specified by path and filter and retu
 | Path | string | The path to be search attribute. | 'CN=Users,DC=FRENDSTest01,DC=net' |
 | Filter | string | Attribute name to be searched. | '(&(objectClass=user)(sAMAccountName=TestAdmin))' |
 | PropertiesToLoad | string[] | Properties to return from AD. Empty array returns object's all properties. | [ 'cn', 'name', 'email'] |
+| PageSize | int | PageSize when loading big amounts of objects from server. If set serve| 0 - paging not used, 1000 - a safe value. |
 
 ### Returns
 
