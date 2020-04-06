@@ -28,7 +28,7 @@ namespace Frends.Community.LDAPTests
 
             _connection = new LdapConnectionInfo
             {
-                AuthenticationType = Authentication.Secure,
+                AuthenticationFlagTypes = new AuthType[] { new AuthType { AuthenticationFlagType = Authentication.Secure, Value = true }  },
                 LdapUri = "LDAP://"  + ConfigHandler.ReadConfigValue("HiQ.AzureADTest.Address"),
                 Username = ConfigHandler.ReadConfigValue("HiQ.AzureADTest.User"),
                 Password = ConfigHandler.ReadConfigValue("HiQ.AzureADTest.Password")

@@ -292,3 +292,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 3.2.0   | Added GetAccountExpiresDateTime, fixed known lowPart interface bug |
 | 3.3.0   | Added AD_RenameUser and a new attribute type: JSONArray |
 | 3.4.0   | Added AD_SearchObjects |
+| 3.4.2   | Change authentication type selection |
