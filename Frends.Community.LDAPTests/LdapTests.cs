@@ -203,6 +203,8 @@ namespace Frends.Community.LDAPTests
 
             if (ret != null)
             {
+                System.Console.WriteLine(ret.GetType());
+                System.Console.WriteLine(ret.ToString());
                 string cnValue = ret[0].GetPropertyStringValue("cn");
                 string nullValue = ret[0].GetPropertyStringValue("name"); // should return null
                 Assert.AreEqual(cnValue, _user);
