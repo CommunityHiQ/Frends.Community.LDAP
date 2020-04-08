@@ -20,12 +20,36 @@ namespace Frends.Community.LDAP.Models
         public string Username { get; set; }
         [PasswordPropertyText(true)]
         public string Password { get; set; }
-        public Authentication AuthenticationType { get; set; }
+        /// <summary>
+        /// Default value is None
+        /// </summary>
+        public AuthType[] AuthenticationFlagTypes { get; set; }
 
         internal AuthenticationTypes GetAuthenticationType()
         {
-            return (AuthenticationTypes)((int)AuthenticationType);
+            AuthenticationTypes authenticationType = AuthenticationTypes.None;
+            foreach (var authT in AuthenticationFlagTypes)
+            {
+                if (authT.AuthenticationFlagType != Authentication.None && authT.Value == true)
+                {
+                    authenticationType |= (AuthenticationTypes)Enum.Parse(typeof(AuthenticationTypes), authT.AuthenticationFlagType.ToString());
+                }
+            }
+            return authenticationType;
         }
+    }
+
+    public class AuthType
+    {
+        /// <summary>
+        /// Auth type
+        /// </summary>
+        public Authentication AuthenticationFlagType { get; set; }
+
+        /// <summary>
+        /// Flag value
+        /// </summary>
+        public bool Value { get; set; }
     }
 
     public enum Authentication
