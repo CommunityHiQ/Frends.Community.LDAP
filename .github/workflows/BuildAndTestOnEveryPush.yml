@@ -24,6 +24,11 @@ jobs:
     - name: Test
       run: dotnet test
       
+      env:
+         HiQAzureADTestAddress: ${{ secrets.HiQAzureADTestAddress }}
+         HiQAzureADTestPassword: ${{ secrets.HiQAzureADTestPassword }}
+         HiQAzureADTestUser: ${{ secrets.HiQAzureADTestUser }}
+      
     - name: Pack release version of task
       if: runner.os == 'Windows' 
       run: dotnet pack --configuration Release --include-source
@@ -31,5 +36,4 @@ jobs:
     - name: Push NuGet package to the testfeed
       if: runner.os == 'Windows' 
       run: dotnet nuget push Frends.Community.Echo\bin\Release\Frends.Community.Echo.*.nupkg  --api-key ${{ secrets.CommunityFeedApiKey }} --source https://www.myget.org/F/frends-community-test/api/v2/package --symbol-source https://www.myget.org/F/frends-community-test/symbols/api/v2/package
-
-
+	  
