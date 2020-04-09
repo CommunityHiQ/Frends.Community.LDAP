@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using Frends.Community.LDAP.Models;
 using Frends.Community.LDAP;
-using TestConfigurationHandler;
+using System;
 
 namespace Frends.Community.LDAPTests
 {
@@ -29,9 +29,9 @@ namespace Frends.Community.LDAPTests
             _connection = new LdapConnectionInfo
             {
                 AuthenticationFlagTypes = new AuthType[] { new AuthType { AuthenticationFlagType = Authentication.Secure, Value = true }  },
-                LdapUri = "LDAP://"  + ConfigHandler.ReadConfigValue("HiQ.AzureADTest.Address"),
-                Username = ConfigHandler.ReadConfigValue("HiQ.AzureADTest.User"),
-                Password = ConfigHandler.ReadConfigValue("HiQ.AzureADTest.Password")
+                LdapUri = "LDAP://"  + Environment.GetEnvironmentVariable("HiQ.AzureADTest.Address", EnvironmentVariableTarget.User),
+                Username = Environment.GetEnvironmentVariable("HiQ.AzureADTest.User", EnvironmentVariableTarget.User),
+                Password = Environment.GetEnvironmentVariable("HiQ.AzureADTest.Password", EnvironmentVariableTarget.User),
             };
         }
 
