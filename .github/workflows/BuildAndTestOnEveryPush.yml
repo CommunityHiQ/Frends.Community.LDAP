@@ -25,7 +25,7 @@ jobs:
       run: dotnet test
       
       env:
-         HiQAzureADTestAddress: ${{ secrets.HiQAzureADTestAddress }}
+         HiQAzureADTestAddress: Foobar
          HiQAzureADTestPassword: ${{ secrets.HiQAzureADTestPassword }}
          HiQAzureADTestUser: ${{ secrets.HiQAzureADTestUser }}
       
