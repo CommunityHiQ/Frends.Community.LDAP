@@ -305,4 +305,18 @@ namespace Frends.Community.LDAP
     {
         public bool OperationSuccessful { get; set; }
     }
+
+    /// <summary>
+    /// Result class.
+    /// Fields and their descriptions:
+    /// - OperationSuccessful: Tells if the requested operation was performed successfully.
+    /// - UserPrincipalName: The userPrincipalName of the affected user.
+    /// - LogString: Log of operation.
+    /// </summary>
+    public class PasswordOutput
+    {
+        public bool OperationSuccessful { get; set; }
+        public string UserPrincipalName { get; set; }
+        public string LogString { get; set; }
+    }
 }

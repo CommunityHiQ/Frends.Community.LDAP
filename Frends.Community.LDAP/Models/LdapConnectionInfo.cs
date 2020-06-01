@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 #pragma warning disable CS1591
 
@@ -23,16 +19,16 @@ namespace Frends.Community.LDAP.Models
         /// <summary>
         /// Default value is None
         /// </summary>
-        public AuthType[] AuthenticationFlagTypes { get; set; }
+        public AuthType[] AuthenticationFlags { get; set; }
 
         internal AuthenticationTypes GetAuthenticationType()
         {
             AuthenticationTypes authenticationType = AuthenticationTypes.None;
-            foreach (var authT in AuthenticationFlagTypes)
+            foreach (var authT in AuthenticationFlags)
             {
-                if (authT.AuthenticationFlagType != Authentication.None && authT.Value == true)
+                if (authT.AuthenticationFlag != Authentication.None && authT.Value == true)
                 {
-                    authenticationType |= (AuthenticationTypes)Enum.Parse(typeof(AuthenticationTypes), authT.AuthenticationFlagType.ToString());
+                    authenticationType |= (AuthenticationTypes)Enum.Parse(typeof(AuthenticationTypes), authT.AuthenticationFlag.ToString());
                 }
             }
             return authenticationType;
@@ -44,7 +40,7 @@ namespace Frends.Community.LDAP.Models
         /// <summary>
         /// Auth type
         /// </summary>
-        public Authentication AuthenticationFlagType { get; set; }
+        public Authentication AuthenticationFlag { get; set; }
 
         /// <summary>
         /// Flag value

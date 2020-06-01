@@ -3,6 +3,7 @@ using Frends.Community.LDAP.Services;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 
 #pragma warning disable CS1591
 
@@ -73,7 +74,8 @@ namespace Frends.Community.LDAP
         }
 
         /// <summary>
-        /// Create a user to AD.
+        /// Create a user to AD. The task AD_SetUserPassword is meant as a replacement
+        /// for setting the password in conjuction with AD user creation.
         /// </summary>
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
         /// <param name="adUser">The user record to be created</param>
@@ -220,6 +222,53 @@ namespace Frends.Community.LDAP
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
                 result.OperationSuccessful = ldap.RemoveFromGroups(target.Dn, groupsToRemoveFrom.Groups);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets password for user in AD. This task allows the use of other ways of binding to the server
+        /// than simple bind, which is the one that is used when setting the password in AD_CreateUser.
+        /// </summary>
+        /// <param name="passwordParameters">Input parameters and options</param>
+        /// <returns>Object { bool OperationSuccessful, string UserPrincipalName, string LogString }</returns>
+        public static PasswordOutput AD_SetUserPassword([PropertyTab] PasswordParameters passwordParameters)
+        {
+            var result = new PasswordOutput();
+            PrincipalContext pContext = null;
+
+            try
+            {
+                // Create context
+                pContext = new PrincipalContext(ContextType.Domain, passwordParameters.AdServer, passwordParameters.AdContainer, passwordParameters.GetContextType(), passwordParameters.Username, passwordParameters.Password);
+                result.LogString += "Context created and connection formed. Server: " + pContext.ConnectedServer.ToString() + " Container: " +
+                   pContext.Container.ToString() + " Context type: " + pContext.ContextType.ToString() + " UserName: " + pContext.UserName.ToString() + ";";
+
+                // Fetch the principal object for the user
+                UserPrincipal user = UserPrincipal.FindByIdentity(pContext, IdentityType.UserPrincipalName, passwordParameters.UserPrincipalName);
+                result.LogString += "User found: " + user.DistinguishedName.ToString() + ";";
+
+                // Set user password
+                user.SetPassword(passwordParameters.NewPassword);
+                result.LogString += "Password set;";
+
+                // Save the changes to the store
+                user.Save();
+                result.LogString += "User saved;";
+
+                // Finalize result
+                result.OperationSuccessful = true;
+                result.UserPrincipalName = passwordParameters.UserPrincipalName;
+            }
+            catch (System.Exception ex)
+            {
+                throw new System.Exception("Password could not be set. Log: " + result.LogString, ex);
+            }
+            finally
+            {
+                if (pContext != null)
+                    pContext.Dispose();
             }
 
             return result;

@@ -35,9 +35,9 @@ Searches Active Directory for an object(s) specified by path and filter.
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
-| Username | string | User name | 'user' |
+| Username | string | Username to login with | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
+| Authentication flags | Array of enums. Enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
 | Path | string | The path to be search attribute. | 'CN=Users,DC=FRENDSTest01,DC=net' |
 | filter | string | Attribute name to be searched. | '(&(objectClass=user)(sAMAccountName=TestAdmin))' |
 
@@ -70,9 +70,9 @@ Searches Active Directory for an object(s) specified by path and filter and retu
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
-| Username | string | User name | 'user' |
+| Username | string | Username to login with | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
+| Authentication flags | Array of enums. Enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind  | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
 | Path | string | The path to be search attribute. | 'CN=Users,DC=FRENDSTest01,DC=net' |
 | Filter | string | Attribute name to be searched. | '(&(objectClass=user)(sAMAccountName=TestAdmin))' |
 | PropertiesToLoad | string[] | Properties to return from AD. Empty array returns object's all properties. | [ 'cn', 'name', 'email'] |
@@ -101,9 +101,9 @@ Create a user to AD.
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
-| Username | string | User name | 'user' |
+| Username | string | Username to login with | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx|
+| Authentication flags | Array of enums. Enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx|
 | Cn | string | Common name | 'CN=MattiMeikalainen' |
 | Path | string | Location, where the user is located. | CN=Users,DC=FRENDSTest01,DC=net |
 | Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
@@ -126,9 +126,9 @@ Update a user in the AD.
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
-| Username | string | User name | 'user' |
+| Username | string | Username to login with | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
+| Authentication flags | Array of enums. Enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
 | DN | string | distinguishedName, where the user is located. | 'CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net' |
 | Ad flags | List | https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx |  |
 | Other attributes | List | parameters: Attribute=attribute name; Value: Value to be set(set to null if you want to clear the value); Data type: Attribute's type |  |
@@ -149,9 +149,9 @@ Add the user in AD to a group(s).
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
 | LDAP uri | string | Actice Directory uri | 'LDAP://xx.xxx.xxx.xxx' |
-| Username | string | User name | 'user' |
+| Username | string | Username to login with | 'user' |
 | Password | string | Password | '****' |
-| Authentication type | enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
+| Authentication flags | Array of enums. Enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Authentication type, more than one type can be selected | https://msdn.microsoft.com/en-us/library/system.directoryservices.authenticationtypes(v=vs.110).aspx |
 | DN | string | distinguishedName, where the user is located. | 'CN=MattiMeikalainen,CN=Users,DC=FRENDSTest01,DC=net' |
 | AD_AddGroupsProperties| List | Groups the user to be added. | 'CN=Guests,CN=Builtin' |
 
@@ -171,9 +171,9 @@ Ldap connection Info:
 | Property           | Type   | Description             | Example                |
 | ------------------ | ------ | ----------------------- | ---------------------- |
 | LdapUri            | string | Uri for the LDAP server | `LDAP://frends.ad.org` |
-| Username           | string | User name to login with | `frendsAgent`          |
+| Username           | string | Username to login with | `frendsAgent`          |
 | Password           | string | Password                | `***`                  |
-| AuthenticationType | Enum   | Type of authentication, more than one type can be selected | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
+| AuthenticationFlags | Array of enums. Enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Type of authentication, more than one type can be selected | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
 
 Target:
 
@@ -203,9 +203,9 @@ Ldap connection Info:
 | Property           | Type   | Description             | Example                |
 | ------------------ | ------ | ----------------------- | ---------------------- |
 | LdapUri            | string | Uri for the LDAP server | `LDAP://frends.ad.org` |
-| Username           | string | User name to login with | `frendsAgent`          |
+| Username           | string | Username to login with | `frendsAgent`          |
 | Password           | string | Password                | `***`                  |
-| AuthenticationType | Enum   | Type of authentication, more than one type can be selected | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
+| AuthenticationFlags | Array of enums. Enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Type of authentication, more than one type can be selected | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
 
 User:
 
@@ -231,9 +231,9 @@ Ldap connection Info:
 | Property           | Type   | Description             | Example                |
 | ------------------ | ------ | ----------------------- | ---------------------- |
 | LdapUri            | string | Uri for the LDAP server | `LDAP://frends.ad.org` |
-| Username           | string | User name to login with | `frendsAgent`          |
+| Username           | string | Username to login with | `frendsAgent`          |
 | Password           | string | Password                | `***`                  |
-| AuthenticationType | Enum   | Type of authentication, more than one type can be selected | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
+| AuthenticationFlags | Array of Enums. Enum: None, Secure, Encryption, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind | Type of authentication, more than one type can be selected | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
 
 User:
 
@@ -250,6 +250,33 @@ An object with parameters.
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
 | OperationSuccessful | bool | True, if operation is successful | `true` |
+
+## AD_SetUserPassword
+Sets password for user in AD. This task allows the use of other ways of binding to the server than simple bind, which is the one that is used when setting the password in AD_CreateUser.
+
+### Properties
+Password parameters:
+
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| AdServer           | string | Uri for the LDAP server | `frends.ad.org` |
+| AdContainer        | string | The container to use as the root of the context  | `DC=Test`          |
+| Username           | string | Username to login with  | `frendsAgent`                  |
+| Password           | string | Password                | `***`                  |
+| UserPrincipalName  | string | The UPN of the user whose password is to be set | `test.user@ad.com`                  |
+| NewPassword        | string | The password to bet assigned to the user | `***`                  |
+| ContextOptionFlags | Array of enums. Enum: Negotiate, SimpleBind, SecureSocketsLayer, Signing, Sealing, ServerBind | Context options for binding to the server. Some options require the 'Negotiate' option to be selected as well. | `Simple bind` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.accountmanagement.contextoptions?view=dotnet-plat-ext-3.1) |
+
+
+### Returns
+An object with parameters.
+
+| Property | Type | Description | Example |
+| -------- | -------- | -------- | -------- |
+| OperationSuccessful | bool | True, if operation is successful | `true` |
+| UserPrincipalName | string | The UPN of the affected user | `test.user@ad.com` |
+| LogString | string | Log of operation | `true` |
+
 
 # Building
 
@@ -295,3 +322,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 3.3.0   | Added AD_RenameUser and a new attribute type: JSONArray |
 | 3.4.0   | Added AD_SearchObjects |
 | 3.4.2   | Setting multiple authentication type flags is now possible |
+| 3.5.0   | New, separate task for setting AD user password |

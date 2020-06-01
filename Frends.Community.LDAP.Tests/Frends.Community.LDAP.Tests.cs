@@ -28,7 +28,7 @@ namespace Frends.Community.LDAPTests
 
             _connection = new LdapConnectionInfo
             {
-                AuthenticationFlagTypes = new AuthType[] { new AuthType { AuthenticationFlagType = Authentication.Secure, Value = true }  },
+                AuthenticationFlags = new AuthType[] { new AuthType { AuthenticationFlag = Authentication.Secure, Value = true }  },
                 LdapUri = "LDAP://"  + Environment.GetEnvironmentVariable("HiQAzureADTestAddress", EnvironmentVariableTarget.User),
                 Username = Environment.GetEnvironmentVariable("HiQAzureADTestUser", EnvironmentVariableTarget.User),
                 Password = Environment.GetEnvironmentVariable("HiQAzureADTestPassword", EnvironmentVariableTarget.User),
