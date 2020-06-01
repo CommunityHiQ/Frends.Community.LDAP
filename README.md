@@ -1,5 +1,7 @@
 # Frends.Community.LDAP
 
+[![Actions Status](https://github.com/CommunityHiQ/Frends.Community.LDAP/workflows/PackAndPushAfterMerge/badge.svg)](https://github.com/CommunityHiQ/Frends.Community.LDAP/actions) ![MyGet](https://img.shields.io/myget/frends-community/v/Frends.Community.LDAP) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
+
 FRENDS Community Task for Active Directory related operations.
 
 Task operations that use Active Directory library.
