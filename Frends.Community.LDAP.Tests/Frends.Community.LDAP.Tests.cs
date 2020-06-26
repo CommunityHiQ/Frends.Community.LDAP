@@ -16,6 +16,7 @@ namespace Frends.Community.LDAPTests
         private string _path;
         private string _groupDn;
         private LdapConnectionInfo _connection;
+        private PasswordParameters _passConnection;
 
 
         [SetUp]
@@ -33,6 +34,25 @@ namespace Frends.Community.LDAPTests
                 Username = Environment.GetEnvironmentVariable("HiQAzureADTestUser", EnvironmentVariableTarget.User),
                 Password = Environment.GetEnvironmentVariable("HiQAzureADTestPassword", EnvironmentVariableTarget.User),
             };
+
+            _passConnection = new PasswordParameters
+            {
+                AdServer = Environment.GetEnvironmentVariable("HiQAzureADTestAddress", EnvironmentVariableTarget.User),
+                AdContainer = "DC=FRENDSTest01",
+                Username = Environment.GetEnvironmentVariable("HiQAzureADTestUser", EnvironmentVariableTarget.User),
+                Password = Environment.GetEnvironmentVariable("HiQAzureADTestPassword", EnvironmentVariableTarget.User),
+                // UserPrincipalName not confirmed to exist in test AD - TO DO!
+                UserPrincipalName = "Matti.Meikalainen@testi.fi",
+                // HiQAzureADTestUserNewPassword has not yet been set - TO DO!
+                NewPassword = Environment.GetEnvironmentVariable("HiQAzureADTestUserNewPassword", EnvironmentVariableTarget.User),
+                ContextOptionFlags = new Context[]
+                    {
+                    new Context { ContextOptionFlag = ContextOption.SimpleBind, Value = true },
+                    new Context { ContextOptionFlag = ContextOption.Signing, Value = true },
+                    new Context { ContextOptionFlag = ContextOption.ServerBind , Value = true }
+                    }
+            };
+
         }
 
         [Test, Order(1)]
@@ -206,6 +226,16 @@ namespace Frends.Community.LDAPTests
             string nullValue = ret[0].GetPropertyStringValue("name"); // should return null
             Assert.AreEqual(cnValue, _user);
             Assert.AreEqual(nullValue, null);
+        }
+
+        /// <summary>
+        ///  Test for AD_SetUserPassword: Set a user's password
+        /// </summary>
+        [Test, Order(11)]
+        public void ShouldSetPassword()
+        {
+            var result = LdapActiveDirectoryOperations.AD_SetUserPassword(_passConnection);
+            Assert.AreEqual(result.OperationSuccessful, true);
         }
     }
 }

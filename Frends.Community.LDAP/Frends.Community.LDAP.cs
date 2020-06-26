@@ -235,7 +235,7 @@ namespace Frends.Community.LDAP
         /// <returns>Object { bool OperationSuccessful, string UserPrincipalName, string LogString }</returns>
         public static PasswordOutput AD_SetUserPassword([PropertyTab] PasswordParameters passwordParameters)
         {
-            var result = new PasswordOutput();
+            var result = new PasswordOutput { OperationSuccessful = false, UserPrincipalName = null, LogString = null };
             PrincipalContext pContext = null;
 
             try
