@@ -295,3 +295,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 3.3.0   | Added AD_RenameUser and a new attribute type: JSONArray |
 | 3.4.0   | Added AD_SearchObjects |
 | 3.4.2   | Setting multiple authentication type flags is now possible |
+| 3.5.0   | Support for both .Net Framework and .Net Standard |
