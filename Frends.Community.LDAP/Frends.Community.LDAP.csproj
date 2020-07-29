@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <description>This is template task.</description>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
     <authors>HiQ Finland</authors>
     <copyright>HiQ Finland</copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -10,7 +10,7 @@
     <IncludeSource>true</IncludeSource>
     <PackageTags>Frends</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>0.0.5</Version>
+    <Version>3.4.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +22,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    <PackageReference Include="System.DirectoryServices" Version="4.7.0" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>

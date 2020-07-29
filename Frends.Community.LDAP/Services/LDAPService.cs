@@ -143,19 +143,21 @@ namespace Frends.Community.LDAP.Services
                     s.SearchScope = SearchScope.Subtree;
                     s.ReferralChasing = ReferralChasingOption.All;
                     s.Filter = filter;
-                    SearchResultCollection ResultCollection = s.FindAll();
-       
-                    if (ResultCollection == null)
+                    using (SearchResultCollection ResultCollection = s.FindAll())
                     {
-                        return ret;
-                    }
-                    else
-                    {
-                        foreach (SearchResult item in ResultCollection)
+
+                        if (ResultCollection == null)
                         {
-                            ret.Add(item.GetDirectoryEntry());
+                            return ret;
                         }
-                        return ret;
+                        else
+                        {
+                            foreach (SearchResult item in ResultCollection)
+                            {
+                                ret.Add(item.GetDirectoryEntry());
+                            }
+                            return ret;
+                        }
                     }
                 }
             }
