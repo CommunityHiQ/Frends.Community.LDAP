@@ -235,6 +235,7 @@ namespace Frends.Community.LDAP
         public static MoveAdObjectResult AD_MoveObject([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] MoveObject adObject)
         {
             var result = new MoveAdObjectResult();
+            result.OperationSuccessful = false;
 
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
