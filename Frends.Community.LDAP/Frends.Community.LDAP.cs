@@ -224,5 +224,26 @@ namespace Frends.Community.LDAP
 
             return result;
         }
+
+
+        /// <summary>
+        /// Move a object to another OU (Organizational Unit). Returns class, which carries a copy of the updated object.
+        /// </summary>
+        /// <param name="ldapConnectionInfo"></param>
+        /// <param name="adObject"></param>
+        /// <returns>Object { DirectoryEntry ObjectEntryCopy }</returns>
+        public static MoveAdObjectResult AD_MoveObject([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] MoveObject adObject)
+        {
+            var result = new MoveAdObjectResult();
+
+            using (var ldap = new LdapService(ldapConnectionInfo))
+            {
+                result.ObjectEntryCopy = ldap.MoveAdObject(adObject);
+                result.OperationSuccessful = true;
+            }
+
+            return result;
+        }
+
     }
 }

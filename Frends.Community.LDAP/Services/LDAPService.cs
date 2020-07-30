@@ -23,14 +23,14 @@ namespace Frends.Community.LDAP.Services
             return CreateEntry(name, organizationUnit, schemaClass, attrDictionary);
         }
 
-        private DirectoryEntry CreateEntry(string name, string organizationUnit, string schemaClass, Dictionary<string,object> entry)
+        private DirectoryEntry CreateEntry(string name, string organizationUnit, string schemaClass, Dictionary<string, object> entry)
         {
             var parent = _rootEntry;
-            if(!string.IsNullOrEmpty(organizationUnit))
+            if (!string.IsNullOrEmpty(organizationUnit))
                 parent = FindPath(_rootEntry, organizationUnit);
 
             DirectoryEntry childEntry = parent.Children.Add(name, schemaClass);
-            childEntry = SetDirectoryEntryAttributes(childEntry, entry, false);           
+            childEntry = SetDirectoryEntryAttributes(childEntry, entry, false);
             return childEntry;
         }
 
@@ -38,27 +38,28 @@ namespace Frends.Community.LDAP.Services
         {
             try
             {
-            string filter = "distinguishedname=" + path;
-            using (DirectorySearcher s = new DirectorySearcher(searchRoot))
-            {
-                s.SearchScope = SearchScope.Subtree;
-                s.ReferralChasing = ReferralChasingOption.All;
-                s.Filter = filter;
-                SearchResult res = s.FindOne();
-                if (res == null)
+                string filter = "distinguishedname=" + path;
+                using (DirectorySearcher s = new DirectorySearcher(searchRoot))
                 {
-                    return null;
-                }
-                else
-                {
-                    return res.GetDirectoryEntry();
+                    s.SearchScope = SearchScope.Subtree;
+                    s.ReferralChasing = ReferralChasingOption.All;
+                    s.Filter = filter;
+                    SearchResult res = s.FindOne();
+                    if (res == null)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        return res.GetDirectoryEntry();
+                    }
                 }
             }
-            } catch(Exception ex)
+            catch (Exception ex)
             {
                 string message = "Failed finding directory entry with path '{0}' under path '{1}'." + ex.Message;
                 string rootPath = searchRoot != null ? searchRoot.Path : "";
-                throw new ArgumentException(string.Format(message,path, rootPath), ex);
+                throw new ArgumentException(string.Format(message, path, rootPath), ex);
             }
         }
 
@@ -66,7 +67,7 @@ namespace Frends.Community.LDAP.Services
         {
             try
             {
-                if(saveRootEntry)
+                if (saveRootEntry)
                     _rootEntry.CommitChanges();
                 entry.CommitChanges();
                 entry.Close();
@@ -81,7 +82,7 @@ namespace Frends.Community.LDAP.Services
         public DirectoryEntry CreateAdUser(CreateADuser user)
         {
             var entryAttributes = GetEntryAttributes(user, user.OtherAttributes);
-            if(!user.CN.ToUpper().StartsWith("CN="))
+            if (!user.CN.ToUpper().StartsWith("CN="))
                 user.CN = "CN=" + user.CN;
 
             var entry = CreateEntry(user.CN, user.Path, LdapClasses.User, entryAttributes);
@@ -133,7 +134,7 @@ namespace Frends.Community.LDAP.Services
         /// </summary>
         /// <param name="filter">The attribute to filter the search by</param>
         /// <returns> The list of the DirectoreEntry(s) objects</returns>
-         public List<DirectoryEntry> SearchObjectsByFilter(string filter)
+        public List<DirectoryEntry> SearchObjectsByFilter(string filter)
         {
             var ret = new List<DirectoryEntry>();
             try
@@ -190,7 +191,7 @@ namespace Frends.Community.LDAP.Services
                     ds.Filter = filter;
 
                     // Paging on/off
-                    if(pageSize > 0)
+                    if (pageSize > 0)
                     {
                         ds.PageSize = pageSize;
                     }
@@ -202,11 +203,11 @@ namespace Frends.Community.LDAP.Services
                     }
 
                     using (SearchResultCollection ResultCollection = ds.FindAll())
-                    {                        
+                    {
                         foreach (SearchResult item in ResultCollection)
                         {
                             ret.Add(item);
-                        } 
+                        }
                     }
                 }
                 return ret;
@@ -251,7 +252,7 @@ namespace Frends.Community.LDAP.Services
                     groupEntry.Invoke(LdapMethods.Add, new object[] { entry.Path.ToString() });
                     SaveEntry(groupEntry, false);
                 }
-            }        
+            }
             SaveEntry(entry, false);
             return true;
         }
@@ -386,7 +387,7 @@ namespace Frends.Community.LDAP.Services
                     throw new Exception($"Exception occured while trying to find group {groupName} from {_rootEntry.Path}", e);
                 }
 
-                if(groupEntry == null)
+                if (groupEntry == null)
                 {
                     throw new Exception($"{groupName} was not found from {_rootEntry.Path}");
                 }
@@ -405,6 +406,22 @@ namespace Frends.Community.LDAP.Services
                 }
             }
             return SaveEntry(targetEntry, false);
+        }
+
+        /// <summary>
+        /// Move a object to another OU. Returns: LdapResult class, which carries a copy of the updated object.
+        /// </summary>
+        public DirectoryEntry MoveAdObject(MoveObject adObject)
+        {
+            if (!adObject.CN.ToUpper().StartsWith("CN="))
+                adObject.CN = "CN=" + adObject.CN;
+
+            using (DirectoryEntry theObjectToMove = FindPath(_rootEntry, adObject.CN + "," + adObject.Path))
+                using (DirectoryEntry theNewParent = FindPath(_rootEntry, adObject.NewPath))
+                {
+                    theObjectToMove.MoveTo(theNewParent);
+                    return FindPath(_rootEntry, adObject.CN + "," + adObject.NewPath);
+                }
         }
     }
 }

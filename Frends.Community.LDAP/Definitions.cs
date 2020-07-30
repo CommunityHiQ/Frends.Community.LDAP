@@ -305,4 +305,18 @@ namespace Frends.Community.LDAP
     {
         public bool OperationSuccessful { get; set; }
     }
+
+
+    /// <summary>
+    /// Result class.
+    /// - ObjectEntry is copy of moved object entry data.
+    /// - operationSuccessful: Tells if the requested operation was performed successfully.
+    /// </summary>
+    public class MoveAdObjectResult
+    {
+
+        public DirectoryEntry ObjectEntryCopy { get; set; }
+        public bool OperationSuccessful { get; set; }
+
+    }
 }
