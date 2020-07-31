@@ -207,5 +207,25 @@ namespace Frends.Community.LDAPTests
             Assert.AreEqual(cnValue, _user);
             Assert.AreEqual(nullValue, null);
         }
+
+        /// <summary>
+        /// Test for AD_SearchOjects: fetch a property and a not loaded property.
+        /// </summary>
+        [Test, Order(11)]
+        [Ignore("Test is not implemented. TODO")]
+        public void ShouldMoveUser()
+        {
+            var input = new MoveObject()
+            {
+                CN = "kk",
+                Path = "kk",
+                NewPath = "kk"
+            };
+
+            var ret = LdapActiveDirectoryOperations.AD_MoveObject(_connection, input);
+
+            // Also assert that copy of object is correct.
+            Assert.AreEqual(ret.OperationSuccessful, true);
+        }
     }
 }
