@@ -329,3 +329,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 3.4.2   | Setting multiple authentication type flags is now possible |
 | 3.5.0   | Support for both .Net Framework and .Net Standard |
 | 3.6.1   | Added AD_MoveObject |
+
