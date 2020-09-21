@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <description>This is template task.</description>
+    <description>A task for LDAP operations.</description>
     <TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
     <authors>HiQ Finland</authors>
     <copyright>HiQ Finland</copyright>
@@ -10,7 +10,7 @@
     <IncludeSource>true</IncludeSource>
     <PackageTags>Frends</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>3.6.1</Version>
+    <Version>3.7.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

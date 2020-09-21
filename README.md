@@ -291,13 +291,13 @@ Password parameters:
 
 | Property           | Type   | Description             | Example                |
 | ------------------ | ------ | ----------------------- | ---------------------- |
-| AdServer           | string | Uri for the LDAP server | `frends.ad.org` |
+| AdServer           | string | Name of the LDAP server | `frends.ad.org` |
 | AdContainer        | string | The container to use as the root of the context  | `DC=Test`          |
 | Username           | string | Username to login with  | `frendsAgent`                  |
 | Password           | string | Password                | `***`                  |
 | UserPrincipalName  | string | The UPN of the user whose password is to be set | `test.user@ad.com`                  |
 | NewPassword        | string | The password to bet assigned to the user | `***`                  |
-| ContextOptionFlags | Array of enums. Enum: Negotiate, SimpleBind, SecureSocketsLayer, Signing, Sealing, ServerBind | Context options for binding to the server. Some options require the 'Negotiate' option to be selected as well. | `Simple bind` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.accountmanagement.contextoptions?view=dotnet-plat-ext-3.1) |
+| ContextOptionFlags | Array of enums. Enum: Negotiate, SimpleBind, SecureSocketsLayer, Signing, Sealing, ServerBind | Context options for binding to the server. Some options require the 'Negotiate' option to be selected as well. Caution: Communications may be sent over the Internet in clear text if the 'SecureSocketsLayer' option is not specified with simple bind. | `Simple bind` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.accountmanagement.contextoptions?view=dotnet-plat-ext-3.1) |
 
 
 ### Returns
@@ -356,5 +356,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 3.4.2   | Setting multiple authentication type flags is now possible |
 | 3.5.0   | Support for both .Net Framework and .Net Standard |
 | 3.6.1   | Added AD_MoveObject |
-
 | 3.7.0   | New, separate task for setting AD user password |

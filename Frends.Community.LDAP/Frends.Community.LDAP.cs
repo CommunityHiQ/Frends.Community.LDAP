@@ -262,8 +262,9 @@ namespace Frends.Community.LDAP
 
             try
             {
+                string serverName = passwordParameters.AdServer.ToLower().Replace("ldap://", "").Replace("ldaps://", "");
                 // Create context
-                pContext = new PrincipalContext(ContextType.Domain, passwordParameters.AdServer, passwordParameters.AdContainer, passwordParameters.GetContextType(), passwordParameters.Username, passwordParameters.Password);
+                pContext = new PrincipalContext(ContextType.Domain, serverName, passwordParameters.AdContainer, passwordParameters.GetContextType(), passwordParameters.Username, passwordParameters.Password);
                 result.LogString += "Context created and connection formed. Server: " + pContext.ConnectedServer.ToString() + " Container: " +
                    pContext.Container.ToString() + " Context type: " + pContext.ContextType.ToString() + " UserName: " + pContext.UserName.ToString() + ";";
 
