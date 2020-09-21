@@ -53,13 +53,13 @@ namespace Frends.Community.LDAP.Models
             // and remove it afterwards if it was not specified
             ContextOptions contextOption = ContextOptions.SimpleBind;
             bool sbNeeded = false;
-            foreach (var contO in ContextOptionFlags)
+            foreach (var contOpt in ContextOptionFlags)
             {
-                if (contO.ContextOptionFlag != ContextOption.SimpleBind && contO.Value == true)
+                if (contOpt.ContextOptionFlag != ContextOption.SimpleBind && contOpt.Value == true)
                 {
-                    contextOption |= (ContextOptions)Enum.Parse(typeof(ContextOptions), contO.ContextOptionFlag.ToString());
+                    contextOption |= (ContextOptions)Enum.Parse(typeof(ContextOptions), contOpt.ContextOptionFlag.ToString());
                 }
-                else if (contO.ContextOptionFlag == ContextOption.SimpleBind && contO.Value == true)
+                else if (contOpt.ContextOptionFlag == ContextOption.SimpleBind && contOpt.Value == true)
                 {
                     sbNeeded = true;
                 }
