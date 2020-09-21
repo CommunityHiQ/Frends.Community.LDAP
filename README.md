@@ -239,9 +239,9 @@ User:
 
 | Property           | Type   | Description             | Example                |
 | ------------------ | ------ | ----------------------- | ---------------------- |
-| Path               | string | Path to the OU where the user is located | `OU=Users,DC=FRENDSTest01,DC=net` |
 | Cn                 | string | Current CN of the user | `UserName` |
-| NewCn              | string | New CN that is to be assigned to the user | `NewUserName` |
+| Path               | string | Path to the OU where the user is located | `OU=Users,DC=FRENDSTest01,DC=net` |
+| NewPath             | string | New CN that is to be assigned to the user | `NewUserName` |
 
 
 ### Returns
@@ -250,6 +250,38 @@ An object with parameters.
 | Property | Type | Description | Example |
 | -------- | -------- | -------- | -------- |
 | OperationSuccessful | bool | True, if operation is successful | `true` |
+
+
+## AD_MoveObject
+Move a object to another OU (Organizational Unit).
+
+### Properties
+Ldap connection Info:
+
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| LdapUri            | string | Uri for the LDAP server | `LDAP://frends.ad.org` |
+| Username           | string | User name to login with | `frendsAgent`          |
+| Password           | string | Password                | `***`                  |
+| AuthenticationType | Enum   | Type of authentication, more than one type can be selected | `Secure` (see https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.authenticationtypes?redirectedfrom=MSDN&view=netframework-4.7.2) |
+
+User:
+
+| Property           | Type   | Description             | Example                |
+| ------------------ | ------ | ----------------------- | ---------------------- |
+| Cn                 | string | Current CN of the user. | `UserName` |
+| Path               | string | Path to the OU where the user is located. | `OU=Users,DC=FRENDSTest01,DC=net` |
+| NewCn              | string | Path to the OU where the user is moved located. | `OU=Users,DC=FRENDSTest01,DC=net` |
+
+
+### Returns
+An object with parameters.
+
+| Property | Type | Description | Example |
+| -------- | -------- | -------- | -------- |
+| OperationSuccessful | bool | True, if operation is successful. | `true` |
+| ObjectEntryCopy | DirectoryEntry(object) | Copy of moved object entry data. |  |
+
 
 ## AD_SetUserPassword
 Sets password for user in AD. This task allows the use of other ways of binding to the server than simple bind, which is the one that is used when setting the password in AD_CreateUser.
@@ -322,4 +354,7 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 3.3.0   | Added AD_RenameUser and a new attribute type: JSONArray |
 | 3.4.0   | Added AD_SearchObjects |
 | 3.4.2   | Setting multiple authentication type flags is now possible |
-| 3.5.0   | New, separate task for setting AD user password |
+| 3.5.0   | Support for both .Net Framework and .Net Standard |
+| 3.6.1   | Added AD_MoveObject |
+
+| 3.7.0   | New, separate task for setting AD user password |

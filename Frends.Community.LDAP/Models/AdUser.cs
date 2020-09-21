@@ -58,9 +58,5 @@ namespace Frends.Community.LDAP.Models
             return "";
             //return CN+","+OU;
         }
-
     }
-
-
-
 }
