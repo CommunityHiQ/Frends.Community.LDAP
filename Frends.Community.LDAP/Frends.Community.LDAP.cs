@@ -260,29 +260,40 @@ namespace Frends.Community.LDAP
             var result = new PasswordOutput { OperationSuccessful = false, UserPrincipalName = null, LogString = null };
             PrincipalContext pContext = null;
 
+            string serverName = passwordParameters.AdServer.ToLower().Replace("ldap://", "").Replace("ldaps://", "");
+            string userPN = passwordParameters.UserPrincipalName;
+
             try
             {
-                string serverName = passwordParameters.AdServer.ToLower().Replace("ldap://", "").Replace("ldaps://", "");
+                result.LogString += "Attempting to connect to server.";
                 // Create context
                 pContext = new PrincipalContext(ContextType.Domain, serverName, passwordParameters.AdContainer, passwordParameters.GetContextType(), passwordParameters.Username, passwordParameters.Password);
                 result.LogString += "Context created and connection formed. Server: " + pContext.ConnectedServer.ToString() + " Container: " +
                    pContext.Container.ToString() + " Context type: " + pContext.ContextType.ToString() + " UserName: " + pContext.UserName.ToString() + ";";
 
                 // Fetch the principal object for the user
-                UserPrincipal user = UserPrincipal.FindByIdentity(pContext, IdentityType.UserPrincipalName, passwordParameters.UserPrincipalName);
-                result.LogString += "User found: " + user.DistinguishedName.ToString() + ";";
+                UserPrincipal user = UserPrincipal.FindByIdentity(pContext, IdentityType.UserPrincipalName, userPN);
+                if (user == null)
+                {
+                    result.LogString += "User " + userPN + " not found.";
+                    throw new System.ArgumentNullException();
+                }
+                else
+                {
+                    result.LogString += "User found: " + user.DistinguishedName.ToString() + ";";
 
-                // Set user password
-                user.SetPassword(passwordParameters.NewPassword);
-                result.LogString += "Password set;";
+                    // Set user password
+                    user.SetPassword(passwordParameters.NewPassword);
+                    result.LogString += "Password set;";
 
-                // Save the changes to the store
-                user.Save();
-                result.LogString += "User saved;";
+                    // Save the changes to the store
+                    user.Save();
+                    result.LogString += "User saved;";
 
-                // Finalize result
-                result.OperationSuccessful = true;
-                result.UserPrincipalName = passwordParameters.UserPrincipalName;
+                    // Finalize result
+                    result.OperationSuccessful = true;
+                    result.UserPrincipalName = passwordParameters.UserPrincipalName;
+                }
             }
             catch (System.Exception ex)
             {
