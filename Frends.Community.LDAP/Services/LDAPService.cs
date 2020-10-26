@@ -45,14 +45,7 @@ namespace Frends.Community.LDAP.Services
                     s.ReferralChasing = ReferralChasingOption.All;
                     s.Filter = filter;
                     SearchResult res = s.FindOne();
-                    if (res == null)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        return res.GetDirectoryEntry();
-                    }
+                    return res?.GetDirectoryEntry();
                 }
             }
             catch (Exception ex)
@@ -133,7 +126,7 @@ namespace Frends.Community.LDAP.Services
         /// Searches for the collection of the objects based on given filter. 
         /// </summary>
         /// <param name="filter">The attribute to filter the search by</param>
-        /// <returns> The list of the DirectoreEntry(s) objects</returns>
+        /// <returns> The list of the DirectoryEntry(s) objects</returns>
         public List<DirectoryEntry> SearchObjectsByFilter(string filter)
         {
             var ret = new List<DirectoryEntry>();
@@ -144,29 +137,21 @@ namespace Frends.Community.LDAP.Services
                     s.SearchScope = SearchScope.Subtree;
                     s.ReferralChasing = ReferralChasingOption.All;
                     s.Filter = filter;
-                    using (SearchResultCollection ResultCollection = s.FindAll())
+                    using (SearchResultCollection resultCollection = s.FindAll())
                     {
-
-                        if (ResultCollection == null)
+                        foreach (SearchResult item in resultCollection)
                         {
-                            return ret;
+                            ret.Add(item.GetDirectoryEntry());
                         }
-                        else
-                        {
-                            foreach (SearchResult item in ResultCollection)
-                            {
-                                ret.Add(item.GetDirectoryEntry());
-                            }
-                            return ret;
-                        }
+                        return ret;
+                    
                     }
                 }
             }
             catch (Exception ex)
             {
-                string message = "Failed finding objects with filter {0}:'." + ex.Message;
+                var message = "Failed finding objects with filter {0}:'." + ex.Message;
                 throw new ArgumentException(string.Format(message, filter), ex);
-                throw new Exception(ex.Message);
             }
         }
 
@@ -178,7 +163,7 @@ namespace Frends.Community.LDAP.Services
         /// <param name="filter">The attribute to filter the search by</param>
         /// <param name="propertiesToLoad">Array of properties to load. Empty array loads all properties.</param>
         /// <param name="pageSize">DirectorySearches paging on/off. 0 = off</param>
-        /// <returns> The list of the DirectoreEntry(s) objects</returns>
+        /// <returns> The list of the DirectoryEntry(s) objects</returns>
         public List<SearchResult> SearchObjectsByFilterSpecifyProperties(string filter, string[] propertiesToLoad, int pageSize)
         {
             var ret = new List<SearchResult>();
@@ -196,15 +181,15 @@ namespace Frends.Community.LDAP.Services
                         ds.PageSize = pageSize;
                     }
 
-                    // Specify properties to load -> better perfomance
+                    // Specify properties to load -> better performance
                     foreach (var prop in propertiesToLoad)
                     {
                         ds.PropertiesToLoad.Add(prop);
                     }
 
-                    using (SearchResultCollection ResultCollection = ds.FindAll())
+                    using (var resultCollection = ds.FindAll())
                     {
-                        foreach (SearchResult item in ResultCollection)
+                        foreach (SearchResult item in resultCollection)
                         {
                             ret.Add(item);
                         }
@@ -216,7 +201,6 @@ namespace Frends.Community.LDAP.Services
             {
                 string message = "Failed searching objects with filter {0}:'." + ex.Message;
                 throw new ArgumentException(string.Format(message, filter), ex);
-                throw new Exception(ex.Message);
             }
         }
 
@@ -226,8 +210,8 @@ namespace Frends.Community.LDAP.Services
         {
             var entryAttributes = GetEntryAttributes(user, user.OtherAttributes);
             var entry = CreateEntry(user.UserName, null, LdapClasses.User, entryAttributes);
-            entry.Invoke("SetPassword", new object[] { user.Password });
-            entry.Invoke("Put", new object[] { "Description", user.Description });
+            entry.Invoke("SetPassword", user.Password);
+            entry.Invoke("Put", "Description", user.Description );
             SaveEntry(entry, false);
             return entry;
         }
@@ -235,8 +219,8 @@ namespace Frends.Community.LDAP.Services
         public DirectoryEntry UpdateWindowsUser(WindowsUser user)
         {
             var entry = SearchEntry(user.UserName, LdapClasses.User);
-            entry.Invoke("SetPassword", new object[] { user.Password });
-            entry.Invoke("Put", new object[] { "Description", user.Description });
+            entry.Invoke("SetPassword", user.Password);
+            entry.Invoke("Put", "Description", user.Description);
             SaveEntry(entry, false);
             return entry;
         }
@@ -249,7 +233,7 @@ namespace Frends.Community.LDAP.Services
                 var groupEntry = SearchEntry(groupName, LdapClasses.Group);
                 if (!IsMemberOf(entry, groupEntry))
                 {
-                    groupEntry.Invoke(LdapMethods.Add, new object[] { entry.Path.ToString() });
+                    groupEntry.Invoke(LdapMethods.Add,  entry.Path);
                     SaveEntry(groupEntry, false);
                 }
             }
@@ -266,7 +250,7 @@ namespace Frends.Community.LDAP.Services
                 var groupEntry = SearchEntry(groupName, LdapClasses.Group);
                 if (!IsMemberOf(userEntry, groupEntry))
                 {
-                    groupEntry.Invoke(LdapMethods.Add, new object[] { userEntry.Path.ToString() });
+                    groupEntry.Invoke(LdapMethods.Add, userEntry.Path);
                 }
             }
 
@@ -278,7 +262,7 @@ namespace Frends.Community.LDAP.Services
 
         private static bool IsMemberOf(DirectoryEntry userEntry, DirectoryEntry groupEntry)
         {
-            return (bool)groupEntry.Invoke(LdapMethods.IsMember, new object[] { userEntry.Path.ToString() });
+            return (bool)groupEntry.Invoke(LdapMethods.IsMember,  userEntry.Path );
         }
 
         public DirectoryEntry SearchEntry(string name, string schemaClass)
@@ -290,7 +274,7 @@ namespace Frends.Community.LDAP.Services
 
         private Dictionary<string, object> GetEntryAttributes(object entry, IEnumerable<EntryAttribute> attributes)
         {
-            var dictionaryEntry = new Dictionary<string, Object>();
+            var dictionaryEntry = new Dictionary<string, object>();
 
             if (entry != null)
             {
@@ -326,7 +310,7 @@ namespace Frends.Community.LDAP.Services
                             dictionaryEntry.Add(attrName, Convert.ToInt32(attr.Value));
                             break;
                         case AttributeType.Boolean:
-                            dictionaryEntry.Add(attrName, Boolean.Parse(attr.Value));
+                            dictionaryEntry.Add(attrName, bool.Parse(attr.Value));
                             break;
                         case AttributeType.JSONArray:
                             dictionaryEntry.Add(attrName, Newtonsoft.Json.Linq.JToken.Parse(attr.Value).ToArray());
@@ -347,21 +331,21 @@ namespace Frends.Community.LDAP.Services
             {
                 try
                 {
-                    if (attribute.Value != null && !String.IsNullOrEmpty(attribute.Value.ToString()))
+                    if (attribute.Value != null && !string.IsNullOrEmpty(attribute.Value.ToString()))
                     {
                         entry.Properties[attribute.Key].Value = attribute.Value;
                     }
                     else
                     {
                         // attribuutin arvo oli tyhjä, seuraavaksi tyhjennös
-                        if (isUpdate == true)
+                        if (isUpdate)
                         { // tyhjennä arvo 
                             entry.Properties[attribute.Key].Clear();
                         }
                     }
                 }
                 catch (Exception e)
-                { throw new Exception("DirectoryEntry.Properties failed with key '" + attribute.Key + "'. Check that key is in schema and/or it was right. (it could be case sensitive). Exception: " + e.ToString()); }
+                { throw new Exception("DirectoryEntry.Properties failed with key '" + attribute.Key + "'. Check that key is in schema and/or it was right. (it could be case sensitive). Exception: " + e); }
             }
             return entry;
         }
@@ -377,7 +361,7 @@ namespace Frends.Community.LDAP.Services
             DirectoryEntry targetEntry = FindPath(_rootEntry, targetDn);
             foreach (string groupName in groups)
             {
-                DirectoryEntry groupEntry = null;
+                DirectoryEntry groupEntry;
                 try
                 {
                     groupEntry = SearchEntry(groupName, LdapClasses.Group);
@@ -396,7 +380,7 @@ namespace Frends.Community.LDAP.Services
                 {
                     if (IsMemberOf(targetEntry, groupEntry))
                     {
-                        groupEntry.Invoke("remove", new[] { targetEntry.Path.ToString() });
+                        groupEntry.Invoke("remove", targetEntry.Path);
                         SaveEntry(groupEntry, false);
                     }
                 }

@@ -51,15 +51,15 @@ namespace Frends.Community.LDAP.Models
         {
             // ContextOption does not include value None / 0, so we need to default to something
             // and remove it afterwards if it was not specified
-            ContextOptions contextOption = ContextOptions.SimpleBind;
-            bool sbNeeded = false;
+            var contextOption = ContextOptions.SimpleBind;
+            var sbNeeded = false;
             foreach (var contOpt in ContextOptionFlags)
             {
-                if (contOpt.ContextOptionFlag != ContextOption.SimpleBind && contOpt.Value == true)
+                if (contOpt.ContextOptionFlag != ContextOption.SimpleBind && contOpt.Value)
                 {
                     contextOption |= (ContextOptions)Enum.Parse(typeof(ContextOptions), contOpt.ContextOptionFlag.ToString());
                 }
-                else if (contOpt.ContextOptionFlag == ContextOption.SimpleBind && contOpt.Value == true)
+                else if (contOpt.ContextOptionFlag == ContextOption.SimpleBind && contOpt.Value)
                 {
                     sbNeeded = true;
                 }

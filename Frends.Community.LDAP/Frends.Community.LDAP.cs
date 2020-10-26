@@ -32,17 +32,17 @@ namespace Frends.Community.LDAP
             }
 
             // Create & return result list
-            var ret_outputs = new List<OutputSearchEntry>();
+            var retOutputs = new List<OutputSearchEntry>();
 
             foreach (var item in tmpSearchEntries)
             {
-                OutputSearchEntry output_class = new OutputSearchEntry
+                OutputSearchEntry outputClass = new OutputSearchEntry
                 {
                     SearchEntry = item
                 };
-                ret_outputs.Add(output_class);
+                retOutputs.Add(outputClass);
             }
-            return ret_outputs;
+            return retOutputs;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Frends.Community.LDAP
         public static List<OutputObjectEntry> AD_FetchObjects([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_FetchObjectProperties SearchParameters)
         {
 
-            var ret_outputs = new List<OutputObjectEntry>(); 
+            var retOutputs = new List<OutputObjectEntry>(); 
             List<DirectoryEntry> tmpObjectEntries;
 
             ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/"+SearchParameters.Path;
@@ -66,16 +66,18 @@ namespace Frends.Community.LDAP
 
             foreach (var item in tmpObjectEntries)
             {
-                OutputObjectEntry output_class = new OutputObjectEntry();
-                output_class.ObjectEntry = item;
-                ret_outputs.Add(output_class);
+                var outputClass = new OutputObjectEntry
+                {
+                    ObjectEntry = item
+                };
+                retOutputs.Add(outputClass);
             }
-            return ret_outputs;
+            return retOutputs;
         }
 
         /// <summary>
         /// Create a user to AD. The task AD_SetUserPassword is meant as a replacement
-        /// for setting the password in conjuction with AD user creation.
+        /// for setting the password in conjunction with AD user creation.
         /// </summary>
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
         /// <param name="adUser">The user record to be created</param>
@@ -146,17 +148,18 @@ namespace Frends.Community.LDAP
         /// <returns>operationSuccessful = true if operation is ok.</returns>
         public static Output AD_DeleteUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_DeleteUserProperties userProperties)
         {
-            var ret_output = new Output();
-            List<DirectoryEntry> tmpObjectEntries;
-            ret_output.OperationSuccessful = false;
+            var retOutput = new Output
+            {
+                OperationSuccessful = false
+            };
 
             ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + userProperties.Path;
 
-            string filter = "(&(objectClass=user)(cn=" + userProperties.Cn + "))";
+            var filter = "(&(objectClass=user)(cn=" + userProperties.Cn + "))";
 
             using (var ldap = new LdapService(ldapConnectionInfo))// @"(&(objectClass=user)(cn=MattiMeikalainen))
             {
-                tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
+                List<DirectoryEntry> tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
                 if (tmpObjectEntries.Count > 0)
                 {
                     ldap.DeleteAdUser(tmpObjectEntries[0]);
@@ -167,8 +170,8 @@ namespace Frends.Community.LDAP
                 }
             }
 
-            ret_output.OperationSuccessful = true;
-            return ret_output;
+            retOutput.OperationSuccessful = true;
+            return retOutput;
         }
 
         /// <summary>
@@ -260,16 +263,16 @@ namespace Frends.Community.LDAP
             var result = new PasswordOutput { OperationSuccessful = false, UserPrincipalName = null, LogString = null };
             PrincipalContext pContext = null;
 
-            string serverName = passwordParameters.AdServer.ToLower().Replace("ldap://", "").Replace("ldaps://", "");
-            string userPN = passwordParameters.UserPrincipalName;
+            var serverName = passwordParameters.AdServer.ToLower().Replace("ldap://", "").Replace("ldaps://", "");
+            var userPN = passwordParameters.UserPrincipalName;
 
             try
             {
                 result.LogString += "Attempting to connect to server.";
                 // Create context
                 pContext = new PrincipalContext(ContextType.Domain, serverName, passwordParameters.AdContainer, passwordParameters.GetContextType(), passwordParameters.Username, passwordParameters.Password);
-                result.LogString += "Context created and connection formed. Server: " + pContext.ConnectedServer.ToString() + " Container: " +
-                   pContext.Container.ToString() + " Context type: " + pContext.ContextType.ToString() + " UserName: " + pContext.UserName.ToString() + ";";
+                result.LogString += "Context created and connection formed. Server: " + pContext.ConnectedServer + " Container: " +
+                   pContext.Container + " Context type: " + pContext.ContextType + " UserName: " + pContext.UserName + ";";
 
                 // Fetch the principal object for the user
                 UserPrincipal user = UserPrincipal.FindByIdentity(pContext, IdentityType.UserPrincipalName, userPN);
@@ -280,7 +283,7 @@ namespace Frends.Community.LDAP
                 }
                 else
                 {
-                    result.LogString += "User found: " + user.DistinguishedName.ToString() + ";";
+                    result.LogString += "User found: " + user.DistinguishedName + ";";
 
                     // Set user password
                     user.SetPassword(passwordParameters.NewPassword);
@@ -301,8 +304,7 @@ namespace Frends.Community.LDAP
             }
             finally
             {
-                if (pContext != null)
-                    pContext.Dispose();
+                pContext?.Dispose();
             }
 
             return result;
