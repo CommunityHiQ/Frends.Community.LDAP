@@ -182,7 +182,7 @@ namespace Frends.Community.LDAP
         /// </summary>
         /// <param name="name">Propterty name</param>
         /// <returns>Property's first value or null if property not exists.</returns>
-        public string GetPropertyStringValue(String name)
+        public string GetPropertyStringValue(string name)
         {
             if (SearchEntry.Properties.Contains(name))
             {
@@ -208,11 +208,11 @@ namespace Frends.Community.LDAP
         {
             List<object> ret = new List<object>();
 
-            var object_type = ObjectEntry.Properties[attribute].Value;
+            var objectType = ObjectEntry.Properties[attribute].Value;
 
-            if (object_type is System.Object[]) // many objects found
+            if (objectType is object[]) // many objects found
             {
-                foreach (var item in (Object[])(ObjectEntry.Properties[attribute].Value))
+                foreach (var _ in (object[])ObjectEntry.Properties[attribute].Value)
                 {
                     ret.Add(ProcessLargeInteger(attribute));
                 }
@@ -233,32 +233,32 @@ namespace Frends.Community.LDAP
                 throw new ArgumentException("User attribute not found", attribute);
             }
 
-            var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-            var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            var highPart = (int)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            var lowPart = (int)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
 
             // compensate for IADsLargeInteger interface bug
             if (lowPart < 0)
             {
                 highPart += 1;
             }
-            var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
+            var recipientType = highPart * ((long)uint.MaxValue + 1) + lowPart;
             return recipientType;
         }
 
 
 
         // GetProperty returns collection even if there are one object match.
-        public object[] GetProperty(String attribute)// int32, string, ...
+        public object[] GetProperty(string attribute)// int32, string, ...
         {
-            var object_type = ObjectEntry.Properties[attribute].Value;
+            var objectType = ObjectEntry.Properties[attribute].Value;
 
-            if (object_type is System.Object[]) // many objects found
+            if (objectType is object[]) // many objects found
             {
-                return (Object[])ObjectEntry.Properties[attribute].Value;
+                return (object[])ObjectEntry.Properties[attribute].Value;
             }
             else // just one object found
             {
-                object[] ret = new object[] { ObjectEntry.Properties[attribute].Value };
+                var ret = new [] {ObjectEntry.Properties[attribute].Value};
                 return ret;
             }
         }
@@ -318,5 +318,19 @@ namespace Frends.Community.LDAP
         public DirectoryEntry ObjectEntryCopy { get; set; }
         public bool OperationSuccessful { get; set; }
 
+    }
+
+    /// <summary>
+    /// Result class.
+    /// Fields and their descriptions:
+    /// - OperationSuccessful: Tells if the requested operation was performed successfully.
+    /// - UserPrincipalName: The userPrincipalName of the affected user.
+    /// - LogString: Log of operation.
+    /// </summary>
+    public class PasswordOutput
+    {
+        public bool OperationSuccessful { get; set; }
+        public string UserPrincipalName { get; set; }
+        public string LogString { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Frends.Community.LDAP.Services;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 
 #pragma warning disable CS1591
 
@@ -31,17 +32,17 @@ namespace Frends.Community.LDAP
             }
 
             // Create & return result list
-            var ret_outputs = new List<OutputSearchEntry>();
+            var retOutputs = new List<OutputSearchEntry>();
 
             foreach (var item in tmpSearchEntries)
             {
-                OutputSearchEntry output_class = new OutputSearchEntry
+                OutputSearchEntry outputClass = new OutputSearchEntry
                 {
                     SearchEntry = item
                 };
-                ret_outputs.Add(output_class);
+                retOutputs.Add(outputClass);
             }
-            return ret_outputs;
+            return retOutputs;
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace Frends.Community.LDAP
         public static List<OutputObjectEntry> AD_FetchObjects([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_FetchObjectProperties SearchParameters)
         {
 
-            var ret_outputs = new List<OutputObjectEntry>(); 
+            var retOutputs = new List<OutputObjectEntry>(); 
             List<DirectoryEntry> tmpObjectEntries;
 
             ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/"+SearchParameters.Path;
@@ -65,15 +66,18 @@ namespace Frends.Community.LDAP
 
             foreach (var item in tmpObjectEntries)
             {
-                OutputObjectEntry output_class = new OutputObjectEntry();
-                output_class.ObjectEntry = item;
-                ret_outputs.Add(output_class);
+                var outputClass = new OutputObjectEntry
+                {
+                    ObjectEntry = item
+                };
+                retOutputs.Add(outputClass);
             }
-            return ret_outputs;
+            return retOutputs;
         }
 
         /// <summary>
-        /// Create a user to AD.
+        /// Create a user to AD. The task AD_SetUserPassword is meant as a replacement
+        /// for setting the password in conjunction with AD user creation.
         /// </summary>
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
         /// <param name="adUser">The user record to be created</param>
@@ -144,17 +148,18 @@ namespace Frends.Community.LDAP
         /// <returns>operationSuccessful = true if operation is ok.</returns>
         public static Output AD_DeleteUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_DeleteUserProperties userProperties)
         {
-            var ret_output = new Output();
-            List<DirectoryEntry> tmpObjectEntries;
-            ret_output.OperationSuccessful = false;
+            var retOutput = new Output
+            {
+                OperationSuccessful = false
+            };
 
             ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + userProperties.Path;
 
-            string filter = "(&(objectClass=user)(cn=" + userProperties.Cn + "))";
+            var filter = "(&(objectClass=user)(cn=" + userProperties.Cn + "))";
 
             using (var ldap = new LdapService(ldapConnectionInfo))// @"(&(objectClass=user)(cn=MattiMeikalainen))
             {
-                tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
+                List<DirectoryEntry> tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
                 if (tmpObjectEntries.Count > 0)
                 {
                     ldap.DeleteAdUser(tmpObjectEntries[0]);
@@ -165,8 +170,8 @@ namespace Frends.Community.LDAP
                 }
             }
 
-            ret_output.OperationSuccessful = true;
-            return ret_output;
+            retOutput.OperationSuccessful = true;
+            return retOutput;
         }
 
         /// <summary>
@@ -246,5 +251,63 @@ namespace Frends.Community.LDAP
             return result;
         }
 
+
+        /// <summary>
+        /// Sets password for user in AD. This task allows the use of other ways of binding to the server
+        /// than simple bind, which is the one that is used when setting the password in AD_CreateUser.
+        /// </summary>
+        /// <param name="passwordParameters">Input parameters and options</param>
+        /// <returns>Object { bool OperationSuccessful, string UserPrincipalName, string LogString }</returns>
+        public static PasswordOutput AD_SetUserPassword([PropertyTab] PasswordParameters passwordParameters)
+        {
+            var result = new PasswordOutput { OperationSuccessful = false, UserPrincipalName = null, LogString = null };
+            PrincipalContext pContext = null;
+
+            var serverName = passwordParameters.AdServer.ToLower().Replace("ldap://", "").Replace("ldaps://", "");
+            var userPN = passwordParameters.UserPrincipalName;
+
+            try
+            {
+                result.LogString += "Attempting to connect to server.";
+                // Create context
+                pContext = new PrincipalContext(ContextType.Domain, serverName, passwordParameters.AdContainer, passwordParameters.GetContextType(), passwordParameters.Username, passwordParameters.Password);
+                result.LogString += "Context created and connection formed. Server: " + pContext.ConnectedServer + " Container: " +
+                   pContext.Container + " Context type: " + pContext.ContextType + " UserName: " + pContext.UserName + ";";
+
+                // Fetch the principal object for the user
+                UserPrincipal user = UserPrincipal.FindByIdentity(pContext, IdentityType.UserPrincipalName, userPN);
+                if (user == null)
+                {
+                    result.LogString += "User " + userPN + " not found.";
+                    throw new System.ArgumentNullException();
+                }
+                else
+                {
+                    result.LogString += "User found: " + user.DistinguishedName + ";";
+
+                    // Set user password
+                    user.SetPassword(passwordParameters.NewPassword);
+                    result.LogString += "Password set;";
+
+                    // Save the changes to the store
+                    user.Save();
+                    result.LogString += "User saved;";
+
+                    // Finalize result
+                    result.OperationSuccessful = true;
+                    result.UserPrincipalName = passwordParameters.UserPrincipalName;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw new System.Exception("Password could not be set. Log: " + result.LogString, ex);
+            }
+            finally
+            {
+                pContext?.Dispose();
+            }
+
+            return result;
+        }
     }
 }

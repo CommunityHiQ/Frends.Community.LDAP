@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Frends.Community.LDAP.Services
 {
     class SetPassword
     {
-        static internal void SetUserPassword(string ldapUri, string OUPath, string username, string loginPassword, string CNValue, string newPassword) 
+        internal static void SetUserPassword(string ldapUri, string OUPath, string username, string loginPassword, string CNValue, string newPassword) 
         {
             try
             {
@@ -19,6 +15,12 @@ namespace Frends.Community.LDAP.Services
                             ContextOptions.SimpleBind, username, loginPassword))
                 {
                     var user = UserPrincipal.FindByIdentity(oPrincipalContext, CNValue);
+
+                    if (user == null)
+                    {
+                        throw new Exception("Could not find user: " + CNValue +". ");
+
+                    }
                     user.SetPassword(newPassword);
                 }
             }

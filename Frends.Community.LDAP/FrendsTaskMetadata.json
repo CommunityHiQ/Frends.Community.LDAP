@@ -26,6 +26,9 @@
     },
     {
       "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_MoveObject"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_SetUserPassword"
     }
   ]
 }
