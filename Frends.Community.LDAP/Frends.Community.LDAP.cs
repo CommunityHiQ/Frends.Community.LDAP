@@ -21,22 +21,28 @@ namespace Frends.Community.LDAP
         /// <returns>LdapResult class: the Collection of the SearchEntry classes.</returns>
         public static List<OutputSearchEntry> AD_SearchObjects([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] AD_SearchObjectProperties SearchParameters)
         {
-            ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + SearchParameters.Path;
 
-            List<SearchResult> tmpSearchEntries;
+            var ldapQueryInfo = new LdapConnectionInfo
+            {
+                LdapUri = ldapConnectionInfo.LdapUri + "/" + SearchParameters.Path,
+                Username = ldapConnectionInfo.Username,
+                Password = ldapConnectionInfo.Password
+            };
+
+            List<SearchResult> tmpObjectEntries;
 
             // Search objects
-            using (var ldap = new LdapService(ldapConnectionInfo))
+            using (var ldap = new LdapService(ldapQueryInfo))
             {
-                tmpSearchEntries = ldap.SearchObjectsByFilterSpecifyProperties(SearchParameters.Filter, SearchParameters.PropertiesToLoad, SearchParameters.PageSize);
+                 tmpObjectEntries = ldap.SearchObjectsByFilterSpecifyProperties(SearchParameters.Filter, SearchParameters.PropertiesToLoad, SearchParameters.PageSize);
             }
 
             // Create & return result list
             var retOutputs = new List<OutputSearchEntry>();
 
-            foreach (var item in tmpSearchEntries)
+            foreach (var item in tmpObjectEntries)
             {
-                OutputSearchEntry outputClass = new OutputSearchEntry
+                var outputClass = new OutputSearchEntry
                 {
                     SearchEntry = item
                 };
