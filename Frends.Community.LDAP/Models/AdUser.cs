@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 #pragma warning disable CS1591 
 
@@ -21,7 +17,7 @@ namespace Frends.Community.LDAP.Models
         [DefaultValue("CN=Users,DC=FRENDSTest01,DC=net")]
         public string Path { get; set; }
 
-        public CreateADuser() : base()
+        public CreateADuser()
         {
             ADFlags = new ADFlag[0];
         }
@@ -44,7 +40,7 @@ namespace Frends.Community.LDAP.Models
         [DisplayFormat(DataFormatString = "Text")]
         public string DN { get; set; }
 
-        public UpdateADuser() : base()
+        public UpdateADuser()
         {
             ADFlags = new ADFlag[0];
         }
@@ -58,9 +54,5 @@ namespace Frends.Community.LDAP.Models
             return "";
             //return CN+","+OU;
         }
-
     }
-
-
-
 }

@@ -1,6 +1,9 @@
 ﻿{
   "Tasks": [
     {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_SearchObjects"
+    },
+    {
       "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_FetchObjects"
     },
     {
@@ -14,6 +17,18 @@
     },
     {
       "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_RemoveFromGroups"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_DeleteUser"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_RenameUser"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_MoveObject"
+    },
+    {
+      "TaskMethod": "Frends.Community.LDAP.LdapActiveDirectoryOperations.AD_SetUserPassword"
     }
   ]
 }

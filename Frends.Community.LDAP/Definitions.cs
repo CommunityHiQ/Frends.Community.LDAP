@@ -8,6 +8,42 @@ using System.DirectoryServices;
 
 namespace Frends.Community.LDAP
 {
+
+    /// <summary>
+    /// Properties for AD's object search
+    /// </summary>
+    public class AD_SearchObjectProperties
+    {
+        /// <summary>
+        /// Defines path which used to search object(s)
+        /// </summary>
+        [DisplayFormat(DataFormatString = "Text")]
+        [DefaultValue("CN=Users,DC=FRENDSTest01,DC=net")]
+        public string Path { get; set; }
+
+        /// <summary>
+        /// Defines filter which is used to search object(s)
+        /// </summary>
+        [DisplayFormat(DataFormatString = "Text")]
+        [DefaultValue("(&(objectClass=user)(sAMAccountName=TestAdmin))")]
+        public string Filter { set; get; }
+
+        /// <summary>
+        /// Defines properties to load. Empty list fetch all properties.
+        /// adspath is returned automatically.
+        /// </summary>
+        public string[] PropertiesToLoad { get; set; }
+
+        /// <summary>
+        /// Defines PageSize when fetch big amounts of data from server. 
+        /// 0 - not used. Server limits returned objects count.
+        /// 1000 - a safe first value. Client fetched 1000 objects per internal call. 
+        /// </summary>
+        [DefaultValue(0)]
+        public int PageSize { get; set; }
+    }
+
+
     /// <summary>
     /// Properties for AD's object search
     /// </summary>
@@ -25,7 +61,7 @@ namespace Frends.Community.LDAP
         /// </summary>
         [DisplayFormat(DataFormatString = "Text")]
         [DefaultValue("(&(objectClass=user)(sAMAccountName=TestAdmin))")]
-        public string filter { set; get; }
+        public string Filter { set; get; }
     }
 
     /// <summary>
@@ -36,12 +72,12 @@ namespace Frends.Community.LDAP
         /// <summary>
         ///  Defines if password should be set at create time.
         /// </summary>
-        public bool setPassword { set; get; }
+        public bool SetPassword { set; get; }
         /// <summary>
         /// AD Create user: Defines the new password if needed.
         /// </summary>
         [PasswordPropertyText(true)]
-        public string newPassword { set; get; }
+        public string NewPassword { set; get; }
     }
 
     /// <summary>
@@ -52,7 +88,7 @@ namespace Frends.Community.LDAP
         /// <summary>
         ///  To which groups the user should be added(For example. CN=Guests,CN=Builtin).
         /// </summary>
-        public string[] groups { set; get; }
+        public string[] Groups { set; get; }
     }
 
     /// <summary>
@@ -62,7 +98,7 @@ namespace Frends.Community.LDAP
     {
         [DefaultValue("CN=UserName,CN=Users,DC=FRENDSTest01,DC=net")]
         [DisplayFormat(DataFormatString = "Text")]
-        public string dn { set; get; }
+        public string Dn { set; get; }
     }
 
     /// <summary>
@@ -71,9 +107,45 @@ namespace Frends.Community.LDAP
     public class AD_DeleteUserProperties
     {
         /// <summary>
-        ///  cn name of the user
+        /// Path to remove from
         /// </summary>
-        public string user { set; get; }
+        [DisplayFormat(DataFormatString = "Text")]
+        [DefaultValue("OU=Users,DC=FRENDSTest01,DC=net")]
+        public string Path { get; set; }
+
+        /// <summary>
+        ///  Common name of the user
+        /// </summary>
+        [DefaultValue("UserName")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Cn { set; get; }
+    }
+
+    /// <summary>
+    /// Properties for AD rename user
+    /// </summary>
+    public class AD_RenameUserProperties
+    {
+        /// <summary>
+        /// Path to the user to be renamed
+        /// </summary>
+        [DisplayFormat(DataFormatString = "Text")]
+        [DefaultValue("OU=Users,DC=FRENDSTest01,DC=net")]
+        public string Path { get; set; }
+
+        /// <summary>
+        ///  Current common name of the user
+        /// </summary>
+        [DefaultValue("UserName")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string Cn { set; get; }
+
+        /// <summary>
+        ///  New name for the user
+        /// </summary>
+        [DefaultValue("NewUserName")]
+        [DisplayFormat(DataFormatString = "Text")]
+        public string NewCn { set; get; }
     }
 
     public class AD_RemoveFromGroupsTargetProperties
@@ -95,6 +167,35 @@ namespace Frends.Community.LDAP
     }
 
     /// <summary>
+    /// Result class for object search.
+    /// Fields and their descriptions:
+    /// - SearchEntry is search's result data(SearchResult)
+    /// Methods:
+    /// - GetPropertyStringValue(name) : returns property's first value
+    /// </summary>
+    public class OutputSearchEntry
+    {
+        public SearchResult SearchEntry { get; set; }
+
+        /// <summary>
+        /// Returns property's first value as string or null.
+        /// </summary>
+        /// <param name="name">Propterty name</param>
+        /// <returns>Property's first value or null if property not exists.</returns>
+        public string GetPropertyStringValue(string name)
+        {
+            if (SearchEntry.Properties.Contains(name))
+            {
+                if (SearchEntry.Properties[name].Count > 0)
+                {
+                    return SearchEntry.Properties[name][0].ToString();
+                }
+            }
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Result class.
     /// Fields and their descriptions:
     /// - ObjectEntry is object's entry data(DirectoryEntry)
@@ -103,48 +204,79 @@ namespace Frends.Community.LDAP
     {
         public DirectoryEntry ObjectEntry { get; set; }
 
-        public object GetPropertyLargeInteger(string Attribute)// int64
+        public object GetPropertyLargeInteger(string attribute)// int64
         {
             List<object> ret = new List<object>();
-            var object_type = ObjectEntry.Properties[Attribute].Value;
 
-            if (object_type is System.Object[]) // many objects found
+            var objectType = ObjectEntry.Properties[attribute].Value;
+
+            if (objectType is object[]) // many objects found
             {
-                foreach (var item in (Object[])(ObjectEntry.Properties[Attribute].Value))
+                foreach (var _ in (object[])ObjectEntry.Properties[attribute].Value)
                 {
-                    var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
-                    var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                    var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                    var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
-                    ret.Add(recipientType);
+                    ret.Add(ProcessLargeInteger(attribute));
                 }
                 return ret;
             }
             else // just one object found
             {
-                var adsLargeInteger = ObjectEntry.Properties[Attribute].Value;
-                var highPart = (Int32)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                var lowPart = (Int32)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
-                var recipientType = highPart * ((Int64)UInt32.MaxValue + 1) + lowPart;
-                ret.Add(recipientType);
-                return recipientType;
+                return ProcessLargeInteger(attribute);
             }
         }
+            
+        private long ProcessLargeInteger(string attribute)
+        {
+            var adsLargeInteger = ObjectEntry.Properties[attribute].Value;
+
+            if(adsLargeInteger == null)
+            {
+                throw new ArgumentException("User attribute not found", attribute);
+            }
+
+            var highPart = (int)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+            var lowPart = (int)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
+
+            // compensate for IADsLargeInteger interface bug
+            if (lowPart < 0)
+            {
+                highPart += 1;
+            }
+            var recipientType = highPart * ((long)uint.MaxValue + 1) + lowPart;
+            return recipientType;
+        }
+
+
 
         // GetProperty returns collection even if there are one object match.
-        public object[] GetProperty(String Attribute)// int32, string, ...
+        public object[] GetProperty(string attribute)// int32, string, ...
         {
-            var object_type = ObjectEntry.Properties[Attribute].Value;
+            var objectType = ObjectEntry.Properties[attribute].Value;
 
-            if (object_type is System.Object[]) // many objects found
+            if (objectType is object[]) // many objects found
             {
-                return (Object[])ObjectEntry.Properties[Attribute].Value;
+                return (object[])ObjectEntry.Properties[attribute].Value;
             }
             else // just one object found
             {
-                object[] ret = new object[] { ObjectEntry.Properties[Attribute].Value };
+                var ret = new [] {ObjectEntry.Properties[attribute].Value};
                 return ret;
             }
+        }
+
+        public DateTime GetAccountExpiresDateTime()
+        {
+            object largeIntObject = GetPropertyLargeInteger("accountExpires");
+
+            if ((long)largeIntObject > DateTime.MaxValue.Ticks)//0x7FFFFFFFFFFFFFFF = account never expires -> doesn't fit in DateTime
+            {
+                return DateTime.MaxValue; //return DateTime.MaxValue instead
+            }
+            else
+            {
+                DateTime datetime = DateTime.FromFileTime(((long)largeIntObject));
+                return datetime;
+            }
+
         }
     }
 
@@ -156,12 +288,12 @@ namespace Frends.Community.LDAP
     /// </summary>
     public class OutputUser
     {
-        public bool operationSuccessful { get; set; }
-        public DirectoryEntry user { get; set; }
+        public bool OperationSuccessful { get; set; }
+        public DirectoryEntry User { get; set; }
 
         public object GetUserProperty(string Attribute)
         {
-            return user.Properties[Attribute].Value.ToString();
+            return User.Properties[Attribute].Value.ToString();
         }
     }
 
@@ -171,6 +303,34 @@ namespace Frends.Community.LDAP
     /// </summary>
     public class Output
     {
-        public bool operationSuccessful { get; set; }
+        public bool OperationSuccessful { get; set; }
+    }
+
+
+    /// <summary>
+    /// Result class.
+    /// - ObjectEntry is copy of moved object entry data.
+    /// - operationSuccessful: Tells if the requested operation was performed successfully.
+    /// </summary>
+    public class MoveAdObjectResult
+    {
+
+        public DirectoryEntry ObjectEntryCopy { get; set; }
+        public bool OperationSuccessful { get; set; }
+
+    }
+
+    /// <summary>
+    /// Result class.
+    /// Fields and their descriptions:
+    /// - OperationSuccessful: Tells if the requested operation was performed successfully.
+    /// - UserPrincipalName: The userPrincipalName of the affected user.
+    /// - LogString: Log of operation.
+    /// </summary>
+    public class PasswordOutput
+    {
+        public bool OperationSuccessful { get; set; }
+        public string UserPrincipalName { get; set; }
+        public string LogString { get; set; }
     }
 }
