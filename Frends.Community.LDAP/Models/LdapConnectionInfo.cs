@@ -24,6 +24,10 @@ namespace Frends.Community.LDAP.Models
         internal AuthenticationTypes GetAuthenticationType()
         {
             var authenticationType = AuthenticationTypes.None;
+            if (AuthenticationFlags == null)
+            {
+                return authenticationType;
+            }
             foreach (var authT in AuthenticationFlags)
             {
                 if (authT.AuthenticationFlag != Authentication.None && authT.Value == true)
