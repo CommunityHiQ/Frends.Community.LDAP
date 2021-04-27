@@ -169,6 +169,27 @@ namespace Frends.Community.LDAP.Tests
             Assert.AreEqual(result.OperationSuccessful, true);
         }
 
+        /// <summary>
+        /// Test for AD_SearchOjects: fetch a property and a not loaded property.
+        /// </summary>
+        [Test, Order(7)]
+        public void ShouldSearchUser()
+        {
+            var prop = new AD_SearchObjectProperties()
+            {
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path,
+                PropertiesToLoad = new[] { "cn", "invalidProperty" }
+            };
+
+            var ret = LdapActiveDirectoryOperations.AD_SearchObjects(_connection, prop);
+
+            var cnValue = ret[0].GetPropertyStringValue("cn");
+            var nullValue = ret[0].GetPropertyStringValue("name"); // should return null
+            Assert.AreEqual(cnValue, _user);
+            Assert.AreEqual(nullValue, null);
+        }
+
         [Test, Order(8)]
         public void ShouldRemoveUserFromGroup()
         {
@@ -188,27 +209,7 @@ namespace Frends.Community.LDAP.Tests
             Assert.AreEqual(result.OperationSuccessful, true);
         }
 
-        /// <summary>
-        /// Test for AD_SearchOjects: fetch a property and a not loaded property.
-        /// </summary>
-        [Test, Order(10)]
-        [Ignore("Test won't work, should be fixed. TODO")]
-        public void ShouldSearchUser()
-        {
-            var prop = new AD_SearchObjectProperties()
-            {
-                Filter = "(&(objectClass=user)(cn=" + _user + "))",
-                Path = _path,
-                PropertiesToLoad = new [] { "cn", "invalidProperty" }
-            };
-            
-            var ret = LdapActiveDirectoryOperations.AD_SearchObjects(_connection, prop);
 
-            var cnValue = ret[0].GetPropertyStringValue("cn");
-            var nullValue = ret[0].GetPropertyStringValue("name"); // should return null
-            Assert.AreEqual(cnValue, _user);
-            Assert.AreEqual(nullValue, null);
-        }
 
         /// <summary>
         /// Test for AD_SearchOjects: fetch a property and a not loaded property.
