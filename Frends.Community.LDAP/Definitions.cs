@@ -276,8 +276,31 @@ namespace Frends.Community.LDAP
                 DateTime datetime = DateTime.FromFileTime(((long)largeIntObject));
                 return datetime;
             }
-
         }
+
+        public DateTime GetPropertyDateTime(string attribute)
+        {
+
+            try
+            {
+                object largeIntObject = GetPropertyLargeInteger((string)attribute);
+
+                if ((long)largeIntObject > DateTime.MaxValue.Ticks)
+                {
+                    return DateTime.MaxValue;
+                }
+                else
+                {
+                    DateTime datetime = DateTime.FromFileTime((long)largeIntObject);
+                    return datetime;
+                }
+
+            } catch (Exception ex)
+            {
+                throw new ArgumentException("Only numeric values can be fetch.", ex);
+            }
+        }
+
     }
 
     /// <summary>

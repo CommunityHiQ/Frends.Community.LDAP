@@ -145,9 +145,23 @@ namespace Frends.Community.LDAP.Tests
             Assert.AreEqual(expectedDateTime, result);
         }
 
-
-
         [Test, Order(6)]
+        public void ShouldGetUserLastLogonDateTime()
+        {
+            var e = new AD_FetchObjectProperties()
+            {
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path
+            };
+
+            var expectedDateTime = DateTime.MinValue;
+
+            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e);
+            DateTime result = u[0].GetPropertyDateTime("lastLogon");
+            Assert.AreEqual(expectedDateTime.GetType(), result.GetType());
+        }
+
+        [Test, Order(7)]
         public void ShouldUpdateUser()
         {
             var user = new UpdateADuser { DN = _dn };
@@ -159,7 +173,7 @@ namespace Frends.Community.LDAP.Tests
             Assert.AreEqual(result.OperationSuccessful, true);
         }
 
-        [Test, Order(7)]
+        [Test, Order(8)]
         public void ShouldAddGroups()
         {
             var u = new AD_AddGroupsUserProperties { Dn = _dn };
@@ -172,7 +186,7 @@ namespace Frends.Community.LDAP.Tests
         /// <summary>
         /// Test for AD_SearchOjects: fetch a property and a not loaded property.
         /// </summary>
-        [Test, Order(7)]
+        [Test, Order(8)]
         public void ShouldSearchUser()
         {
             var prop = new AD_SearchObjectProperties()
@@ -190,7 +204,7 @@ namespace Frends.Community.LDAP.Tests
             Assert.AreEqual(nullValue, null);
         }
 
-        [Test, Order(8)]
+        [Test, Order(9)]
         public void ShouldRemoveUserFromGroup()
         {
             var u = new AD_RemoveFromGroupsTargetProperties { Dn = _dn };
@@ -201,7 +215,7 @@ namespace Frends.Community.LDAP.Tests
             Assert.IsTrue(result.OperationSuccessful);
         }
 
-        [Test, Order(9)]
+        [Test, Order(10)]
         public void ShouldDeleteUser()
         {
             var e = new AD_DeleteUserProperties { Cn = _user, Path = _path };
@@ -214,7 +228,7 @@ namespace Frends.Community.LDAP.Tests
         /// <summary>
         /// Test for AD_SearchOjects: fetch a property and a not loaded property.
         /// </summary>
-        [Test, Order(11)]
+        [Test, Order(12)]
         [Ignore("Test is not implemented. TODO")]
         public void ShouldMoveUser()
         {
@@ -234,7 +248,7 @@ namespace Frends.Community.LDAP.Tests
         /// <summary>
         ///  Test for AD_SetUserPassword: Set a user's password
         /// </summary>
-        [Test, Order(11)]
+        [Test, Order(12)]
         [Ignore("Test is not working on build server. TODO")]
 
         public void ShouldSetPassword()

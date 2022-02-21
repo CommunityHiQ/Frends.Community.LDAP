@@ -63,6 +63,8 @@ To fetch result use syntax:
 
 #result[0].GetAccountExpiresDateTime() - Returns a DateTime value for AD accountExpires attribute. If accountExpires=0x7FFFFFFFFFFFFFFF, DateTime.MaxValue is returned.
 
+#result[0].GetPropertyDateTime() - Return a DateTime value for AD attribute that is in numeric form. If attribute.Value=0x7FFFFFFFFFFFFFFF, DateTime.MaxValue is returned.
+
 #result can be looped by loop element, also.
 
 ## AD_SearchObjects
