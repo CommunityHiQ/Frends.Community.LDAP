@@ -10,26 +10,27 @@ namespace Frends.Community.LDAP
 {
 
     /// <summary>
-    /// Properties for AD's object search
+    /// Properties for AD's object search.
     /// </summary>
     public class AD_SearchObjectProperties
     {
         /// <summary>
-        /// Defines path which used to search object(s)
+        /// Defines path which used to search object(s).
         /// </summary>
         [DisplayFormat(DataFormatString = "Text")]
         [DefaultValue("CN=Users,DC=FRENDSTest01,DC=net")]
         public string Path { get; set; }
 
         /// <summary>
-        /// Defines filter which is used to search object(s)
+        /// Defines filter which is used to search object(s).
         /// </summary>
         [DisplayFormat(DataFormatString = "Text")]
         [DefaultValue("(&(objectClass=user)(sAMAccountName=TestAdmin))")]
         public string Filter { set; get; }
 
         /// <summary>
-        /// Defines properties to load. Empty list fetch all properties.
+        /// Defines properties to load.
+        /// Empty list fetch all properties.
         /// adspath is returned automatically.
         /// </summary>
         public string[] PropertiesToLoad { get; set; }
@@ -45,19 +46,19 @@ namespace Frends.Community.LDAP
 
 
     /// <summary>
-    /// Properties for AD's object search
+    /// Properties for AD's object search.
     /// </summary>
     public class AD_FetchObjectProperties
     {
         /// <summary>
-        /// Defines path which used to search object(s)
+        /// Defines path which used to search object(s).
         /// </summary>
         [DisplayFormat(DataFormatString = "Text")]
         [DefaultValue("CN=Users,DC=FRENDSTest01,DC=net")]
         public string Path { get; set; }
 
         /// <summary>
-        /// Defines filter which is used to search object(s)
+        /// Defines filter which is used to search object(s).
         /// </summary>
         [DisplayFormat(DataFormatString = "Text")]
         [DefaultValue("(&(objectClass=user)(sAMAccountName=TestAdmin))")]
@@ -65,7 +66,7 @@ namespace Frends.Community.LDAP
     }
 
     /// <summary>
-    /// Properties for create user
+    /// Properties for create user.
     /// </summary>
     public class AD_CreateUserProperties
     {
@@ -81,18 +82,18 @@ namespace Frends.Community.LDAP
     }
 
     /// <summary>
-    /// Properties for AD groups
+    /// Properties for AD groups.
     /// </summary>
     public class AD_AddGroupsProperties
     {
         /// <summary>
-        ///  To which groups the user should be added(For example. CN=Guests,CN=Builtin).
+        /// To which groups the user should be added(For example. CN=Guests,CN=Builtin).
         /// </summary>
         public string[] Groups { set; get; }
     }
 
     /// <summary>
-    ///  User to be added into groups
+    ///  User to be added into groups.
     /// </summary>
     public class AD_AddGroupsUserProperties
     {
@@ -102,19 +103,19 @@ namespace Frends.Community.LDAP
     }
 
     /// <summary>
-    /// Properties for AD delete user
+    /// Properties for AD delete user.
     /// </summary>
     public class AD_DeleteUserProperties
     {
         /// <summary>
-        /// Path to remove from
+        /// Path to remove from.
         /// </summary>
         [DisplayFormat(DataFormatString = "Text")]
         [DefaultValue("OU=Users,DC=FRENDSTest01,DC=net")]
         public string Path { get; set; }
 
         /// <summary>
-        ///  Common name of the user
+        /// Common name of the user.
         /// </summary>
         [DefaultValue("UserName")]
         [DisplayFormat(DataFormatString = "Text")]
@@ -122,26 +123,26 @@ namespace Frends.Community.LDAP
     }
 
     /// <summary>
-    /// Properties for AD rename user
+    /// Properties for AD rename user.
     /// </summary>
     public class AD_RenameUserProperties
     {
         /// <summary>
-        /// Path to the user to be renamed
+        /// Path to the user to be renamed.
         /// </summary>
         [DisplayFormat(DataFormatString = "Text")]
         [DefaultValue("OU=Users,DC=FRENDSTest01,DC=net")]
         public string Path { get; set; }
 
         /// <summary>
-        ///  Current common name of the user
+        /// Current common name of the user.
         /// </summary>
         [DefaultValue("UserName")]
         [DisplayFormat(DataFormatString = "Text")]
         public string Cn { set; get; }
 
         /// <summary>
-        ///  New name for the user
+        /// New name for the user.
         /// </summary>
         [DefaultValue("NewUserName")]
         [DisplayFormat(DataFormatString = "Text")]
@@ -151,7 +152,7 @@ namespace Frends.Community.LDAP
     public class AD_RemoveFromGroupsTargetProperties
     {
         /// <summary>
-        /// Distinguished name of the object to remove from groups
+        /// Distinguished name of the object to remove from groups.
         /// </summary>
         [DefaultValue("CN=UserName,CN=Users,DC=FRENDSTest01,DC=net")]
         [DisplayFormat(DataFormatString = "Text")]
@@ -171,7 +172,7 @@ namespace Frends.Community.LDAP
     /// Fields and their descriptions:
     /// - SearchEntry is search's result data(SearchResult)
     /// Methods:
-    /// - GetPropertyStringValue(name) : returns property's first value
+    /// - GetPropertyStringValue(name) : returns property's first value.
     /// </summary>
     public class OutputSearchEntry
     {
@@ -186,10 +187,7 @@ namespace Frends.Community.LDAP
         {
             if (SearchEntry.Properties.Contains(name))
             {
-                if (SearchEntry.Properties[name].Count > 0)
-                {
-                    return SearchEntry.Properties[name][0].ToString();
-                }
+                if (SearchEntry.Properties[name].Count > 0) return SearchEntry.Properties[name][0].ToString();
             }
             return null;
         }
@@ -204,80 +202,80 @@ namespace Frends.Community.LDAP
     {
         public DirectoryEntry ObjectEntry { get; set; }
 
-        public object GetPropertyLargeInteger(string attribute)// int64
+        // Int64.
+        public object GetPropertyLargeInteger(string attribute)
         {
             List<object> ret = new List<object>();
 
             var objectType = ObjectEntry.Properties[attribute].Value;
 
-            if (objectType is object[]) // many objects found
+            // Many objects found.
+            if (objectType is object[])
             {
-                foreach (var _ in (object[])ObjectEntry.Properties[attribute].Value)
-                {
-                    ret.Add(ProcessLargeInteger(attribute));
-                }
+                foreach (var _ in (object[])ObjectEntry.Properties[attribute].Value) ret.Add(ProcessLargeInteger(attribute));
                 return ret;
             }
-            else // just one object found
-            {
-                return ProcessLargeInteger(attribute);
-            }
+
+            // Just one object found.
+            else return ProcessLargeInteger(attribute);
         }
             
         private long ProcessLargeInteger(string attribute)
         {
             var adsLargeInteger = ObjectEntry.Properties[attribute].Value;
 
-            if(adsLargeInteger == null)
-            {
-                throw new ArgumentException("User attribute not found", attribute);
-            }
+            if (adsLargeInteger == null) throw new ArgumentException("User attribute not found", attribute);
 
             var highPart = (int)adsLargeInteger.GetType().InvokeMember("HighPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
             var lowPart = (int)adsLargeInteger.GetType().InvokeMember("LowPart", System.Reflection.BindingFlags.GetProperty, null, adsLargeInteger, null);
 
-            // compensate for IADsLargeInteger interface bug
-            if (lowPart < 0)
-            {
-                highPart += 1;
-            }
-            var recipientType = highPart * ((long)uint.MaxValue + 1) + lowPart;
-            return recipientType;
+            // Compensate for IADsLargeInteger interface bug.
+            if (lowPart < 0) highPart += 1;
+            return highPart * ((long)uint.MaxValue + 1) + lowPart;
         }
 
 
 
         // GetProperty returns collection even if there are one object match.
-        public object[] GetProperty(string attribute)// int32, string, ...
+        // Int32, string, ...
+        public object[] GetProperty(string attribute)
         {
             var objectType = ObjectEntry.Properties[attribute].Value;
 
-            if (objectType is object[]) // many objects found
-            {
-                return (object[])ObjectEntry.Properties[attribute].Value;
-            }
-            else // just one object found
-            {
-                var ret = new [] {ObjectEntry.Properties[attribute].Value};
-                return ret;
-            }
+            // Many objects found.
+            if (objectType is object[]) return (object[])ObjectEntry.Properties[attribute].Value;
+
+            // Just one object found.
+            else return new [] {ObjectEntry.Properties[attribute].Value};
         }
 
         public DateTime GetAccountExpiresDateTime()
         {
-            object largeIntObject = GetPropertyLargeInteger("accountExpires");
+            var largeIntObject = GetPropertyLargeInteger("accountExpires");
 
-            if ((long)largeIntObject > DateTime.MaxValue.Ticks)//0x7FFFFFFFFFFFFFFF = account never expires -> doesn't fit in DateTime
-            {
-                return DateTime.MaxValue; //return DateTime.MaxValue instead
-            }
-            else
-            {
-                DateTime datetime = DateTime.FromFileTime(((long)largeIntObject));
-                return datetime;
-            }
-
+            // 0x7FFFFFFFFFFFFFFF = account never expires -> doesn't fit in DateTime.
+            // Return DateTime.MaxValue instead.
+            if ((long)largeIntObject > DateTime.MaxValue.Ticks) return DateTime.MaxValue;
+            else return DateTime.FromFileTime(((long)largeIntObject));
         }
+
+        public DateTime GetPropertyDateTime(string attribute)
+        {
+
+            try
+            {
+                var largeIntObject = GetPropertyLargeInteger((string)attribute);
+
+                if ((long)largeIntObject > DateTime.MaxValue.Ticks) return DateTime.MaxValue;
+                else return DateTime.FromFileTime((long)largeIntObject);
+
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Only numeric values can be fetch.", ex);
+            }
+        }
+
     }
 
     /// <summary>

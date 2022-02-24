@@ -63,6 +63,8 @@ To fetch result use syntax:
 
 #result[0].GetAccountExpiresDateTime() - Returns a DateTime value for AD accountExpires attribute. If accountExpires=0x7FFFFFFFFFFFFFFF, DateTime.MaxValue is returned.
 
+#result[0].GetPropertyDateTime() - Return a DateTime value for AD attribute that is in numeric form. If attribute.Value=0x7FFFFFFFFFFFFFFF, DateTime.MaxValue is returned.
+
 #result can be looped by loop element, also.
 
 ## AD_SearchObjects
@@ -361,3 +363,4 @@ NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 | 3.6.1   | Added AD_MoveObject |
 | 3.7.0   | New, separate task for setting AD user password |
 | 3.8.0   | Fixed ever increasing search parameters bug. |
+| 3.8.1   | Added GetPropertyDateTime to fetch AD user attributes in DateTime form |

@@ -38,8 +38,10 @@ namespace Frends.Community.LDAP.Tests
                 AdContainer = "DC=FRENDSTest01",
                 Username = Environment.GetEnvironmentVariable("HiQAzureADTestUser", EnvironmentVariableTarget.User),
                 Password = Environment.GetEnvironmentVariable("HiQAzureADTestPassword", EnvironmentVariableTarget.User),
+
                 // UserPrincipalName not confirmed to exist in test AD - TO DO!
                 UserPrincipalName = "Matti.Meikalainen@testi.fi",
+
                 // HiQAzureADTestUserNewPassword has not yet been set - TO DO!
                 NewPassword = Environment.GetEnvironmentVariable("HiQAzureADTestUserNewPassword", EnvironmentVariableTarget.User),
                 ContextOptionFlags = new []
@@ -64,7 +66,8 @@ namespace Frends.Community.LDAP.Tests
             user.OtherAttributes = attributes.ToArray();
 
             var flags = new List<ADFlag>
-            { new ADFlag {FlagType = ADFlagType.ADS_UF_ACCOUNTDISABLE, Value = false},
+            {   
+                new ADFlag {FlagType = ADFlagType.ADS_UF_ACCOUNTDISABLE, Value = false},
                 new ADFlag {FlagType = ADFlagType.ADS_UF_NORMAL_ACCOUNT, Value = true}
             };
             user.ADFlags = flags.ToArray();
@@ -103,10 +106,11 @@ namespace Frends.Community.LDAP.Tests
                 Path = _path
             };
 
-            //Assume the created test user has a default value of: accountExpires = 0x7FFFFFFFFFFFFFFF = 9223372036854775807
+            // Assume the created test user has a default value of: accountExpires = 0x7FFFFFFFFFFFFFFF = 9223372036854775807.
             const long largeInt = 9223372036854775807;
 
-            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e); //user
+            // User.
+            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e);
             var result = (long)u[0].GetPropertyLargeInteger("accountExpires");
             Assert.AreEqual(largeInt, result);
         }
@@ -122,7 +126,8 @@ namespace Frends.Community.LDAP.Tests
                 Path = _path
             };
 
-            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e); //user
+            // User.
+            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e);
             Assert.Throws<ArgumentException>(() => u[0].GetPropertyLargeInteger("fooBar"));
         }
 
@@ -137,21 +142,37 @@ namespace Frends.Community.LDAP.Tests
                 Path = _path
             };
 
-            //User accountExpires = 0x7FFFFFFFFFFFFFFF -> DateTime should return DateTime.MaxValue
+            // User accountExpires = 0x7FFFFFFFFFFFFFFF -> DateTime should return DateTime.MaxValue.
             var expectedDateTime = DateTime.MaxValue;
 
-            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e); //user
-            DateTime result = u[0].GetAccountExpiresDateTime();
+            // User.
+            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e);
+            var result = u[0].GetAccountExpiresDateTime();
             Assert.AreEqual(expectedDateTime, result);
         }
 
-
-
         [Test, Order(6)]
+        public void ShouldGetUserLastLogonDateTime()
+        {
+            var e = new AD_FetchObjectProperties()
+            {
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path
+            };
+
+            var expectedDateTime = DateTime.MinValue;
+
+            var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e);
+            var result = u[0].GetPropertyDateTime("lastLogon");
+            Assert.AreEqual(expectedDateTime.GetType(), result.GetType());
+        }
+
+        [Test, Order(7)]
         public void ShouldUpdateUser()
         {
             var user = new UpdateADuser { DN = _dn };
-            var attributes = new List<EntryAttribute> {
+            var attributes = new List<EntryAttribute>
+            {
                 new EntryAttribute {Attribute = AdUserAttribute.description, Value = "MattiMeikalainen", DataType = AttributeType.String}
             };
             user.OtherAttributes = attributes.ToArray();
@@ -159,7 +180,7 @@ namespace Frends.Community.LDAP.Tests
             Assert.AreEqual(result.OperationSuccessful, true);
         }
 
-        [Test, Order(7)]
+        [Test, Order(8)]
         public void ShouldAddGroups()
         {
             var u = new AD_AddGroupsUserProperties { Dn = _dn };
@@ -172,7 +193,7 @@ namespace Frends.Community.LDAP.Tests
         /// <summary>
         /// Test for AD_SearchOjects: fetch a property and a not loaded property.
         /// </summary>
-        [Test, Order(7)]
+        [Test, Order(8)]
         public void ShouldSearchUser()
         {
             var prop = new AD_SearchObjectProperties()
@@ -185,12 +206,14 @@ namespace Frends.Community.LDAP.Tests
             var ret = LdapActiveDirectoryOperations.AD_SearchObjects(_connection, prop);
 
             var cnValue = ret[0].GetPropertyStringValue("cn");
-            var nullValue = ret[0].GetPropertyStringValue("name"); // should return null
+
+            // Should return null.
+            var nullValue = ret[0].GetPropertyStringValue("name");
             Assert.AreEqual(cnValue, _user);
             Assert.AreEqual(nullValue, null);
         }
 
-        [Test, Order(8)]
+        [Test, Order(9)]
         public void ShouldRemoveUserFromGroup()
         {
             var u = new AD_RemoveFromGroupsTargetProperties { Dn = _dn };
@@ -201,7 +224,7 @@ namespace Frends.Community.LDAP.Tests
             Assert.IsTrue(result.OperationSuccessful);
         }
 
-        [Test, Order(9)]
+        [Test, Order(10)]
         public void ShouldDeleteUser()
         {
             var e = new AD_DeleteUserProperties { Cn = _user, Path = _path };
@@ -214,7 +237,7 @@ namespace Frends.Community.LDAP.Tests
         /// <summary>
         /// Test for AD_SearchOjects: fetch a property and a not loaded property.
         /// </summary>
-        [Test, Order(11)]
+        [Test, Order(12)]
         [Ignore("Test is not implemented. TODO")]
         public void ShouldMoveUser()
         {
@@ -232,9 +255,9 @@ namespace Frends.Community.LDAP.Tests
         }
 
         /// <summary>
-        ///  Test for AD_SetUserPassword: Set a user's password
+        ///  Test for AD_SetUserPassword: Set a user's password.
         /// </summary>
-        [Test, Order(11)]
+        [Test, Order(12)]
         [Ignore("Test is not working on build server. TODO")]
 
         public void ShouldSetPassword()
