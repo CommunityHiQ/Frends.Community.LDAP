@@ -1,5 +1,6 @@
 ﻿using Frends.Community.LDAP.Models;
 using Frends.Community.LDAP.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.DirectoryServices;
@@ -31,13 +32,11 @@ namespace Frends.Community.LDAP
 
             List<SearchResult> tmpObjectEntries;
 
-            // Search objects
+            // Search objects.
             using (var ldap = new LdapService(ldapQueryInfo))
-            {
                  tmpObjectEntries = ldap.SearchObjectsByFilterSpecifyProperties(SearchParameters.Filter, SearchParameters.PropertiesToLoad, SearchParameters.PageSize);
-            }
 
-            // Create & return result list
+            // Create & return result list.
             var retOutputs = new List<OutputSearchEntry>();
 
             foreach (var item in tmpObjectEntries)
@@ -65,10 +64,7 @@ namespace Frends.Community.LDAP
 
             ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/"+SearchParameters.Path;
 
-            using (var ldap = new LdapService(ldapConnectionInfo))
-            {
-                tmpObjectEntries = ldap.SearchObjectsByFilter(SearchParameters.Filter);
-            }
+            using (var ldap = new LdapService(ldapConnectionInfo)) tmpObjectEntries = ldap.SearchObjectsByFilter(SearchParameters.Filter);
 
             foreach (var item in tmpObjectEntries)
             {
@@ -82,8 +78,7 @@ namespace Frends.Community.LDAP
         }
 
         /// <summary>
-        /// Create a user to AD. The task AD_SetUserPassword is meant as a replacement
-        /// for setting the password in conjunction with AD user creation.
+        /// Create a user to AD. The task AD_SetUserPassword is meant as a replacement for setting the password in conjunction with AD user creation.
         /// </summary>
         /// <param name="ldapConnectionInfo">The LDAP connection information</param>
         /// <param name="adUser">The user record to be created</param>
@@ -98,9 +93,7 @@ namespace Frends.Community.LDAP
                 ldapOperationResult.User = ldap.CreateAdUser(adUser);
 
                 if (Password.SetPassword) 
-                {
                     SetPassword.SetUserPassword(ldapConnectionInfo.LdapUri,adUser.Path,ldapConnectionInfo.Username,ldapConnectionInfo.Password,adUser.CN, Password.NewPassword);
-                }
 
                 ldapOperationResult.OperationSuccessful = true;
 
@@ -163,17 +156,12 @@ namespace Frends.Community.LDAP
 
             var filter = "(&(objectClass=user)(cn=" + userProperties.Cn + "))";
 
-            using (var ldap = new LdapService(ldapConnectionInfo))// @"(&(objectClass=user)(cn=MattiMeikalainen))
+            // @"(&(objectClass=user)(cn=MattiMeikalainen))
+            using (var ldap = new LdapService(ldapConnectionInfo))
             {
-                List<DirectoryEntry> tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
-                if (tmpObjectEntries.Count > 0)
-                {
-                    ldap.DeleteAdUser(tmpObjectEntries[0]);
-                }
-                else
-                {
-                    throw new System.Exception($"Did not find any entries matching filter {filter} from {ldapConnectionInfo.LdapUri}");
-                }
+                var tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
+                if (tmpObjectEntries.Count > 0) ldap.DeleteAdUser(tmpObjectEntries[0]);
+                else throw new Exception($"Did not find any entries matching filter {filter} from {ldapConnectionInfo.LdapUri}");
             }
 
             retOutput.OperationSuccessful = true;
@@ -194,23 +182,15 @@ namespace Frends.Community.LDAP
             
             ldapConnectionInfo.LdapUri = ldapConnectionInfo.LdapUri + "/" + userProperties.Path;
 
-            string filter = "(&(objectClass=user)(cn=" + userProperties.Cn + "))";
+            var filter = "(&(objectClass=user)(cn=" + userProperties.Cn + "))";
 
-            using (var ldap = new LdapService(ldapConnectionInfo)) // @"(&(objectClass=user)(cn=MattiMeikalainen))
+            // @"(&(objectClass=user)(cn=MattiMeikalainen))
+            using (var ldap = new LdapService(ldapConnectionInfo))
             {
                 tmpObjectEntries = ldap.SearchObjectsByFilter(filter);
-                if (tmpObjectEntries.Count == 1)
-                {
-                    ldapOperationResult.User = ldap.RenameAdUser(tmpObjectEntries[0], userProperties.NewCn);
-                }
-                else if (tmpObjectEntries.Count == 0)
-                {
-                    throw new System.Exception($"Did not find any entries matching filter {filter} from {ldapConnectionInfo.LdapUri}");
-                }
-                else if (tmpObjectEntries.Count > 1)
-                {
-                    throw new System.Exception($"Found more than one entry matching filter {filter} from {ldapConnectionInfo.LdapUri}");
-                }
+                if (tmpObjectEntries.Count == 1) ldapOperationResult.User = ldap.RenameAdUser(tmpObjectEntries[0], userProperties.NewCn);
+                else if (tmpObjectEntries.Count == 0) throw new Exception($"Did not find any entries matching filter {filter} from {ldapConnectionInfo.LdapUri}");
+                else if (tmpObjectEntries.Count > 1) throw new Exception($"Found more than one entry matching filter {filter} from {ldapConnectionInfo.LdapUri}");
             }
             
             ldapOperationResult.OperationSuccessful = true;
@@ -218,7 +198,7 @@ namespace Frends.Community.LDAP
         }
 
         /// <summary>
-        /// Remove AD object from a set of groups
+        /// Remove AD object from a set of groups.
         /// </summary>
         /// <param name="ldapConnectionInfo"></param>
         /// <param name="target"></param>
@@ -228,10 +208,7 @@ namespace Frends.Community.LDAP
         {
             var result = new Output();
 
-            using (var ldap = new LdapService(ldapConnectionInfo))
-            {
-                result.OperationSuccessful = ldap.RemoveFromGroups(target.Dn, groupsToRemoveFrom.Groups);
-            }
+            using (var ldap = new LdapService(ldapConnectionInfo)) result.OperationSuccessful = ldap.RemoveFromGroups(target.Dn, groupsToRemoveFrom.Groups);
 
             return result;
         }
@@ -245,8 +222,10 @@ namespace Frends.Community.LDAP
         /// <returns>Object { DirectoryEntry ObjectEntryCopy }</returns>
         public static MoveAdObjectResult AD_MoveObject([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] MoveObject adObject)
         {
-            var result = new MoveAdObjectResult();
-            result.OperationSuccessful = false;
+            var result = new MoveAdObjectResult
+            {
+                OperationSuccessful = false
+            };
 
             using (var ldap = new LdapService(ldapConnectionInfo))
             {
@@ -259,8 +238,8 @@ namespace Frends.Community.LDAP
 
 
         /// <summary>
-        /// Sets password for user in AD. This task allows the use of other ways of binding to the server
-        /// than simple bind, which is the one that is used when setting the password in AD_CreateUser.
+        /// Sets password for user in AD.
+        /// This task allows the use of other ways of binding to the server than simple bind, which is the one that is used when setting the password in AD_CreateUser.
         /// </summary>
         /// <param name="passwordParameters">Input parameters and options</param>
         /// <returns>Object { bool OperationSuccessful, string UserPrincipalName, string LogString }</returns>
@@ -275,13 +254,14 @@ namespace Frends.Community.LDAP
             try
             {
                 result.LogString += "Attempting to connect to server.";
-                // Create context
+
+                // Create context.
                 pContext = new PrincipalContext(ContextType.Domain, serverName, passwordParameters.AdContainer, passwordParameters.GetContextType(), passwordParameters.Username, passwordParameters.Password);
                 result.LogString += "Context created and connection formed. Server: " + pContext.ConnectedServer + " Container: " +
                    pContext.Container + " Context type: " + pContext.ContextType + " UserName: " + pContext.UserName + ";";
 
-                // Fetch the principal object for the user
-                UserPrincipal user = UserPrincipal.FindByIdentity(pContext, IdentityType.UserPrincipalName, userPN);
+                // Fetch the principal object for the user.
+                var user = UserPrincipal.FindByIdentity(pContext, IdentityType.UserPrincipalName, userPN);
                 if (user == null)
                 {
                     result.LogString += "User " + userPN + " not found.";
@@ -291,22 +271,22 @@ namespace Frends.Community.LDAP
                 {
                     result.LogString += "User found: " + user.DistinguishedName + ";";
 
-                    // Set user password
+                    // Set user password.
                     user.SetPassword(passwordParameters.NewPassword);
                     result.LogString += "Password set;";
 
-                    // Save the changes to the store
+                    // Save the changes to the store.
                     user.Save();
                     result.LogString += "User saved;";
 
-                    // Finalize result
+                    // Finalize result.
                     result.OperationSuccessful = true;
                     result.UserPrincipalName = passwordParameters.UserPrincipalName;
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                throw new System.Exception("Password could not be set. Log: " + result.LogString, ex);
+                throw new Exception("Password could not be set. Log: " + result.LogString, ex);
             }
             finally
             {
