@@ -230,7 +230,6 @@ namespace Frends.Community.LDAP.Tests
 
             var cnValue = ret[0].GetPropertyCollectionValues("cn");
 
-            // Should return null.
             var objectclass = ret[0].GetPropertyCollectionValues("objectclass");
             Assert.AreEqual(new List<string> { _user }, cnValue);
             Assert.AreEqual(new List<string> { "top", "person", "organizationalPerson", "user" }, objectclass);

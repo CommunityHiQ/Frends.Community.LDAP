@@ -17,5 +17,5 @@ jobs:
       run: dotnet pack --configuration Release --include-source 
       
     - name: Push NuGet package to the (prod) feed
-      run: dotnet nuget push Frends.Community.LDAP\bin\Release\Frends.Community.LDAP.*.nupkg  --api-key ${{ secrets.CommunityFeedApiKey }} --source https://www.myget.org/F/frends-community/api/v2/package --symbol-source https://www.myget.org/F/frends-community/symbols/api/v2/package
+      run: dotnet nuget push Frends.Community.LDAP\bin\Release\Frends.Community.LDAP.*.nupkg  --api-key ${{ secrets.CommunityFeedApiKey }} --source https://www.myget.org/F/frends-community/api/v2/package
 
