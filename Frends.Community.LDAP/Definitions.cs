@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -172,11 +173,36 @@ namespace Frends.Community.LDAP
     /// Fields and their descriptions:
     /// - SearchEntry is search's result data(SearchResult)
     /// Methods:
+    /// - GetProperty(name) : returns property's values
     /// - GetPropertyStringValue(name) : returns property's first value.
     /// </summary>
     public class OutputSearchEntry
     {
         public SearchResult SearchEntry { get; set; }
+
+        // GetPropertyCollectionValues returns collection in string typed even if there are one object match.
+        // String, ...
+        public List<string> GetPropertyCollectionValues(string name)
+        {
+            
+            if (SearchEntry.Properties.Contains(name))
+            {
+                if (SearchEntry.Properties[name].Count > 0)
+                {
+                    var searchResult = new List<string>();
+                    foreach (var property in SearchEntry.Properties[name])
+                    {
+                        searchResult.Add(property.ToString());
+                    }
+
+                    return searchResult;
+                }
+                else
+                    return new List<string>();
+            }
+
+            return new List<string>();
+        }
 
         /// <summary>
         /// Returns property's first value as string or null.

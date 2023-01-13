@@ -213,6 +213,29 @@ namespace Frends.Community.LDAP.Tests
             Assert.AreEqual(nullValue, null);
         }
 
+        /// <summary>
+        /// Test for AD_SearchOjects: fetch a property and a not loaded property.
+        /// </summary>
+        [Test, Order(8)]
+        public void ShouldSearchMultipleUsers()
+        {
+            var prop = new AD_SearchObjectProperties()
+            {
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path,
+                PropertiesToLoad = Array.Empty<string>()
+            };
+
+            var ret = LdapActiveDirectoryOperations.AD_SearchObjects(_connection, prop);
+
+            var cnValue = ret[0].GetPropertyValues("cn");
+
+            // Should return null.
+            var objectclass = ret[0].GetPropertyValues("objectclass");
+            Assert.AreEqual(new List<string> { _user }, cnValue);
+            Assert.AreEqual(new List<string> { "top", "person", "organizationalPerson", "user" }, objectclass);
+        }
+
         [Test, Order(9)]
         public void ShouldRemoveUserFromGroup()
         {
