@@ -78,7 +78,7 @@ namespace Frends.Community.LDAP.Tests
                 SetPassword = false
             };
             var result = LdapActiveDirectoryOperations.AD_CreateUser(_connection, user, e);
-            Assert.AreEqual(result.OperationSuccessful, true);
+            Assert.IsTrue(result.OperationSuccessful);
         }
 
 
@@ -92,7 +92,7 @@ namespace Frends.Community.LDAP.Tests
             };
             var u = LdapActiveDirectoryOperations.AD_FetchObjects(_connection, e);
             var result = u[0].GetProperty("cn");
-            Assert.AreEqual(result[0], _user);
+            Assert.AreEqual(_user, result[0]);
         }
 
 
@@ -177,7 +177,7 @@ namespace Frends.Community.LDAP.Tests
             };
             user.OtherAttributes = attributes.ToArray();
             var result = LdapActiveDirectoryOperations.AD_UpdateUser(_connection, user);
-            Assert.AreEqual(result.OperationSuccessful, true);
+            Assert.IsTrue(result.OperationSuccessful);
         }
 
         [Test, Order(8)]
@@ -187,7 +187,7 @@ namespace Frends.Community.LDAP.Tests
             var e = new AD_AddGroupsProperties { Groups = new[] { _groupDn } };
 
             var result = LdapActiveDirectoryOperations.AD_AddGroups(_connection, u, e);
-            Assert.AreEqual(result.OperationSuccessful, true);
+            Assert.IsTrue(result.OperationSuccessful);
         }
 
         /// <summary>
@@ -209,8 +209,30 @@ namespace Frends.Community.LDAP.Tests
 
             // Should return null.
             var nullValue = ret[0].GetPropertyStringValue("name");
-            Assert.AreEqual(cnValue, _user);
-            Assert.AreEqual(nullValue, null);
+            Assert.AreEqual(_user, cnValue);
+            Assert.AreEqual(null, nullValue);
+        }
+
+        /// <summary>
+        /// Test for AD_SearchOjects: fetch a property and a not loaded property.
+        /// </summary>
+        [Test, Order(8)]
+        public void ShouldSearchMultipleUsers()
+        {
+            var prop = new AD_SearchObjectProperties()
+            {
+                Filter = "(&(objectClass=user)(cn=" + _user + "))",
+                Path = _path,
+                PropertiesToLoad = Array.Empty<string>()
+            };
+
+            var ret = LdapActiveDirectoryOperations.AD_SearchObjects(_connection, prop);
+
+            var cnValue = ret[0].GetPropertyCollectionValues("cn");
+
+            var objectclass = ret[0].GetPropertyCollectionValues("objectclass");
+            Assert.AreEqual(new List<string> { _user }, cnValue);
+            Assert.AreEqual(new List<string> { "top", "person", "organizationalPerson", "user" }, objectclass);
         }
 
         [Test, Order(9)]
@@ -229,7 +251,7 @@ namespace Frends.Community.LDAP.Tests
         {
             var e = new AD_DeleteUserProperties { Cn = _user, Path = _path };
             var result = LdapActiveDirectoryOperations.AD_DeleteUser(_connection, e);
-            Assert.AreEqual(result.OperationSuccessful, true);
+            Assert.IsTrue(result.OperationSuccessful);
         }
 
 

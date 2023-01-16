@@ -84,7 +84,7 @@ namespace Frends.Community.LDAP
         /// <param name="adUser">The user record to be created</param>
         /// <param name="Password">Passes two parameters to this task: bool setPassword, which defines if a password should be set at create time, and string newPassword, containing the password to be set.</param>
         /// <returns>LdapResult class, which carries a copy of the created user record.</returns>
-        public static OutputUser AD_CreateUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] CreateADuser adUser, AD_CreateUserProperties Password )
+        public static OutputUser AD_CreateUser([PropertyTab] LdapConnectionInfo ldapConnectionInfo, [PropertyTab] CreateADuser adUser, [PropertyTab] AD_CreateUserProperties Password )
         {
             var ldapOperationResult = new OutputUser { OperationSuccessful = false, User = null };
 
